@@ -17,20 +17,22 @@ import batchOpen as bo
 kv = '''
 '''
 
-
-
-class GraphApp(App):
-
+class DragAndDrop(MDApp):
     path = StringProperty()
+
+    def build(self):
+        Window.bind(on_dropfile=self.on_file_drop)
+        return Builder.load_string(kv)
 
     def on_file_drop(self, window, file_path):
         self.path = str(file_path.decode("utf-8"))
         print(file_path.decode("utf-8"))
         print(bo.batchOpen(file_path.decode("utf-8")))
 
-    def build(self):
+class GraphApp(App):
 
-        Window.bind(on_dropfile= self.on_file_drop)
+
+    def build(self):
 
         Window.size = (800, 600)
         main_layout = BoxLayout(orientation='horizontal')
@@ -67,4 +69,5 @@ class GraphApp(App):
             os.remove("graph.png")
 
 if __name__ == '__main__':
+    DragAndDrop().run()
     GraphApp().run()
