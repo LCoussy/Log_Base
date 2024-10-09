@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" project-jdk-name="kivy_env" project-jdk-type="Python SDK" />
+=======
+  <component name="Black">
+    <option name="sdkName" value="projet_tut" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="projet_tut" project-jdk-type="Python SDK" />
+>>>>>>> e66d53a300682af9c13290c5c01d536f8e586817
 </project>

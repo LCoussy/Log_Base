@@ -17,29 +17,22 @@ import batchOpen as bo
 kv = '''
 '''
 
-class DragAndDrop(MDApp):
-    path = StringProperty()
 
-    def build(self):
-        Window.bind(on_dropfile=self.on_file_drop)
-        return Builder.load_string(kv)
+class GraphApp(App):
+    path = StringProperty()
 
     def on_file_drop(self, window, file_path):
         self.path = str(file_path.decode("utf-8"))
         print(file_path.decode("utf-8"))
         print(bo.batchOpen(file_path.decode("utf-8")))
 
-class GraphApp(App):
-
-
     def build(self):
-
+        Window.bind(on_dropfile=self.on_file_drop)
         Window.size = (800, 600)
         main_layout = BoxLayout(orientation='horizontal')
 
-        left_block = BoxLayout(orientation='vertical', size_hint=(0.3, 1))
-        left_block.add_widget(Label(text="Bloc de gauche", size_hint=(1, 0.1), font_size='20sp'))
-
+        left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))  # 30% de la largeur
+        left_layout.add_widget(Label(text="Drag and drop", size_hint=(1, 0.1), font_size='20sp'))
 
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1))
         title = Label(text="Graphique Matplotlib", size_hint=(1, 0.1), font_size='20sp')
@@ -49,10 +42,10 @@ class GraphApp(App):
         img = Image(source="graph.png")
         right_layout.add_widget(img)
 
-        main_layout.add_widget(left_block)
+        main_layout.add_widget(left_layout)
         main_layout.add_widget(right_layout)
 
-        return main_layout
+        return  main_layout
 
     def create_graph(self):
         plt.figure(figsize=(5, 5))
@@ -69,5 +62,4 @@ class GraphApp(App):
             os.remove("graph.png")
 
 if __name__ == '__main__':
-    DragAndDrop().run()
     GraphApp().run()
