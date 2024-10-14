@@ -8,6 +8,10 @@ from kivy.uix.screenmanager import Screen
 import parser as par
 import data_handler as dh
 
+import pandas as pd
+from kivymd.app import MDApp
+from kivymd.uix.boxlayout import MDBoxLayout
+
 import matplotlib.pyplot as plt
 
 
@@ -37,10 +41,11 @@ class GraphScreen(Screen):
         )
         up_layout.add_widget(title)
 
-        text = str(dh.createTableBlockedRequest(par.parse_log("/home/morgan/Documents/Log_bas/GCE_10-30-02_17_07-10-2024.txt")))
+        df = (dh.createTableBlockedRequest(par.parse_log("/home/morgan/Documents/Log_bas/GCE_10-30-02_17_07-10-2024.txt")))
+        html = df.to_html()
 
         array = Label(
-            text= text,
+            text= html,
             size_hint=(1, 1),
             font_size='20sp',
             #text_size=(Window.width * 0.7, None)
