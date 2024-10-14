@@ -7,7 +7,6 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserIconView
-
 import os
 import batchOpen as bo
 
@@ -64,29 +63,48 @@ class DragDropScreen(Screen):
         self.add_widget(main_layout)
 
     def open_filechooser(self, instance):
+        # Appel à la classe de filechooser précédente
         filechooser = FileChooserIconView(path="/home", filters=["*"], dirselect=True)
-        filechooser.bind(on_selection=self.selected_file_or_dir)
+        select_btn = Button(text="Sélectionner", size_hint=(1, 0.1))
+        select_btn.bind(on_press=lambda x: self.selected_file_or_dir(filechooser))
 
+        # Layout pour le filechooser et le bouton
+        layout = BoxLayout(orientation='vertical')
+        layout.add_widget(filechooser)
+        layout.add_widget(select_btn)
+
+        # Popup qui affiche la fenêtre de sélection
         self.popup = Popup(
-            title="Selectionner un fichier ou un dossier",
-            content=filechooser,
+            title="Sélectionner un fichier ou un dossier",
+            content=layout,
             size_hint=(0.9, 0.9)
         )
         self.popup.open()
 
-    def selected_file_or_dir(self, filechooser, selection):
+    def selected_file_or_dir(self, filechooser):
+        # Récupérer la sélection
+        selection = filechooser.selection
         if selection:
             selected_path = selection[0]
-            print(f"{selected_path}")
+            print(f"Sélectionné : {selected_path}")
 
+            # Stocker le chemin sélectionné dans la variable path
+            self.path = selected_path
+
+            # Si c'est un dossier
             if os.path.isdir(selected_path):
-                print(f"{selected_path} ")
+                print(f"{selected_path} est un dossier.")
+                # Appeler bo.batchOpen(selected_path)
                 files = bo.batchOpen(selected_path)
                 for file in files:
                     print(file)
             else:
-                print(f"{selected_path}")
+                print(f"{selected_path} est un fichier.")
 
+            # Mettre à jour le texte du label avec le chemin sélectionné
+            self.drop_label.text = f"Fichier sélectionné : {selected_path}"
+
+            # Fermer la popup
             self.popup.dismiss()
 
     def on_enter(self):
@@ -96,6 +114,7 @@ class DragDropScreen(Screen):
         Window.unbind(on_dropfile=self.on_file_drop)
 
     def on_file_drop(self, window, file_path):
+        # Mettre à jour la propriété path lors du drag-and-drop
         self.path = file_path.decode("utf-8")
         self.drop_label.text = f"{self.path}"
         print(f" {self.path}")
@@ -103,3 +122,9 @@ class DragDropScreen(Screen):
 
     def go_to_graph(self, instance):
         self.manager.current = 'graph'
+
+    # Nouvelle fonction pour renvoyer le path
+    def get_path(self):
+
+        return self.path
+
