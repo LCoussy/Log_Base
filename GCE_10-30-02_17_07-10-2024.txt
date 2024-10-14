@@ -1,0 +1,1905 @@
+------------------------------------------------------- 
+07/10/2024 
+10:30
+------------------------------------------------------- 
+
+SQL*Plus: Release 12.2.0.1.0 Production on Lun. Oct. 7 10:30:02 2024
+
+Copyright (c) 1982, 2017, Oracle.  All rights reserved.
+
+Heure de la derni�re connexion r�ussie : Lun. Oct.  07 2024 10:29:14 +02:00
+
+Connect� � :
+Oracle Database 12c Standard Edition Release 12.2.0.1.0 - 64bit Production
+
+SP2-0734: commande inconnue au d�but de "﻿set spo..." - le reste de la ligne est ignor�.
+07/10/24 10:30:03 BLOQUE 10/07/24 09:32:07		    5 07/10/24 10:29:58
+ARFWSELECH
+mjaulin
+Ares.exe
+CG85\DSI08721								531
+     29682 INACTIVE 5j067zm8mp28h
+Select CDMODXSL, rowid	 From ARMODXSL 
+ Where CDMODXSL = :p0
+	  1422		    66	      1495
+:P0, :P0
+CHAR(32), CHAR(32)
+ALRT_BULL_MAIL, ALRT_BULL_MAIL
+MJ
+
+07/10/24 10:30:03 BLOQUE 10/07/24 09:32:07		    5 07/10/24 10:29:58
+ARFWSELECH
+mjaulin
+Ares.exe
+CG85\DSI08721								531
+     29682 INACTIVE 5j067zm8mp28h
+Select CDMODXSL, rowid	 From ARMODXSL 
+ Where CDMODXSL = :p0
+	  7730		    66	      7812
+:P0, :P0
+CHAR(32), CHAR(32)
+ALRT_BULL_MAIL, ALRT_BULL_MAIL
+MJ
+
+07/10/24 10:30:03 BLOQUE 10/07/24 09:32:07		    5 07/10/24 10:29:58
+COMSGAUT
+mjaulin
+Ares.exe
+CG85\DSI08721								531
+     29682 INACTIVE 5j067zm8mp28h
+Select CDMODXSL, rowid	 From ARMODXSL 
+ Where CDMODXSL = :p0
+	  1422		    66	      1495
+:P0, :P0
+CHAR(32), CHAR(32)
+ALRT_BULL_MAIL, ALRT_BULL_MAIL
+MJ
+
+07/10/24 10:30:03 BLOQUE 10/07/24 09:32:07		    5 07/10/24 10:29:58
+COMSGAUT
+mjaulin
+Ares.exe
+CG85\DSI08721								531
+     29682 INACTIVE 5j067zm8mp28h
+Select CDMODXSL, rowid	 From ARMODXSL 
+ Where CDMODXSL = :p0
+	  7730		    66	      7812
+:P0, :P0
+CHAR(32), CHAR(32)
+ALRT_BULL_MAIL, ALRT_BULL_MAIL
+MJ
+
+07/10/24 10:30:03					 7593 07/10/24 08:23:30
+
+chchauvet
+Ares.exe
+CG85\VCF-CVDA-AP-10							546
+       650 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	     0		    27		43
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+CCH
+
+07/10/24 10:30:03					 7593 07/10/24 08:23:30
+
+chchauvet
+Ares.exe
+CG85\VCF-CVDA-AP-10							546
+       650 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	     0		    27	       215
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+CCH
+
+07/10/24 10:30:03					 7593 07/10/24 08:23:30
+
+chchauvet
+Ares.exe
+CG85\VCF-CVDA-AP-10							546
+       650 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	     0		    27	       588
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+CCH
+
+07/10/24 10:30:03					 7593 07/10/24 08:23:30
+
+chchauvet
+Ares.exe
+CG85\VCF-CVDA-AP-10							546
+       650 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	   206		    27	      6841
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+CCH
+
+07/10/24 10:30:03					 6824 07/10/24 08:36:19
+
+fpillet
+Ares.exe
+CG85\DSI08720								364
+     17055 INACTIVE 7wuuyramujfm1
+select * from frtftra8501 where numero_feuille = :feuille  and obtention_resulta
+t <> 'T'      order by interne_idech, num_ligne_paillasse
+	    27		    71	      9961
+:FEUILLE
+CHAR(32)
+202400015865
+FP
+
+07/10/24 10:30:03					 4141 07/10/24 09:21:02
+
+svc_ares_prod
+Ares12_batch.exe
+CG85\EGLE								 14
+     13018 INACTIVE 9y6yf0sv1cpm7
+select	f.idfactur as numero_facture,	     
+ lg.mtunitlg as ligne_montant_unit
+aire,  lg.txtva as ligne_taux_tva,
+ lg.mthtlg - lg.mtremhtlg as ligne_montant_HT
+,  lg.txrem as ligne_taux_remise, 
+ lg.nboccurs as ligne_quantite, 
+ decode(trim
+(lgel.dsancond), null, lgel.ttelana, lgel.dsancond) as ligne_lib_leav  from arfa
+ctur f, arlgfact lg, areleman lgel  where f.idfactur = :numero 
+ and lg.cdpiec =
+ f.cdpiec   and lg.nofactur = f.nofactur
+ and f.cdval <> 'I' 
+ and lgel.cdelana(
++) = lg.cdelana  and lgel.DHDBVAL(+) <= SYSDATE and lgel.DHFNVAL(+) >= SYSDATE
+
+and lg.cdnatfac <> 'AN'
+	   112		    46	      1250
+:NUMERO
+CHAR(32)
+P.F202431253
+
+
+07/10/24 10:30:03					 4009 07/10/24 09:23:14
+
+pnicollet
+Ares.exe
+CG85\DSI08799								382
+     12439 INACTIVE 910v60y6d7h4x
+Select CDBDARES, DSBDARES, CDCPTORA, CDALIAS, rowid   From ARBDARES 
+ Where CDBD
+ARES = :p0
+	     4		    13		 8
+:P0, :P0
+CHAR(32), CHAR(32)
+AR8501, AR8501
+PNI
+
+07/10/24 10:30:03					 4009 07/10/24 09:23:14
+
+pnicollet
+Ares.exe
+CG85\DSI08799								382
+     12439 INACTIVE 910v60y6d7h4x
+Select CDBDARES, DSBDARES, CDCPTORA, CDALIAS, rowid   From ARBDARES 
+ Where CDBD
+ARES = :p0
+	   166		    13	       332
+:P0, :P0
+CHAR(32), CHAR(32)
+AR8501, AR8501
+PNI
+
+07/10/24 10:30:03					 3495 07/10/24 09:31:48
+
+spenard
+Ares.exe
+CG85\DSI08771								202
+     58451 INACTIVE 8a8pr4qmm9u3m
+select 1 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,  trim(sit_cg8
+5.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||    ','||lbadr1||decode(trim(lb
+adr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbville) as af
+f  from arfprvnt f, arrlintv rl, titier d 
+ where f.nofiprlv = :fiche 
+ and rl.n
+odem = f.nodem	and rl.nofiprlv = 0
+ and rl.cdtypint = 'CLIE' 
+ and rl.cdval = '
+V'  and d.cdgrpe = rl.cdgrpe 
+ and d.notier = rl.notier
+ and d.cdeqdos = rl.cdeq
+dos  union
+ select 2 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,
+
+trim(sit_cg85.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||	','||lbadr1||dec
+ode(trim(lbadr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbv
+ille) as aff  from arfprvnt f, arrlintv rl, artypint int, titier d 
+ where f.nof
+iprlv = :fiche	 and rl.nodem = f.nodem
+ and rl.nofiprlv = f.nofiprlv 
+ and rl.c
+dval = 'V'  and int.cdtycond = rl.cdtypint
+ and int.cdedresu = 'O'
+ and d.cdg
+	     8		     1	       322
+:FICHE, :FICHE, :FICHE, :FICHE
+CHAR(32), CHAR(32), CHAR(32), CHAR(32)
+000000649264, 000000649264, 000000650056, 000000650056
+SPE
+
+07/10/24 10:30:03					 3495 07/10/24 09:31:48
+
+spenard
+Ares.exe
+CG85\DSI08771								202
+     58451 INACTIVE 8a8pr4qmm9u3m
+select 1 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,  trim(sit_cg8
+5.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||    ','||lbadr1||decode(trim(lb
+adr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbville) as af
+f  from arfprvnt f, arrlintv rl, titier d 
+ where f.nofiprlv = :fiche 
+ and rl.n
+odem = f.nodem	and rl.nofiprlv = 0
+ and rl.cdtypint = 'CLIE' 
+ and rl.cdval = '
+V'  and d.cdgrpe = rl.cdgrpe 
+ and d.notier = rl.notier
+ and d.cdeqdos = rl.cdeq
+dos  union
+ select 2 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,
+
+trim(sit_cg85.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||	','||lbadr1||dec
+ode(trim(lbadr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbv
+ille) as aff  from arfprvnt f, arrlintv rl, artypint int, titier d 
+ where f.nof
+iprlv = :fiche	 and rl.nodem = f.nodem
+ and rl.nofiprlv = f.nofiprlv 
+ and rl.c
+dval = 'V'  and int.cdtycond = rl.cdtypint
+ and int.cdedresu = 'O'
+ and d.cdg
+	   939		     1	     23458
+:FICHE, :FICHE, :FICHE, :FICHE
+CHAR(32), CHAR(32), CHAR(32), CHAR(32)
+000000649264, 000000649264, 000000650056, 000000650056
+SPE
+
+07/10/24 10:30:03					 3495 07/10/24 09:31:48
+
+spenard
+Ares.exe
+CG85\DSI08771								202
+     58451 INACTIVE 8hqczpwmyrfzx
+select	 rtrim(uti_extr.renvoi_comment(interne_numero_demande, interne_numero_fi
+che, interne_numero_echant, commentaire1, 1, 'C'))||' '||rtrim(commentaire1) as
+commentaire  from (
+ select distinct commentaire1, interne_numero_demande, inter
+ne_numero_fiche, interne_numero_echant	   from (
+ select commentaire1, interne_
+numero_demande, interne_numero_fiche,interne_numero_echant, paillasse, ligne_pai
+llasse	from frtres8502 
+ where interne_numero_fiche = :fiche
+ and identifiant_e
+chantillon = :Identifiant_echantillon  and result_editable = 'O' and exclusion_e
+dition = 'N' And nvl(trim(resultat),' ') <>'$'	and trim(nvl(commentaire1,' '))
+<> ' '	 order by interne_id_echant, chapitre, ligne_chapitre 
+ )
+ )
+ order by 1
+
+	     0		     1	      9707
+:FICHE, :IDENTIFIANT_ECHANTILLON
+CHAR(32), CHAR(32)
+000000647032, L.2024.30669-1-2
+SPE
+
+07/10/24 10:30:03					 2992 07/10/24 09:40:11
+
+svc_ares_prod
+Ares04_batch.exe
+CG85\EGLE								212
+     12556 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	     0		    57		43
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+
+
+07/10/24 10:30:03					 2992 07/10/24 09:40:11
+
+svc_ares_prod
+Ares04_batch.exe
+CG85\EGLE								212
+     12556 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	     0		    57	       215
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+
+
+07/10/24 10:30:03					 2992 07/10/24 09:40:11
+
+svc_ares_prod
+Ares04_batch.exe
+CG85\EGLE								212
+     12556 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	     0		    57	       588
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+
+
+07/10/24 10:30:03					 2992 07/10/24 09:40:11
+
+svc_ares_prod
+Ares04_batch.exe
+CG85\EGLE								212
+     12556 INACTIVE 7hu2fzmhxczak
+select distinct trim(nmctier)||' '||trim(nmtier)||chr(10)||trim(lbadr1||lbadr2||
+lbadr3) as fonction,   bib.ttloc as fichier_signature
+ from arutares ar, titier_
+pub ut, arbiblio bib  where trim(ar.cdutmagic) in ( 
+ select substr(trim(:signat
+aires)||';', 1, instr(trim(:signataires)||';', ';', 1, 1)-1) as premier from dua
+l union   select substr(trim(:signataires)||';', instr(trim(:signataires)||';',
+';',1,1)+1,   instr(trim(:signataires)||';', ';', 1, 2) - instr(trim(:signataire
+s)||';', ';',1,1) -1) as deuxieme from dual union   select substr(trim(:signatai
+res)||';', instr(trim(:signataires)||';', ';',1,2)+1,	instr(trim(:signataires)
+||';', ';', 1, 3) - instr(trim(:signataires)||';', ';',1,2) -1) as troisieme fro
+m dual union   select substr(trim(:signataires)||';', instr(trim(:signataires)||
+';', ';',1,3)+1,   instr(trim(:signataires)||';', ';', 1, 4) - instr(trim(:signa
+taires)||';', ';',1,3) -1) as quatrieme from dual union   select substr(trim(:si
+gnataires)||';', instr(trim(:signa
+	   206		    57	      6841
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIG
+NATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES,
+:SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIR
+ES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNA
+TAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :S
+IGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATA
+IRES, :SIGNATAIRES, :SIGNATAIRES, :SIGNATAIRES
+CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1),
+ CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1)
+, CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1
+), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(1), CHAR(
+1), CHAR(1), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR
+(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHAR(3), CHA
+R(3), CHAR(3), CLOB, DISPLAY, DTYAMS, NUMBER, UB2, UROWID, VARCHAR2(0)
+
+
+
+07/10/24 10:30:03					 2992 07/10/24 09:40:11
+
+svc_ares_prod
+Ares04_batch.exe
+CG85\EGLE								212
+     12556 INACTIVE 8a8pr4qmm9u3m
+select 1 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,  trim(sit_cg8
+5.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||    ','||lbadr1||decode(trim(lb
+adr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbville) as af
+f  from arfprvnt f, arrlintv rl, titier d 
+ where f.nofiprlv = :fiche 
+ and rl.n
+odem = f.nodem	and rl.nofiprlv = 0
+ and rl.cdtypint = 'CLIE' 
+ and rl.cdval = '
+V'  and d.cdgrpe = rl.cdgrpe 
+ and d.notier = rl.notier
+ and d.cdeqdos = rl.cdeq
+dos  union
+ select 2 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,
+
+trim(sit_cg85.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||	','||lbadr1||dec
+ode(trim(lbadr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbv
+ille) as aff  from arfprvnt f, arrlintv rl, artypint int, titier d 
+ where f.nof
+iprlv = :fiche	 and rl.nodem = f.nodem
+ and rl.nofiprlv = f.nofiprlv 
+ and rl.c
+dval = 'V'  and int.cdtycond = rl.cdtypint
+ and int.cdedresu = 'O'
+ and d.cdg
+	     8		    57	       322
+:FICHE, :FICHE, :FICHE, :FICHE
+CHAR(32), CHAR(32), CHAR(32), CHAR(32)
+000000649264, 000000649264, 000000650056, 000000650056
+
+
+07/10/24 10:30:03					 2992 07/10/24 09:40:11
+
+svc_ares_prod
+Ares04_batch.exe
+CG85\EGLE								212
+     12556 INACTIVE 8a8pr4qmm9u3m
+select 1 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,  trim(sit_cg8
+5.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||    ','||lbadr1||decode(trim(lb
+adr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbville) as af
+f  from arfprvnt f, arrlintv rl, titier d 
+ where f.nofiprlv = :fiche 
+ and rl.n
+odem = f.nodem	and rl.nofiprlv = 0
+ and rl.cdtypint = 'CLIE' 
+ and rl.cdval = '
+V'  and d.cdgrpe = rl.cdgrpe 
+ and d.notier = rl.notier
+ and d.cdeqdos = rl.cdeq
+dos  union
+ select 2 as ord, trim(d.nmtier) as nom, trim(nmctier) as cplt_nom,
+
+trim(sit_cg85.renv_tiers_edt(d.cdgrpe,d.notier,d.cdeqdos)) ||	','||lbadr1||dec
+ode(trim(lbadr2), null, '', ','||trim(lbadr2))||','||trim(cdpost)||' '||trim(lbv
+ille) as aff  from arfprvnt f, arrlintv rl, artypint int, titier d 
+ where f.nof
+iprlv = :fiche	 and rl.nodem = f.nodem
+ and rl.nofiprlv = f.nofiprlv 
+ and rl.c
+dval = 'V'  and int.cdtycond = rl.cdtypint
+ and int.cdedresu = 'O'
+ and d.cdg
+	   939		    57	     23458
+:FICHE, :FICHE, :FICHE, :FICHE
+CHAR(32), CHAR(32), CHAR(32), CHAR(32)
+000000649264, 000000649264, 000000650056, 000000650056
+
+
+07/10/24 10:30:03					 2811 07/10/24 09:43:12
+
+ebordage
+Ares.exe
+CG85\DSI12741								 23
+     61386 INACTIVE 910v60y6d7h4x
+Select CDBDARES, DSBDARES, CDCPTORA, CDALIAS, rowid   From ARBDARES 
+ Where CDBD
+ARES = :p0
+	     4		   235		 8
+:P0, :P0
+CHAR(32), CHAR(32)
+AR8501, AR8501
+EBO
+
+07/10/24 10:30:03					 2811 07/10/24 09:43:12
+
+ebordage
+Ares.exe
+CG85\DSI12741								 23
+     61386 INACTIVE 910v60y6d7h4x
+Select CDBDARES, DSBDARES, CDCPTORA, CDALIAS, rowid   From ARBDARES 
+ Where CDBD
+ARES = :p0
+	   166		   235	       332
+:P0, :P0
+CHAR(32), CHAR(32)
+AR8501, AR8501
+EBO
+
+07/10/24 10:30:03					 2473 07/10/24 09:48:50
+
+lblouard
+Ares.exe
+CG85\DSI08772								 29
+     60117 INACTIVE 90wrpqs099a1v
+Select NMDEST, CDETAT, DHLECT, rowid, DTMSG, TIMSG   From COMSGAUT 
+ Where NMDES
+T = :p0   And CDETAT = :p1 
+ Order by NMDEST, CDETAT, DTMSG desc, TIMSG desc for
+ update nowait
+	     0		    86	    436003
+:P0, :P0, :P1, :P1
+CHAR(32), CHAR(32), CHAR(32), CHAR(32)
+01, 01, EGI, OPADM
+LB
+
+07/10/24 10:30:03					 2473 07/10/24 09:48:50
+
+lblouard
+Ares.exe
+CG85\DSI08772								 29
+     60117 INACTIVE 90wrpqs099a1v
+Select NMDEST, CDETAT, DHLECT, rowid, DTMSG, TIMSG   From COMSGAUT 
+ Where NMDES
+T = :p0   And CDETAT = :p1 
+ Order by NMDEST, CDETAT, DTMSG desc, TIMSG desc for
+ update nowait
+	    11		    86	   4150938
+:P0, :P0, :P1, :P1
+CHAR(32), CHAR(32), CHAR(32), CHAR(32)
+01, 01, EGI, OPADM
+LB
+
+07/10/24 10:30:03					 1167 07/10/24 10:10:36
+
+svc_ares_prod
+Ares02_batch.exe
+CG85\EGLE								374
+     27132 INACTIVE 6can1r6py9cj5
+select * from (  select rtrim(uti_resu_bo.f_resu_alpha_edt(arparesu.noparesu)) a
+s resultat  from arparesu, arechant cur, arsouech, arechydr, arechant, arfprvnt
+
+ where cur.idech = :interne_idech     and arsouech.noech < cur.noech
+ and arechy
+dr.noech = arsouech.noech  and arechydr.cddept = '85'  
+ and trim(NVL(arechydr.i
+dextpsv,'X')) = :identifiant_point   and arechant.noech = arechydr.noech 
+ and a
+rfprvnt.nofiprlv = arechant.nofiprlv  and arparesu.cdunitan = arsouech.cdunitan
+
+ and arparesu.nounitan = arsouech.nounitan  and arparesu.nodem = arfprvnt.nodem
+
+ and arparesu.nofiprlv = arfprvnt.nofiprlv   and arparesu.cdelana = :code_param
+      and arparesu.cdopres <> '/'    
+ and msresnum is not null
+ order by dharri
+v desc	)
+	   348		    50	    416925
+:CODE_PARAM, :IDENTIFIANT_POINT, :INTERNE_IDECH
+CHAR(32), CHAR(32), CHAR(32)
+COT	  , LR2024000003070900010001, VE_BR_004
+
+
+
+26 lignes s�lectionn�es.
+
+
+1 ligne cr��e.
+
+
+1 ligne cr��e.
+
+
+	 1	56732
+svc_halimede
+BACKGROUND 2484
+
+ORACLE.EXE (PSP0)
+HALIMEDE
+06/10/24 05:48:00 28:42:12
+
+
+       526	63402
+svc_halimede
+BACKGROUND 2972
+
+ORACLE.EXE (CLMN)
+HALIMEDE
+06/10/24 05:48:00 28:42:12
+
+
+       351	55838
+svc_halimede
+BACKGROUND 3360
+
+ORACLE.EXE (PMON)
+HALIMEDE
+06/10/24 05:48:00 28:42:12
+
+
+       177	47998
+svc_halimede
+BACKGROUND 2480
+
+ORACLE.EXE (VKTM)
+HALIMEDE
+06/10/24 05:48:01 28:42:12
+
+
+       352	61700
+svc_halimede
+BACKGROUND 3508
+
+ORACLE.EXE (GEN0)
+HALIMEDE
+06/10/24 05:48:02 28:42:04
+
+
+       527	56300
+svc_halimede
+BACKGROUND 1036
+
+ORACLE.EXE (MMAN)
+HALIMEDE
+06/10/24 05:48:03 28:42:03
+
+
+       178	 4929
+svc_halimede
+BACKGROUND 1336
+
+ORACLE.EXE (GEN1)
+HALIMEDE
+06/10/24 05:48:03 28:42:03
+
+
+       353	13658
+svc_halimede
+BACKGROUND 3232
+
+ORACLE.EXE (DIAG)
+HALIMEDE
+06/10/24 05:48:04 28:42:02
+
+
+	 2	65525
+svc_halimede
+BACKGROUND 2412
+
+ORACLE.EXE (DBRM)
+HALIMEDE
+06/10/24 05:48:07 28:42:00
+
+
+       528	63718
+svc_halimede
+BACKGROUND 2564
+
+ORACLE.EXE (VKRM)
+HALIMEDE
+06/10/24 05:48:08 28:41:59
+
+
+	 3	46318
+svc_halimede
+BACKGROUND 2164
+
+ORACLE.EXE (SVCB)
+HALIMEDE
+06/10/24 05:48:09 28:41:58
+
+
+       179	 1500
+svc_halimede
+BACKGROUND 1552
+
+ORACLE.EXE (PMAN)
+HALIMEDE
+06/10/24 05:48:10 28:41:57
+
+
+       529	 3435
+svc_halimede
+BACKGROUND 4468
+
+ORACLE.EXE (DBW0)
+HALIMEDE
+06/10/24 05:48:11 28:41:56
+
+
+	 4	37392
+svc_halimede
+BACKGROUND 1416
+
+ORACLE.EXE (LGWR)
+HALIMEDE
+06/10/24 05:48:11 28:41:56
+
+
+       354	30752
+svc_halimede
+BACKGROUND 3132
+
+ORACLE.EXE (DIA0)
+HALIMEDE
+06/10/24 05:48:11 28:41:56
+
+
+       355	31690
+svc_halimede
+BACKGROUND 2184
+
+ORACLE.EXE (LG00)
+HALIMEDE
+06/10/24 05:48:12 28:41:55
+
+
+       180	27903
+svc_halimede
+BACKGROUND 2348
+
+ORACLE.EXE (CKPT)
+HALIMEDE
+06/10/24 05:48:12 28:41:55
+
+
+	 5	51619
+svc_halimede
+BACKGROUND 5128
+
+ORACLE.EXE (LG01)
+HALIMEDE
+06/10/24 05:48:13 28:41:54
+
+
+       530	50808
+svc_halimede
+BACKGROUND 5124
+
+ORACLE.EXE (SMON)
+HALIMEDE
+06/10/24 05:48:13 28:41:54
+
+
+       181	10110
+svc_halimede
+BACKGROUND 5132
+KTSJ Coordinator
+ORACLE.EXE (SMCO)
+HALIMEDE
+06/10/24 05:48:14 28:41:53
+
+
+	 6	25761
+svc_halimede
+BACKGROUND 5144
+
+ORACLE.EXE (LREG)
+HALIMEDE
+06/10/24 05:48:15 28:41:52
+
+
+       357	10379
+svc_halimede
+BACKGROUND 5152
+
+ORACLE.EXE (PXMN)
+HALIMEDE
+06/10/24 05:48:15 28:41:52
+
+
+       356	 6371
+svc_halimede
+BACKGROUND 5136
+
+ORACLE.EXE (RECO)
+HALIMEDE
+06/10/24 05:48:15 28:41:52
+
+
+	 7	56472
+svc_halimede
+BACKGROUND 5160
+
+ORACLE.EXE (MMON)
+HALIMEDE
+06/10/24 05:48:17 28:41:50
+
+
+       184	17075
+svc_halimede
+BACKGROUND 5168
+
+ORACLE.EXE (MMNL)
+HALIMEDE
+06/10/24 05:48:18 28:41:49
+
+
+	 8	 7237
+svc_halimede
+BACKGROUND 5184
+
+ORACLE.EXE (TMON)
+HALIMEDE
+06/10/24 05:48:19 28:41:47
+
+
+       358	44332
+svc_halimede
+BACKGROUND 5216
+
+ORACLE.EXE (TT01)
+HALIMEDE
+06/10/24 05:48:28 28:41:39
+
+
+       176	58119
+svc_halimede
+BACKGROUND 5212
+
+ORACLE.EXE (TT00)
+HALIMEDE
+06/10/24 05:48:28 28:41:39
+
+
+       535	52904
+svc_halimede
+BACKGROUND 5220
+
+ORACLE.EXE (TT02)
+HALIMEDE
+06/10/24 05:48:28 28:41:39
+
+
+       185	21274
+svc_halimede
+BACKGROUND 5232
+
+ORACLE.EXE (CJQ0)
+HALIMEDE
+06/10/24 05:48:29 28:41:38
+
+
+	11	62602
+svc_halimede
+BACKGROUND 5224
+
+ORACLE.EXE (AQPC)
+HALIMEDE
+06/10/24 05:48:29 28:41:38
+
+
+       533	21717
+svc_halimede
+BACKGROUND 6032
+QMON Slave
+ORACLE.EXE (Q003)
+HALIMEDE
+06/10/24 05:48:39 28:41:28
+
+
+       362	55718
+svc_halimede
+BACKGROUND 6016
+QMON Coordinator
+ORACLE.EXE (QM02)
+HALIMEDE
+06/10/24 05:48:39 28:41:28
+
+SYS
+       539	 2830
+CG85\adm_hhervouet
+USER	   5276:5968
+
+sqlplus.exe
+CG85\HALIMEDE
+07/10/24 02:55:03 07:35:04
+
+
+       197	 8201
+svc_halimede
+BACKGROUND 32
+QMON Slave
+ORACLE.EXE (Q002)
+HALIMEDE
+07/10/24 05:13:07 05:16:59
+
+AR8501
+	13	19498
+svc_ares_prod
+USER	   6480:1
+
+Ares01_batch.exe
+CG85\EGLE
+07/10/24 06:00:53 04:27:46
+
+AR8501
+       200	36930
+svc_ares_prod
+USER	   1880:1
+
+AwConsole.exe
+CG85\EGLE
+07/10/24 07:00:04 03:07:38
+
+AR8501
+       546	  650
+chchauvet
+USER	   7856:1
+
+Ares.exe
+CG85\VCF-CVDA-AP-10
+07/10/24 08:18:51 02:06:38
+
+AR8501
+       364	17055
+fpillet
+USER	   8264:1
+
+Ares.exe
+CG85\DSI08720
+07/10/24 08:36:17 01:53:48
+
+AR8501
+	14	13018
+svc_ares_prod
+USER	   1924:1
+
+Ares12_batch.exe
+CG85\EGLE
+07/10/24 09:18:08 01:09:05
+
+AR8501
+       382	12439
+pnicollet
+USER	   18188:1
+
+Ares.exe
+CG85\DSI08799
+07/10/24 09:22:32 01:06:53
+
+AR8501
+       202	58451
+spenard
+USER	   12724:1
+
+Ares.exe
+CG85\DSI08771
+07/10/24 09:31:29 00:58:19
+
+AR8501
+       212	12556
+svc_ares_prod
+USER	   6840:1
+
+Ares04_batch.exe
+CG85\EGLE
+07/10/24 09:36:33 00:49:56
+
+AR8501
+	23	61386
+ebordage
+USER	   8296:1
+
+Ares.exe
+CG85\DSI12741
+07/10/24 09:43:07 00:46:55
+
+AR8501
+	26	39203
+javane
+USER	   12212:1
+
+Ares.exe
+CG85\DSI08699
+07/10/24 09:48:09 00:41:56
+
+AR8501
+	29	60117
+lblouard
+USER	   12332:1
+
+Ares.exe
+CG85\DSI08772
+07/10/24 08:36:13 00:41:17
+
+
+       543	36230
+svc_halimede
+BACKGROUND 3364
+KTSJ Slave
+ORACLE.EXE (W003)
+HALIMEDE
+07/10/24 10:02:22 00:27:44
+
+
+       193	28627
+svc_halimede
+BACKGROUND 5564
+KTSJ Slave
+ORACLE.EXE (W001)
+HALIMEDE
+07/10/24 10:03:25 00:26:42
+
+
+       207	41307
+svc_halimede
+BACKGROUND 1880
+KTSJ Slave
+ORACLE.EXE (W006)
+HALIMEDE
+07/10/24 10:06:25 00:23:41
+
+
+       552	 9745
+svc_halimede
+BACKGROUND 4960
+KTSJ Slave
+ORACLE.EXE (W002)
+HALIMEDE
+07/10/24 10:06:34 00:23:32
+
+AR8501
+       374	27132
+svc_ares_prod
+USER	   6568:1
+
+Ares02_batch.exe
+CG85\EGLE
+07/10/24 10:10:24 00:19:30
+
+AR8501
+       547	44079
+ebordage
+USER	   10440:1
+
+Ares.exe
+CG85\DSI12741
+07/10/24 10:23:36 00:06:28
+
+AR8501
+       211	52574
+svc_ares_prod
+USER	   5544:1
+
+Ares07_batch.exe
+CG85\EGLE
+07/10/24 10:25:05 00:03:49
+
+AR8501
+	38	43713
+svc_ares_prod
+USER	   5544:1
+
+Ares07_batch.exe
+CG85\EGLE
+07/10/24 10:25:05 00:03:49
+
+AR8501
+       372	14317
+cpoulain
+USER	   9432:1
+
+Ares.exe
+CG85\DSI08753
+07/10/24 10:27:26 00:02:35
+
+AR8501
+       390	23416
+svc_ares_prod
+USER	   1172:1
+
+Ares03_batch.exe
+CG85\EGLE
+07/10/24 10:22:59 00:01:13
+
+AR8501
+       537	33208
+apajot
+USER	   2728:1
+
+Ares.exe
+CG85\DSI12774
+07/10/24 10:29:07 00:00:48
+
+AR8501
+       199	 9413
+svc_ares_prod
+USER	   1880:1
+
+AwConsole.exe
+CG85\EGLE
+07/10/24 08:14:03 00:00:41
+
+AR8501
+       214	21563
+pagin
+USER	   21336:1
+
+Ares.exe
+CG85\DSI08833
+07/10/24 09:47:46 00:00:12
+
+AR8501
+       386	15474
+oparpaillon
+USER	   8832:1
+
+Ares.exe
+CG85\VCF-CVDA-AP-09
+07/10/24 10:12:20 00:00:10
+
+AR8501
+       182	31128
+ftexier
+USER	   12284:1
+
+Ares.exe
+CG85\DSI12809
+07/10/24 08:26:43 00:00:10
+
+AR8501
+       215	22921
+oparpaillon
+USER	   8832:1
+
+Ares.exe
+CG85\VCF-CVDA-AP-09
+07/10/24 10:11:26 00:00:10
+
+AR8501
+       536	57468
+ebrosseau
+USER	   2364:1
+
+Ares.exe
+CG85\DSI08702
+07/10/24 09:52:35 00:00:10
+
+AR8501
+	18	42958
+edewost
+USER	   8692:1
+
+Ares.exe
+CG85\DSI12783
+07/10/24 08:03:00 00:00:10
+
+AR8501
+       379	62108
+mjaulin
+USER	   22324:1
+
+Ares.exe
+CG85\DSI08721
+07/10/24 08:52:08 00:00:09
+
+AR8501
+       531	29682
+mjaulin
+USER	   22324:1
+
+Ares.exe
+CG85\DSI08721
+07/10/24 08:52:04 00:00:09
+
+AR8501
+       380	 3319
+mouvrard
+USER	   4528:1
+
+Ares.exe
+CG85\DSI08778
+07/10/24 09:08:02 00:00:09
+
+
+	27	43808
+svc_halimede
+BACKGROUND 4420
+JAVAVM JIT slave action
+ORACLE.EXE (M000)
+HALIMEDE
+07/10/24 08:19:22 00:00:09
+
+AR8501
+       538	40495
+pagin
+USER	   17388:1
+
+Ares.exe
+CG85\DSI08833
+07/10/24 08:03:51 00:00:09
+
+AR8501
+       561	 2179
+apajot
+USER	   2728:1
+
+Ares.exe
+CG85\DSI12774
+07/10/24 10:29:07 00:00:09
+
+AR8501
+       361	35733
+edewost
+USER	   7460:1
+
+Ares.exe
+CG85\DSI12783
+07/10/24 08:03:16 00:00:08
+
+AR8501
+       204	35377
+cpoulain
+USER	   9432:1
+
+Ares.exe
+CG85\DSI08753
+07/10/24 09:00:52 00:00:08
+
+AR8501
+	25	33480
+cpoulain
+USER	   9432:1
+
+Ares.exe
+CG85\DSI08753
+07/10/24 09:00:58 00:00:08
+
+AR8501
+       205	28174
+javane
+USER	   12212:1
+
+Ares.exe
+CG85\DSI08699
+07/10/24 09:07:54 00:00:07
+
+AR8501
+       381	12230
+emoll
+USER	   13344:1
+
+Ares.exe
+CG85\DSI12848
+07/10/24 09:26:46 00:00:07
+
+AR8501
+	33	 1379
+fpillet
+USER	   6596:1
+
+Ares.exe
+CG85\DSI12814
+07/10/24 09:03:32 00:00:06
+
+AR8501
+       360	33010
+bouchikh
+USER	   5332:1
+
+Ares.exe
+CG85\DSI08704
+07/10/24 09:32:23 00:00:06
+
+AR8501
+       551	29398
+fpillet
+USER	   6596:1
+
+Ares.exe
+CG85\DSI12814
+07/10/24 09:03:27 00:00:06
+
+AR8501
+       189	29269
+bouchikh
+USER	   5076:1
+
+Ares.exe
+CG85\DSI08704
+07/10/24 08:50:55 00:00:06
+
+AR8501
+       371	38112
+svc_ares_prod
+USER	   4676:1
+
+Ares97_batch.exe
+CG85\EGLE
+07/10/24 03:08:43 00:00:05
+
+AR8501
+       208	34416
+lduchesne
+USER	   10836:1
+
+Ares.exe
+CG85\DSI12841
+07/10/24 09:10:46 00:00:05
+
+AR8501
+       545	16246
+dcollin
+USER	   8076:1
+
+Ares.exe
+CG85\DSI08775
+07/10/24 08:05:08 00:00:05
+
+AR8501
+       373	22016
+chchauvet
+USER	   7856:1
+
+Ares.exe
+CG85\VCF-CVDA-AP-10
+07/10/24 08:07:43 00:00:05
+
+AR8501
+       195	41110
+svc_ares_prod
+USER	   2992:1
+
+Ares14_batch.exe
+CG85\EGLE
+07/10/24 03:08:39 00:00:05
+
+AR8501
+	24	28405
+pthomas
+USER	   6420:1
+
+Ares.exe
+CG85\DSI16992
+07/10/24 08:08:45 00:00:05
+
+AR8501
+       206	45988
+ftexier
+USER	   13972:1
+
+Ares.exe
+CG85\DSI12809
+07/10/24 09:01:28 00:00:04
+
+AR8501
+       203	54960
+ha1
+USER	   11760:1
+
+Ares.exe
+CG85\DSI12759
+07/10/24 10:17:27 00:00:04
+
+AR8501
+       196	13807
+svc_ares_prod
+USER	   7908:1
+
+Ares08_batch.exe
+CG85\EGLE
+07/10/24 03:08:07 00:00:04
+
+AR8501
+       192	 7147
+svc_ares_prod
+USER	   1408:1
+
+Ares13_batch.exe
+CG85\EGLE
+07/10/24 03:08:34 00:00:04
+
+AR8501
+	31	58203
+fpillet
+USER	   14124:1
+
+Ares.exe
+CG85\DSI12814
+07/10/24 09:04:23 00:00:04
+
+AR8501
+       559	15614
+mfreneau
+USER	   12992:1
+
+Ares.exe
+CG85\DSI08770
+07/10/24 09:47:32 00:00:04
+
+AR8501
+       191	55486
+svc_ares_prod
+USER	   1172:1
+
+Ares03_batch.exe
+CG85\EGLE
+07/10/24 03:07:36 00:00:04
+
+AR8501
+       553	24133
+spenard
+USER	   12724:1
+
+Ares.exe
+CG85\DSI08771
+07/10/24 09:24:30 00:00:04
+
+AR8501
+	17	47156
+svc_ares_prod
+USER	   6568:1
+
+Ares02_batch.exe
+CG85\EGLE
+07/10/24 03:07:33 00:00:04
+
+AR8501
+	20	34196
+svc_ares_prod
+USER	   5544:1
+
+Ares07_batch.exe
+CG85\EGLE
+07/10/24 03:08:01 00:00:04
+
+AR8501
+       534	61580
+svc_ares_prod
+USER	   1456:1
+
+Ares05_batch.exe
+CG85\EGLE
+07/10/24 03:07:48 00:00:04
+
+AR8501
+	21	18944
+kbelaud
+USER	   11924:1
+
+Ares.exe
+CG85\DSI08705
+07/10/24 08:53:12 00:00:04
+
+AR8501
+	22	20561
+svc_ares_prod
+USER	   6516:1
+
+Ares11_batch.exe
+CG85\EGLE
+07/10/24 03:08:22 00:00:04
+
+AR8501
+       384	57249
+ihybert
+USER	   14408:1
+
+Ares.exe
+CG85\DSI12810
+07/10/24 10:02:10 00:00:04
+
+AR8501
+	28	60975
+kbelaud
+USER	   11924:1
+
+Ares.exe
+CG85\DSI08705
+07/10/24 08:53:09 00:00:04
+
+AR8501
+       183	15266
+vmontaz
+USER	   4904:1
+
+Ares.exe
+CG85\DSI12716
+07/10/24 09:21:11 00:00:04
+
+AR8501
+       376	23564
+fpillet
+USER	   14124:1
+
+Ares.exe
+CG85\DSI12814
+07/10/24 09:04:17 00:00:04
+
+AR8501
+       375	60408
+ihybert
+USER	   14408:1
+
+Ares.exe
+CG85\DSI12810
+07/10/24 10:02:15 00:00:04
+
+AR8501
+       367	54317
+svc_ares_prod
+USER	   664:1
+
+Ares06_batch.exe
+CG85\EGLE
+07/10/24 03:07:56 00:00:04
+
+AR8501
+       366	44805
+svc_ares_prod
+USER	   6840:1
+
+Ares04_batch.exe
+CG85\EGLE
+07/10/24 03:07:43 00:00:04
+
+AR8501
+       544	 2503
+pnicollet
+USER	   23368:1
+
+Ares.exe
+CG85\DSI08799
+07/10/24 10:04:43 00:00:03
+
+AR8501
+       556	47052
+stblanchard
+USER	   1440:1
+
+Ares.exe
+CG85\DSI12762
+07/10/24 10:16:23 00:00:03
+
+AR8501
+       562	50266
+stblanchard
+USER	   1440:1
+
+Ares.exe
+CG85\DSI12762
+07/10/24 10:16:31 00:00:03
+
+AR8501
+	32	15917
+rcousseau
+USER	   14516:1
+
+Ares.exe
+CG85\DSI12740
+07/10/24 10:19:10 00:00:03
+
+AR8501
+       369	 4838
+svc_ares_prod
+USER	   8032:1
+
+Ares09_batch.exe
+CG85\EGLE
+07/10/24 03:08:12 00:00:03
+
+AR8501
+       210	57964
+epajot
+USER	   29556:1
+
+Ares.exe
+CG85\DSI12752
+07/10/24 10:11:50 00:00:03
+
+AR8501
+	16	51038
+svc_ares_prod
+USER	   1924:1
+
+Ares12_batch.exe
+CG85\EGLE
+07/10/24 03:08:27 00:00:03
+
+AR8501
+	34	39766
+ebordage
+USER	   10440:1
+
+Ares.exe
+CG85\DSI12741
+07/10/24 09:43:34 00:00:03
+
+AR8501
+       385	48103
+ebordage
+USER	   10440:1
+
+Ares.exe
+CG85\DSI12741
+07/10/24 09:43:28 00:00:03
+
+AR8501
+	37	16185
+pnicollet
+USER	   23368:1
+
+Ares.exe
+CG85\DSI08799
+07/10/24 10:04:57 00:00:03
+
+AR8501
+       541	23089
+svc_ares_prod
+USER	   8152:1
+
+Ares10_batch.exe
+CG85\EGLE
+07/10/24 03:08:17 00:00:03
+
+AR8501
+       377	47145
+emoll
+USER	   17168:1
+
+Ares.exe
+CG85\DSI12848
+07/10/24 09:26:57 00:00:02
+
+AR8501
+       540	17011
+svc_ares_prod
+USER	   6480:1
+
+Ares01_batch.exe
+CG85\EGLE
+07/10/24 03:07:33 00:00:02
+
+AR8501
+       532	55711
+stblanchard
+USER	   11084:1
+
+Ares.exe
+CG85\DSI12762
+07/10/24 08:37:48 00:00:02
+
+AR8501
+       550	32016
+stblanchard
+USER	   11084:1
+
+Ares.exe
+CG85\DSI12762
+07/10/24 08:37:42 00:00:02
+
+AR8501
+       201	62386
+eguille
+USER	   11752:1
+
+Ares.exe
+CG85\DSI08843
+07/10/24 09:17:16 00:00:01
+
+AR8501
+	35	 6736
+xdavin
+USER	   14016:1
+
+Ares.exe
+CG85\DSI08774
+07/10/24 10:22:40 00:00:00
+
+AR8501
+       542	16079
+CG85\svc_ares_prod
+USER	   4704:236
+
+sqlplus.exe
+CG85\EGLE
+07/10/24 10:30:03 00:00:00
+
+
+123 lignes s�lectionn�es.
+
+
+aucune ligne s�lectionn�e
+
+
+aucune ligne s�lectionn�e
+
+SP2-0734: commande inconnue au d�but de "aucune lig..." - le reste de la ligne est ignor�.
+D�connect� de Oracle Database 12c Standard Edition Release 12.2.0.1.0 - 64bit Production
+------------------------------------------------------- 
+07/10/2024 
+10:30
+------------------------------------------------------- 

@@ -5,6 +5,8 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
+import parser as par
+import data_handler as dh
 
 import matplotlib.pyplot as plt
 
@@ -26,7 +28,7 @@ class GraphScreen(Screen):
         grid_layout = GridLayout(cols=2, rows=2, size_hint=(1, 0.9), padding=10, spacing=10)
 
         title = Label(
-            text="Graphique Matplotlib",
+            text="Tableaux des logs",
             size_hint=(1, 1),
             font_size='20sp',
             halign='center',
@@ -35,18 +37,19 @@ class GraphScreen(Screen):
         )
         up_layout.add_widget(title)
 
+        text = str(dh.createTableBlockedRequest(par.parse_log("/home/morgan/Documents/Log_bas/GCE_10-30-02_17_07-10-2024.txt")))
+
+        array = Label(
+            text= text,
+            size_hint=(1, 1),
+            font_size='20sp',
+            #text_size=(Window.width * 0.7, None)
+        )
+        up_layout.add_widget(array)
+
         right_layout.add_widget(up_layout)
 
-        self.graph_images = ['graph1.png', 'graph2.png', 'graph3.png', 'graph4.png']
 
-        for graph in self.graph_images:
-            graph_image = Image(
-                source=graph,
-                allow_stretch=True,
-                size_hint=(0.9, 0.9),
-                pos_hint={'center_x': 0.5, 'center_y': 0.5}
-            )
-            grid_layout.add_widget(graph_image)
 
         right_layout.add_widget(grid_layout)
 
