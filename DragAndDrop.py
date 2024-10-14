@@ -7,8 +7,11 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserIconView
+from kivy.config import Config
 import os
 import batchOpen as bo
+
+Config.set('input', 'mouse', 'mouse,disable_multitouch')
 
 class DragDropScreen(Screen):
     path = StringProperty()
