@@ -28,7 +28,7 @@ class GraphScreen(Screen):
 
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
 
-        grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10)
+        grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10,row_force_default=True, row_default_height=40)
 
         title = Label(
             text="Tableaux des logs",
