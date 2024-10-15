@@ -2,16 +2,13 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
-from kivy.properties import StringProperty
+from kivy.properties import StringProperty  # Import manquant
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserIconView
 import os
 import batchOpen as bo
-
-from DisplayLogs import LogExplorer
-
 
 class DragDropScreen(Screen):
     path = StringProperty()
@@ -47,16 +44,9 @@ class DragDropScreen(Screen):
         )
         btn_open.bind(on_press=self.open_filechooser)
 
-        btn_graph = Button(
-            text="Graph",
-            size_hint=(0.15, 0.07),
-            pos_hint={'center_x': -0.2, 'center_y': 0.2},
-            font_size='18sp'
-        )
-        btn_graph.bind(on_press=self.go_to_graph)
+
 
         float_layout.add_widget(btn_open)
-        float_layout.add_widget(btn_graph)
 
         right_layout.add_widget(float_layout)
 
@@ -94,10 +84,9 @@ class DragDropScreen(Screen):
             # Stocker le chemin sélectionné dans la variable path
             self.path = selected_path
 
-            # Si c'est un dossier
+            # Si c'est un dossier, appeler batchOpen pour ouvrir les fichiers
             if os.path.isdir(selected_path):
                 print(f"{selected_path} est un dossier.")
-                # Appeler bo.batchOpen(selected_path)
                 files = bo.batchOpen(selected_path)
                 for file in files:
                     print(file)
@@ -107,8 +96,15 @@ class DragDropScreen(Screen):
             # Mettre à jour le texte du label avec le chemin sélectionné
             self.drop_label.text = f"Fichier sélectionné : {selected_path}"
 
+            # Mettre à jour LogExplorer avec le nouveau chemin sélectionné
+            log_explorer = self.manager.get_screen('log_screen').children[0]  # LogExplorer est le seul widget de log_screen
+            log_explorer.update_directory(selected_path)  # Mise à jour avec le chemin
+
             # Fermer la popup
             self.popup.dismiss()
+
+            # Bascule vers l'écran des logs après l'ouverture du fichier
+            self.manager.current = 'log_screen'
 
     def on_enter(self):
         Window.bind(on_dropfile=self.on_file_drop)
@@ -120,14 +116,21 @@ class DragDropScreen(Screen):
         # Mettre à jour la propriété path lors du drag-and-drop
         self.path = file_path.decode("utf-8")
         self.drop_label.text = f"{self.path}"
-        print(f" {self.path}")
+        print(f"Sélectionné par drag-and-drop : {self.path}")
+        
+        # Ouvrir le fichier/dossier avec batchOpen
         bo.batchOpen(self.path)
+        
+        # Mettre à jour LogExplorer avec le nouveau chemin sélectionné
+        log_explorer = self.manager.get_screen('log_screen').children[0]  # LogExplorer est le seul widget de log_screen
+        log_explorer.update_directory(self.path)  # Mise à jour avec le chemin
+        
+        # Bascule vers l'écran des logs après le dépôt du fichier
+        self.manager.current = 'log_screen'
 
     def go_to_graph(self, instance):
         self.manager.current = 'graph'
 
     # Nouvelle fonction pour renvoyer le path
     def get_path(self):
-
         return self.path
-
