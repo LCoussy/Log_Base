@@ -14,12 +14,10 @@ from kivymd.uix.boxlayout import MDBoxLayout
 
 import matplotlib.pyplot as plt
 
-
 class GraphScreen(Screen):
     def __init__(self, **kwargs):
         super(GraphScreen, self).__init__(**kwargs)
         self.build_ui()
-        # self.create_graphs()
 
     def build_ui(self):
         main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
@@ -29,6 +27,7 @@ class GraphScreen(Screen):
         up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
 
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
+
         grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10)
 
         title = Label(
@@ -45,13 +44,14 @@ class GraphScreen(Screen):
 
         grid_layout.cols=df.shape[1]
 
+        for headers in df.columns:
+            grid_layout.add_widget(Label(text=headers, bold=True))
+
         for row in df.values:
-                for cell in row:
-                    grid_layout.add_widget(Label(text=cell))
+            for cell in row:
+                grid_layout.add_widget(Label(text=cell))
 
         right_layout.add_widget(up_layout)
-
-
 
         right_layout.add_widget(grid_layout)
 
@@ -84,10 +84,3 @@ class GraphScreen(Screen):
     def go_to_main(self, instance):
         self.manager.current = 'drag_drop'
 
-        # self.update_graph_images()
-    """
-    def update_graph_images(self):
-        for i, graph_image in enumerate(self.image_widgets):
-            graph_image.source = f"graph.png"
-            graph_image.reload()
-    """

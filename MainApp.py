@@ -27,5 +27,3 @@ class MainApp(App):
     def on_stop(self):
         if os.path.exists("graph.png"):
             os.remove("graph.png")
-
-
