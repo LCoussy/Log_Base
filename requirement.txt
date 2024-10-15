@@ -1,0 +1,4 @@
+kivy==2.3.0
+pandas
+kivymd==1.2.0
+matplotlib==3.9.2
