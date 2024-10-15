@@ -66,7 +66,7 @@ class DisplayArray(Screen):
         self.add_widget(main_layout)
 
     def go_to_main(self, instance):
-        self.manager.current = 'drag_drop'
+        self.manager.current = 'log_screen'
 
     def updateTable(self, selected_files):
         self.grid_layout.clear_widgets()
@@ -81,10 +81,10 @@ class DisplayArray(Screen):
         for file in selected_files:
             df = dh.createTableBlockedRequest(par.parse_log(file))
 
-        if not df.empty:
-            self.grid_layout.cols = df.shape[1]
-            for headers in df.columns:
+        if not df_combined.empty:
+            self.grid_layout.cols = df_combined.shape[1]
+            for headers in df_combined.columns:
                 self.grid_layout.add_widget(Label(text=headers, bold=True))
-            for row in df.values:
+            for row in df_combined.values:
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))
