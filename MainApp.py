@@ -28,5 +28,4 @@ class MainApp(App):
         if os.path.exists("graph.png"):
             os.remove("graph.png")
 
-if __name__ == '__main__':
-    MainApp().run()
+
