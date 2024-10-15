@@ -29,7 +29,7 @@ class GraphScreen(Screen):
         up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
 
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
-        grid_layout = GridLayout(cols=2, rows=2, size_hint=(1, 0.9), padding=10, spacing=10)
+        grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10)
 
         title = Label(
             text="Tableaux des logs",
@@ -41,16 +41,13 @@ class GraphScreen(Screen):
         )
         up_layout.add_widget(title)
 
-        df = (dh.createTableBlockedRequest(par.parse_log("/home/morgan/Documents/Log_bas/GCE_10-30-02_17_07-10-2024.txt")))
-        html = df.to_html()
+        df = (dh.createTableBlockedRequest(par.parse_log("GCE_10-30-02_17_07-10-2024.txt")))
 
-        array = Label(
-            text= html,
-            size_hint=(1, 1),
-            font_size='20sp',
-            #text_size=(Window.width * 0.7, None)
-        )
-        up_layout.add_widget(array)
+        grid_layout.cols=df.shape[1]
+
+        for row in df.values:
+                for cell in row:
+                    grid_layout.add_widget(Label(text=cell))
 
         right_layout.add_widget(up_layout)
 
