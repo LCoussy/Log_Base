@@ -13,10 +13,10 @@ class MainApp(App):
     def build(self):
         main_layout = BoxLayout(orientation='horizontal')
         log_directory = ""
-
-        log_explorer = LogExplorer(log_directory=log_directory)
-
         sm = ScreenManager()
+
+        log_explorer = LogExplorer(log_directory=log_directory,sm_right=sm)
+
         sm.add_widget(DragDropScreen(name='drag_drop'))
 
         # Ajoutez l'écran de logs ici

@@ -6,15 +6,18 @@ from kivy.uix.scrollview import ScrollView
 import os
 from datetime import datetime
 from kivy.uix.label import Label
+from numpy.ma.core import array
+
 
 class LogExplorer(BoxLayout):
     log_directory = StringProperty()
     selected_files = ListProperty()
 
-    def __init__(self, log_directory, **kwargs):
+    def __init__(self, log_directory,sm_right, **kwargs):
         super(LogExplorer, self).__init__(**kwargs)
         self.orientation = 'vertical'
         self.size_hint = (0.3, 1)
+        self.sm_right = sm_right
         # self.file_name = ""
 
         # Ajout du ScrollView avec le support de la molette de la souris
@@ -175,4 +178,10 @@ class LogExplorer(BoxLayout):
                 #             node.color = [.1, .1, .1, 1] # Couleur par défaut pour les fichiers non sélectionnés
 
                 print(f"Fichiers sélectionnés : {self.selected_files}")
+                self.parseAndDisplay(self.selected_files)
+
+    def parseAndDisplay(self, selected_files):
+         displayArray = self.sm_right.get_screen('array')
+         displayArray.updateTable(selected_files)
+         self.sm_right.current = 'array'
 

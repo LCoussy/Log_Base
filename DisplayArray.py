@@ -5,6 +5,8 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
+from pandas.core.interchange.dataframe_protocol import DataFrame
+
 import parser as par
 import data_handler as dh
 
@@ -15,9 +17,11 @@ from kivymd.uix.boxlayout import MDBoxLayout
 import matplotlib.pyplot as plt
 
 class DisplayArray(Screen):
-    def __init__(self, **kwargs):
+    grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10, row_force_default=True, row_default_height=40)
+    def __init__(self,**kwargs):
         super(DisplayArray, self).__init__(**kwargs)
         self.build_ui()
+
 
     def build_ui(self):
         main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
@@ -28,7 +32,6 @@ class DisplayArray(Screen):
 
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
 
-        grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10,row_force_default=True, row_default_height=40)
 
         title = Label(
             text="Tableaux des logs",
@@ -40,20 +43,12 @@ class DisplayArray(Screen):
         )
         up_layout.add_widget(title)
 
-        df = (dh.createTableBlockedRequest(par.parse_log("GCE_10-30-02_17_07-10-2024.txt")))
+        # df = (dh.createTableBlockedRequest(par.parse_log("GCE_10-30-02_17_07-10-2024.txt")))
 
-        grid_layout.cols=df.shape[1]
-
-        for headers in df.columns:
-            grid_layout.add_widget(Label(text=headers, bold=True))
-
-        for row in df.values:
-            for cell in row:
-                grid_layout.add_widget(Label(text=cell))
 
         right_layout.add_widget(up_layout)
 
-        right_layout.add_widget(grid_layout)
+        right_layout.add_widget(self.grid_layout)
 
         btn_to_main = Button(
             text="Retour au Menu",
@@ -73,3 +68,23 @@ class DisplayArray(Screen):
     def go_to_main(self, instance):
         self.manager.current = 'drag_drop'
 
+    def updateTable(self, selected_files):
+        self.grid_layout.clear_widgets()
+        df_combined = pd.DataFrame()
+
+        for file in selected_files:
+            df = dh.createTableBlockedRequest(par.parse_log(file))
+
+            if df is not None and not df.empty:
+                df_combined = pd.concat([df_combined, df], ignore_index=True)
+
+        for file in selected_files:
+            df = dh.createTableBlockedRequest(par.parse_log(file))
+
+        if not df.empty:
+            self.grid_layout.cols = df.shape[1]
+            for headers in df.columns:
+                self.grid_layout.add_widget(Label(text=headers, bold=True))
+            for row in df.values:
+                for cell in row:
+                    self.grid_layout.add_widget(Label(text=str(cell)))

@@ -7,7 +7,8 @@ def createTableBlockedRequest(data):
     # remove all duplicate
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True) # reset all index
-
+    if df.empty:
+        return None
     return df[['datetime','table','user' ,'id','adress',]]
 
 
