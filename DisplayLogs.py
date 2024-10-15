@@ -98,6 +98,7 @@ class LogExplorer(BoxLayout):
                 file_node.file_path = file_path
                 # print(file_path)
                 file_node.selected_color = [.5, .5, .5, 1]
+                file_node.base_odd_color = file_node.odd_color
                 file_node.base_even_color = file_node.even_color
                 # print(file_node.color_selected)
                 # Stocker le nœud dans le dictionnaire avec le chemin complet
@@ -118,6 +119,19 @@ class LogExplorer(BoxLayout):
         # Créer un nouveau nœud si pas trouvé
         new_node = self.treeview.add_node(TreeViewLabel(text=text, size_hint_y=None, height=25), parent=parent)
         return new_node
+
+    def colorize(self) :
+        for node in self.treeview.iterate_all_nodes():
+            if hasattr(node, 'file_path'):
+                if node.file_path in self.selected_files:
+                    # self.treeview.select_node(node)
+                    self.treeview.deselect_node(node)
+                    node.odd_color = [.5, .5, .5, 1]
+                    node.even_color = [.5, .5, .5, 1]
+                else:
+                    node.even_color = node.base_even_color
+                    node.odd_color = node.base_odd_color
+
 
     def on_file_click(self, instance, touch):
         # Vérifie si l'élément a bien été cliqué
@@ -143,14 +157,14 @@ class LogExplorer(BoxLayout):
                         # instance.color_selected = instance.base_color
                 else:
                     self.selected_files = [instance.file_path]
-
-                for node in self.treeview.iterate_all_nodes():
-                    if hasattr(node, 'file_name'):
-                        if os.path.join(self.log_directory, node.file_name) in self.selected_files:
-                            self.treeview.select_node(node)
-                            node.even_color = [.5, .5, .5, 1]
-                        else:
-                            node.even_color = node.base_even_color
+                self.colorize()
+                # for node in self.treeview.iterate_all_nodes():
+                #     if hasattr(node, 'file_name'):
+                #         if os.path.join(self.log_directory, node.file_name) in self.selected_files:
+                #             self.treeview.select_node(node)
+                #             node.even_color = [.5, .5, .5, 1]
+                #         else:
+                #             node.even_color = node.base_even_color
                             # node.color_selected = [.5, .5, .5, 1]  # Couleur pour les fichiers sélectionnés
                             # print(node.file_name)
                             # print(node.color_selected)
