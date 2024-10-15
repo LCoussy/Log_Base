@@ -7,8 +7,11 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserIconView
+from kivy.config import Config
 import os
 import batchOpen as bo
+
+Config.set('input', 'mouse', 'mouse,disable_multitouch')
 
 class DragDropScreen(Screen):
     path = StringProperty()
@@ -129,7 +132,7 @@ class DragDropScreen(Screen):
         self.manager.current = 'log_screen'
 
     def go_to_graph(self, instance):
-        self.manager.current = 'graph'
+        self.manager.current = 'array'
 
     # Nouvelle fonction pour renvoyer le path
     def get_path(self):
