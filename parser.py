@@ -14,7 +14,7 @@ def parse_blocked_request(content):
         # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
         try:
             combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%d/%m/%y %H:%M:%S")
-            iso_format_datetime = combined_datetime.strftime("%Y-%m-%dT%H:%M:%S")
+            iso_format_datetime = combined_datetime.strftime("%Y-%m-%d %H:%M:%S")
         except ValueError:
             iso_format_datetime = None
     else:
