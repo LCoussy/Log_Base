@@ -10,7 +10,7 @@ from DisplayLogs import LogExplorer
 class MainApp(App):
     def build(self):
         main_layout = BoxLayout(orientation='horizontal')
-        log_directory = "/home/egiraud/Téléchargements/log"
+        log_directory = "/home/coussy/Downloads/log"
 
         log_explorer = LogExplorer(log_directory=log_directory)
         main_layout.add_widget(log_explorer)
