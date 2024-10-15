@@ -16,6 +16,7 @@ class MainApp(App):
         main_layout.add_widget(log_explorer)
 
         sm = ScreenManager()
+
         sm.add_widget(DragDropScreen(name='drag_drop'))
         sm.add_widget(GraphS.GraphScreen(name='graph'))
         sm.get_screen('graph').create_graphs()
@@ -27,6 +28,3 @@ class MainApp(App):
     def on_stop(self):
         if os.path.exists("graph.png"):
             os.remove("graph.png")
-
-if __name__ == '__main__':
-    MainApp().run()

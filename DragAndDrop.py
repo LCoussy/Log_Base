@@ -10,6 +10,9 @@ from kivy.uix.filechooser import FileChooserIconView
 import os
 import batchOpen as bo
 
+from DisplayLogs import LogExplorer
+
+
 class DragDropScreen(Screen):
     path = StringProperty()
 
