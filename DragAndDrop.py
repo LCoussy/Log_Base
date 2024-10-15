@@ -44,16 +44,9 @@ class DragDropScreen(Screen):
         )
         btn_open.bind(on_press=self.open_filechooser)
 
-        btn_graph = Button(
-            text="Graph",
-            size_hint=(0.15, 0.07),
-            pos_hint={'center_x': -0.2, 'center_y': 0.2},
-            font_size='18sp'
-        )
-        btn_graph.bind(on_press=self.go_to_graph)
+
 
         float_layout.add_widget(btn_open)
-        float_layout.add_widget(btn_graph)
 
         right_layout.add_widget(float_layout)
 

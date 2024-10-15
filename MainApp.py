@@ -11,7 +11,7 @@ from kivy.uix.screenmanager import Screen
 class MainApp(App):
     def build(self):
         main_layout = BoxLayout(orientation='horizontal')
-        log_directory = "/home/egiraud/Téléchargements/log"
+        log_directory = ""
 
         log_explorer = LogExplorer(log_directory=log_directory)
 

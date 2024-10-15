@@ -41,7 +41,8 @@ class LogExplorer(BoxLayout):
         self.treeview.clear_widgets()
 
         # Ajouter le dossier racine dans l'arborescence
-        root_node = self.treeview.add_node(TreeViewLabel(text=log_directory))
+        root_node = self.treeview.add_node(TreeViewLabel(text="Logs", size_hint_y=None, height=25))
+
 
         nodes = {}
 
