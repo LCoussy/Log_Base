@@ -124,7 +124,7 @@ class DragDropScreen(Screen):
         bo.batchOpen(self.path)
 
     def go_to_graph(self, instance):
-        self.manager.current = 'graph'
+        self.manager.current = 'array'
 
     # Nouvelle fonction pour renvoyer le path
     def get_path(self):

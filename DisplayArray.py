@@ -14,9 +14,9 @@ from kivymd.uix.boxlayout import MDBoxLayout
 
 import matplotlib.pyplot as plt
 
-class GraphScreen(Screen):
+class DisplayArray(Screen):
     def __init__(self, **kwargs):
-        super(GraphScreen, self).__init__(**kwargs)
+        super(DisplayArray, self).__init__(**kwargs)
         self.build_ui()
 
     def build_ui(self):
@@ -69,17 +69,6 @@ class GraphScreen(Screen):
         main_layout.add_widget(right_layout)
 
         self.add_widget(main_layout)
-
-    def create_graphs(self):
-        plt.figure(figsize=(5, 5))
-        plt.plot([1, 2, 3, 4], [10, 20, 25, 30], label=f'Graph')
-        plt.xlabel('X')
-        plt.ylabel('Y')
-        plt.title(f'Mon Graphique')
-        plt.legend()
-        filename = f"graph.png"
-        plt.savefig(filename)
-        plt.close()
 
     def go_to_main(self, instance):
         self.manager.current = 'drag_drop'
