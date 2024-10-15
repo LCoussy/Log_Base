@@ -81,6 +81,11 @@ class DisplayArray(Screen):
         for file in selected_files:
             df = dh.createTableBlockedRequest(par.parse_log(file))
 
+        #enlève les duplica après la fusion
+        df_combined.drop_duplicates(inplace=True)
+        df_combined.reset_index(drop=True, inplace=True)
+        df_combined.dropna(inplace=True)
+
         if not df_combined.empty:
             self.grid_layout.cols = df_combined.shape[1]
             for headers in df_combined.columns:
