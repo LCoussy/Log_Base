@@ -1,4 +1,5 @@
-from kivy.properties import StringProperty
+from kivy.core.window import Window
+from kivy.properties import StringProperty, ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.treeview import TreeView, TreeViewLabel
 from kivy.uix.scrollview import ScrollView
@@ -7,42 +8,45 @@ from datetime import datetime
 from kivy.uix.label import Label
 
 class LogExplorer(BoxLayout):
+    log_directory = StringProperty()
+    selected_files = ListProperty()
+
     def __init__(self, log_directory, **kwargs):
         super(LogExplorer, self).__init__(**kwargs)
-        self.log_directory = log_directory
-        self.treeview = TreeView(hide_root=True)  
-        self.build_ui()
+        self.orientation = 'vertical'
+        self.size_hint = (0.3, 1)
 
-    def build_ui(self):
-        self.orientation = 'vertical'  
+        # Ajout du ScrollView avec le support de la molette de la souris
+        self.scroll_view = ScrollView(do_scroll_y=True, size_hint=(1, 1))
+        self.treeview = TreeView(root_options=dict(text="Dossier"), hide_root=True, indent_level=4, size_hint_y=None)
+        self.treeview.bind(minimum_height=self.treeview.setter('height'))
+        self.scroll_view.add_widget(self.treeview)
+        self.add_widget(self.scroll_view)
 
+        # Bind l'événement de la molette de la souris pour le scroll
+        Window.bind(on_mouse_scroll=self.on_mouse_scroll)
 
-        scroll_view = ScrollView(size_hint=(1, 1))  # Utiliser la hauteur
-        scroll_view.add_widget(self.treeview) 
+        if self.log_directory:
+            self.populate_treeview(self.log_directory)
 
-        # Créer un BoxLayout pour aligner à gauche
-        left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))  # largeur
-        left_layout.add_widget(scroll_view)  
-        self.add_widget(left_layout)  
-
-        self.populate_treeview(self.log_directory)
+    def on_mouse_scroll(self, window, x, y, scroll_x, scroll_y):
+        if self.scroll_view:
+            self.scroll_view.scroll_y += scroll_y / 10.0
 
     def update_directory(self, new_directory):
-
         self.log_directory = new_directory
-        self.populate_treeview(new_directory)  
+        self.populate_treeview(new_directory)
 
     def populate_treeview(self, log_directory):
         if not os.path.exists(log_directory):
             print(f"Le dossier {log_directory} n'existe pas.")
             return
 
-        # Nettoyer l'arborescence actuelle
+            # Nettoyer l'arborescence actuelle
         self.treeview.clear_widgets()
 
         # Ajouter le dossier racine dans l'arborescence
         root_node = self.treeview.add_node(TreeViewLabel(text="Logs", size_hint_y=None, height=25))
-
 
         nodes = {}
 
@@ -59,8 +63,9 @@ class LogExplorer(BoxLayout):
                 year = str(file_date.year)
                 month = file_date.strftime('%B')
                 day = str(file_date.day)
+                hour = str(file_date.hour) + ":00"
 
-                # Gestion dannée, mois, jour
+                # Gestion des nœuds année, mois, jour, heure
                 year_node = nodes.get(year)
                 if not year_node:
                     year_node = self.get_or_create_node(year, parent=root_node)
@@ -78,8 +83,25 @@ class LogExplorer(BoxLayout):
                     day_node = self.get_or_create_node(day, parent=month_node)
                     nodes[day_key] = day_node
 
-                # Ajouter le fichier sous le jour correspondant
-                self.treeview.add_node(TreeViewLabel(text=file), parent=day_node)
+                hour_key = f"{day_key}/{hour}"
+                hour_node = nodes.get(hour_key)
+                if not hour_node:
+                    hour_node = self.get_or_create_node(hour, parent=day_node)
+                    nodes[hour_key] = hour_node
+
+                file_date_time = file_date
+
+                # Formater l'heure et les minutes
+                formatted_time = file_date_time.strftime('%H:%M')
+
+                # Ajouter le nœud avec le temps formaté
+                file_node = self.treeview.add_node(
+                    TreeViewLabel(text=formatted_time + ".txt", size_hint_y=None, height=25),
+                    parent=hour_node)
+
+                # Ajouter un événement pour sélectionner le fichier
+                file_node.bind(on_touch_down=self.on_file_click)
+
 
     def get_file_date(self, file_path):
         # Récupérer la date de modification du fichier
@@ -92,10 +114,26 @@ class LogExplorer(BoxLayout):
             if node.text == text and node.parent == parent:
                 return node
         # Créer un nouveau nœud si pas trouvé
-        new_node = self.treeview.add_node(TreeViewLabel(text=text), parent=parent)
+        new_node = self.treeview.add_node(TreeViewLabel(text=text, size_hint_y=None, height=25), parent=parent)
         return new_node
 
-    def update_log_directory(self, new_directory):
-        self.log_directory = new_directory
-        # Retirer le print du chemin d'accès
-        self.populate_treeview(new_directory)
+
+    def on_file_click(self, instance, touch):
+        # Vérifie si l'élément a bien été cliqué
+        if instance.collide_point(*touch.pos):
+            # Construire le chemin complet du fichier à partir du texte du nœud
+            file_name = instance.text
+            file_path = os.path.join(self.log_directory, file_name)
+
+            if os.path.isfile(file_path):
+                # Si la touche Ctrl est enfoncée, on ajoute à la sélection multiple
+                if 'ctrl' in Window.modifiers:
+                    if file_path not in self.selected_files:
+                        self.selected_files.append(file_path)
+                        instance.color_selected = [.5, .5, .5, 1]
+                    else:
+                        self.selected_files.remove(file_path)
+                        instance.color_selected = [.1, .1, .1, 1]
+                else:
+                    self.selected_files = [file_path]
+                print(f"Fichiers sélectionnés : {self.selected_files}")
