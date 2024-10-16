@@ -19,13 +19,13 @@ from DisplayLogs import LogExplorer
 
 
 class DisplayArray(Screen):
+    grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10, row_force_default=True, row_default_height=40)
     def __init__(self, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
         self.build_ui()
 
+
     def build_ui(self):
-        grid_layout = GridLayout(size_hint=(1, 0.9), padding=10, spacing=10, row_force_default=True,
-                                 row_default_height=40)
 
         main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
 
@@ -36,10 +36,9 @@ class DisplayArray(Screen):
 
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
 
-        log_directory = ""
         self.log_explorer = LogExplorer(
-            log_directory=log_directory,
-            on_files_selected=self.updateTable
+            log_directory="",
+            display_array=self
         )
         left_layout.add_widget(self.log_explorer)
 
@@ -55,7 +54,7 @@ class DisplayArray(Screen):
 
         right_layout.add_widget(up_layout)
 
-        right_layout.add_widget(grid_layout)
+        right_layout.add_widget(self.grid_layout)
 
         # Assemble the main layout
         main_layout.add_widget(left_layout)

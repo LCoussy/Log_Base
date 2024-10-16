@@ -3,6 +3,7 @@
 import os
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
+from pandas.core.window import Window
 
 from DisplayArray import DisplayArray
 from DragAndDrop import DragDropScreen  # Assuming this is another screen
@@ -10,13 +11,8 @@ from DragAndDrop import DragDropScreen  # Assuming this is another screen
 
 class MainApp(App):
     def build(self):
-        # Initialize ScreenManager
         sm = ScreenManager()
 
-        # Define the log directory (update the path as needed)
-
-
-        # Add DragDropScreen
         sm.add_widget(DragDropScreen(name='drag_drop'))
 
         # Create and add DisplayArray Screen
@@ -26,5 +22,3 @@ class MainApp(App):
         return sm
 
 
-if __name__ == '__main__':
-    MainApp().run()

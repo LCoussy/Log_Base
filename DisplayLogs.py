@@ -1,5 +1,3 @@
-# LogExplorer.py
-
 from kivy.core.window import Window
 from kivy.properties import StringProperty, ListProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
@@ -7,7 +5,7 @@ from kivy.uix.treeview import TreeView, TreeViewLabel
 from kivy.uix.scrollview import ScrollView
 import os
 from datetime import datetime
-from kivy.uix.label import Label
+
 
 
 class LogExplorer(BoxLayout):
@@ -15,11 +13,11 @@ class LogExplorer(BoxLayout):
     selected_files = ListProperty()
     on_files_selected = ObjectProperty(None)  # Callback function
 
-    def __init__(self, log_directory, on_files_selected=None, **kwargs):
+    def __init__(self, log_directory, display_array, **kwargs):
         super(LogExplorer, self).__init__(**kwargs)
         self.orientation = 'vertical'
         self.size_hint = (1, 1)
-        self.on_files_selected = on_files_selected
+        self.display_array = display_array
 
         self.scroll_view = ScrollView(do_scroll_y=True, size_hint=(1, 1))
         self.treeview = TreeView(
@@ -167,3 +165,7 @@ class LogExplorer(BoxLayout):
                 self.colorize()
 
                 print(f"Fichiers sélectionnés : {self.selected_files}")
+                self.display_array.updateTable(self.selected_files)
+
+    def parseAndDisplay(self, selected_files):
+         self.display_array.updateTable(selected_files)
