@@ -9,6 +9,8 @@ def createTableBlockedRequest(data):
     df.reset_index(drop=True, inplace=True) # reset all index
     if df.empty:
         return None
+    if  not (df.columns.__contains__("datetime")):
+        return None
     return df[['datetime','table','user' ,'id','adress',]]
 
 
