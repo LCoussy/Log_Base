@@ -10,11 +10,11 @@ def parse_blocked_request(content):
     if blocking_date_match:
         blocking_date = blocking_date_match.group(1)  # Deuxième date
         blocking_time = blocking_date_match.group(2)  # Deuxième heure
-        
+
         # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
         try:
-            combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%d/%m/%y %H:%M:%S")
-            iso_format_datetime = combined_datetime.strftime("%Y-%m-%dT%H:%M:%S")
+            combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%m/%d/%y %H:%M:%S")
+            iso_format_datetime = combined_datetime.strftime("%Y-%m-%d %H:%M:%S")
         except ValueError:
             iso_format_datetime = None
     else:
@@ -46,12 +46,12 @@ def parse_blocked_request(content):
     # Résultat final avec date et heure combinées au format ISO 8601
     return {
         "type": "bloquee",
-        "datetime": iso_format_datetime,
+        "date": iso_format_datetime,
         "id": request_id,
         "state": state,
-        "adress": sql_address,
+        "adresse": sql_address,
         "table": table_name,
-        "user": user_name
+        "utilisateur": user_name
     }
 
 def parse_lost_request(content):
@@ -60,7 +60,7 @@ def parse_lost_request(content):
     if blocking_date_match:
         blocking_date = blocking_date_match.group(1)  # Deuxième date
         blocking_time = blocking_date_match.group(2)  # Deuxième heure
-        
+
         # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
         try:
             combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%d/%m/%y %H:%M:%S")
@@ -95,7 +95,7 @@ def parse_lost_request(content):
 
     return {
         "type": "perdue",
-        "datetime": iso_format_datetime,
+        "Date": iso_format_datetime,
         "heure": blocking_time,
         "id": request_id,
         "state": state,
@@ -108,19 +108,19 @@ def parse_lost_request(content):
 
 def parse_log(file_path):
     logs = []
-    
+
     # Regex for identifying the start of a block with a date
     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
-    
+
     # Use the correct encoding to read the file
     with open(file_path, 'r', encoding='ISO-8859-1') as file:
         lines = file.readlines()
         current_block = []
-        
+
         for i, line in enumerate(lines):
 
-            if "ligne créée" in line:
-                logs.append({"type": "ligne_creee"})
+            # if "ligne créée" in line:
+            #     logs.append({"type": "ligne_creee"})
 
             if date_regex.match(line):
                 if current_block:
@@ -133,7 +133,7 @@ def parse_log(file_path):
                     #     parsed_data = parse_lost_request(block_content)
                     else:
                         parsed_data = None
-                    
+
 
                     if parsed_data:
                         logs.append(parsed_data)
@@ -147,21 +147,3 @@ def parse_log(file_path):
 # Usage
 log_file = "GCE_10-30-02_17_07-10-2024.txt"
 parsed_logs = parse_log(log_file)
-
-# pd.set_option('display.max_columns', None)
-
-# print(dh.createTableBlockedRequest(parsed_logs))
-
-# df = pd.DataFrame(parsed_logs)
-# df.drop_duplicates(inplace=True)
-# df.reset_index(drop=True, inplace=True)
-#
-# print(df[['datetime','table','user' ,'id','adress',]])
-#
-#
-# df.to_csv('requete.csv', index=False)
-
-# with open('requêtes.json', 'w') as json_file:
-#     json.dump(parsed_logs, json_file, indent=4)
-
-# print("Les données ont été écrites dans 'requêtes.csv'.")

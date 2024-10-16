@@ -7,11 +7,11 @@ from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import Screen
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserIconView
-from kivy.config import Config
+
 import os
 import batchOpen as bo
 
-Config.set('input', 'mouse', 'mouse,disable_multitouch')
+Window.size = (1000, 600)
 
 class DragDropScreen(Screen):
     path = StringProperty()
@@ -23,6 +23,7 @@ class DragDropScreen(Screen):
     def build_ui(self):
         main_layout = BoxLayout(orientation='horizontal')
 
+        # Left Layout: Drop Label
         left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
 
         self.drop_label = Label(
@@ -35,7 +36,8 @@ class DragDropScreen(Screen):
         )
         left_layout.add_widget(self.drop_label)
 
-        right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1))
+        # Right Layout: Open Button
+        right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
 
         float_layout = FloatLayout()
 
@@ -47,8 +49,6 @@ class DragDropScreen(Screen):
         )
         btn_open.bind(on_press=self.open_filechooser)
 
-
-
         float_layout.add_widget(btn_open)
 
         right_layout.add_widget(float_layout)
@@ -59,17 +59,19 @@ class DragDropScreen(Screen):
         self.add_widget(main_layout)
 
     def open_filechooser(self, instance):
-        # Appel à la classe de filechooser précédente
-        filechooser = FileChooserIconView(path="/home", filters=["*"], dirselect=True)
-        select_btn = Button(text="Sélectionner", size_hint=(1, 0.1))
+        # Create a FileChooserIconView instance
+        filechooser = FileChooserIconView(path=os.path.expanduser("~"), filters=["*"], dirselect=True)
+
+        # Create a 'Select' button
+        select_btn = Button(text="Sélectionner", size_hint=(1, 0.1), font_size='18sp')
         select_btn.bind(on_press=lambda x: self.selected_file_or_dir(filechooser))
 
-        # Layout pour le filechooser et le bouton
+        # Layout for the filechooser and the button
         layout = BoxLayout(orientation='vertical')
         layout.add_widget(filechooser)
         layout.add_widget(select_btn)
 
-        # Popup qui affiche la fenêtre de sélection
+        # Popup that displays the filechooser
         self.popup = Popup(
             title="Sélectionner un fichier ou un dossier",
             content=layout,
@@ -78,62 +80,57 @@ class DragDropScreen(Screen):
         self.popup.open()
 
     def selected_file_or_dir(self, filechooser):
-        # Récupérer la sélection
+        # Retrieve the selection
         selection = filechooser.selection
         if selection:
             selected_path = selection[0]
-            print(f"Sélectionné : {selected_path}")
 
-            # Stocker le chemin sélectionné dans la variable path
+            # Store the selected path
             self.path = selected_path
 
-            # Si c'est un dossier, appeler batchOpen pour ouvrir les fichiers
+            # If it's a directory, call batchOpen to process files
             if os.path.isdir(selected_path):
-                print(f"{selected_path} est un dossier.")
                 files = bo.batchOpen(selected_path)
-                for file in files:
-                    print(file)
-            else:
-                print(f"{selected_path} est un fichier.")
 
-            # Mettre à jour le texte du label avec le chemin sélectionné
+            # Update the drop_label with the selected path
             self.drop_label.text = f"Fichier sélectionné : {selected_path}"
 
-            # Mettre à jour LogExplorer avec le nouveau chemin sélectionné
-            log_explorer = self.manager.get_screen('log_screen').children[0]  # LogExplorer est le seul widget de log_screen
-            log_explorer.update_directory(selected_path)  # Mise à jour avec le chemin
 
-            # Fermer la popup
+            display_array_screen = self.manager.get_screen('display_array')
+            log_explorer = display_array_screen.log_explorer
+            log_explorer.update_directory(self.path)
+
+            # Close the popup
             self.popup.dismiss()
 
-            # Bascule vers l'écran des logs après l'ouverture du fichier
-            self.manager.current = 'log_screen'
+            # Switch to the DisplayArray screen after opening the file
+            self.manager.current = 'display_array'  # Updated screen name
 
     def on_enter(self):
+        # Bind the on_dropfile event when entering the screen
         Window.bind(on_dropfile=self.on_file_drop)
 
     def on_leave(self):
+        # Unbind the on_dropfile event when leaving the screen
         Window.unbind(on_dropfile=self.on_file_drop)
 
     def on_file_drop(self, window, file_path):
-        # Mettre à jour la propriété path lors du drag-and-drop
+        # Update the path property when a file is dropped
         self.path = file_path.decode("utf-8")
         self.drop_label.text = f"{self.path}"
-        print(f"Sélectionné par drag-and-drop : {self.path}")
-        
+
         # Ouvrir le fichier/dossier avec batchOpen
         bo.batchOpen(self.path)
-        
-        # Mettre à jour LogExplorer avec le nouveau chemin sélectionné
-        log_explorer = self.manager.get_screen('log_screen').children[0]  # LogExplorer est le seul widget de log_screen
-        log_explorer.update_directory(self.path)  # Mise à jour avec le chemin
-        
-        # Bascule vers l'écran des logs après le dépôt du fichier
-        self.manager.current = 'log_screen'
+
+        display_array_screen = self.manager.get_screen('display_array')
+        log_explorer = display_array_screen.log_explorer
+        log_explorer.update_directory(self.path)
+        self.manager.current = 'display_array'
 
     def go_to_graph(self, instance):
+        # Navigate to the 'array' screen (assuming it's the name for DisplayArray)
         self.manager.current = 'array'
 
-    # Nouvelle fonction pour renvoyer le path
+    # New function to return the path
     def get_path(self):
         return self.path
