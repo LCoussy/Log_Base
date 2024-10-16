@@ -1,33 +1,37 @@
+# LogExplorer.py
+
 from kivy.core.window import Window
-from kivy.core.window import Window
-from kivy.properties import StringProperty, ListProperty
+from kivy.properties import StringProperty, ListProperty, ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.treeview import TreeView, TreeViewLabel
 from kivy.uix.scrollview import ScrollView
 import os
 from datetime import datetime
 from kivy.uix.label import Label
-from numpy.ma.core import array
 
 
 class LogExplorer(BoxLayout):
     log_directory = StringProperty()
     selected_files = ListProperty()
+    on_files_selected = ObjectProperty(None)  # Callback function
 
-    def __init__(self, log_directory,sm_right, **kwargs):
+    def __init__(self, log_directory, on_files_selected=None, **kwargs):
         super(LogExplorer, self).__init__(**kwargs)
         self.orientation = 'vertical'
-        self.size_hint = (0.3, 1)
-        self.sm_right = sm_right
+        self.size_hint = (1, 1)
+        self.on_files_selected = on_files_selected
 
-        # Ajout du ScrollView avec le support de la molette de la souris
         self.scroll_view = ScrollView(do_scroll_y=True, size_hint=(1, 1))
-        self.treeview = TreeView(root_options=dict(text="Dossier"), hide_root=True, indent_level=4, size_hint_y=None)
+        self.treeview = TreeView(
+            root_options=dict(text="Dossier"),
+            hide_root=True,
+            indent_level=4,
+            size_hint_y=None
+        )
         self.treeview.bind(minimum_height=self.treeview.setter('height'))
         self.scroll_view.add_widget(self.treeview)
         self.add_widget(self.scroll_view)
 
-        # Bind l'événement de la molette de la souris pour le scroll
         Window.bind(on_mouse_scroll=self.on_mouse_scroll)
 
         if self.log_directory:
@@ -46,10 +50,8 @@ class LogExplorer(BoxLayout):
             print(f"Le dossier {log_directory} n'existe pas.")
             return
 
-            # Nettoyer l'arborescence actuelle
         self.treeview.clear_widgets()
 
-        # Ajouter le dossier racine dans l'arborescence
         root_node = self.treeview.add_node(TreeViewLabel(text="Logs", size_hint_y=None, height=25))
 
         nodes = {}
@@ -115,10 +117,8 @@ class LogExplorer(BoxLayout):
 
                 file_date_time = file_date
 
-                # Formater l'heure et les minutes
                 formatted_time = file_date_time.strftime('%H:%M')
 
-                # Ajouter le nœud avec le temps formaté
                 file_node = self.treeview.add_node(TreeViewLabel(text=formatted_time, size_hint_y=None, height=25),
                                                    parent=hour_node)
                 file_node.file_path = file_path
@@ -126,25 +126,20 @@ class LogExplorer(BoxLayout):
                 file_node.base_odd_color = file_node.odd_color
                 file_node.base_even_color = file_node.even_color
 
-                # Ajouter un événement pour sélectionner le fichier
                 file_node.bind(on_touch_down=self.on_file_click)
 
-
     def get_file_date(self, file_path):
-        # Récupérer la date de modification du fichier
         file_time = os.path.getmtime(file_path)
         return datetime.fromtimestamp(file_time)
 
     def get_or_create_node(self, text, parent=None):
-        # Vérifier si le nœud existe déjà
         for node in self.treeview.iterate_all_nodes():
             if node.text == text and node.parent == parent:
                 return node
-        # Créer un nouveau nœud si pas trouvé
         new_node = self.treeview.add_node(TreeViewLabel(text=text, size_hint_y=None, height=25), parent=parent)
         return new_node
 
-    def colorize(self) :
+    def colorize(self):
         for node in self.treeview.iterate_all_nodes():
             if hasattr(node, 'file_path'):
                 if node.file_path in self.selected_files:
@@ -156,7 +151,6 @@ class LogExplorer(BoxLayout):
                     node.odd_color = node.base_odd_color
 
     def on_file_click(self, instance, touch):
-        # Vérifie si l'élément a bien été cliqué
         if instance.collide_point(*touch.pos):
             if os.path.isfile(instance.file_path):
                 # Si la touche Ctrl est enfoncée, on ajoute à la sélection multiple
@@ -173,10 +167,3 @@ class LogExplorer(BoxLayout):
                 self.colorize()
 
                 print(f"Fichiers sélectionnés : {self.selected_files}")
-                self.parseAndDisplay(self.selected_files)
-
-    def parseAndDisplay(self, selected_files):
-         displayArray = self.sm_right.get_screen('array')
-         displayArray.updateTable(selected_files)
-         self.sm_right.current = 'array'
-
