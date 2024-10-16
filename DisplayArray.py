@@ -84,7 +84,7 @@ class DisplayArray(Screen):
         #enlève les duplica après la fusion
         df_combined.drop_duplicates(inplace=True)
         df_combined.reset_index(drop=True, inplace=True)
-        df_combined.dropna(inplace=True)
+        # df_combined.dropna(inplace=True)
 
         if not df_combined.empty:
             self.grid_layout.cols = df_combined.shape[1]

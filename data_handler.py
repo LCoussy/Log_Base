@@ -1,8 +1,10 @@
 import pandas as pd
 
 def createTableBlockedRequest(data):
-    # pd.set_option('display.max_columns', None)
+    print(data)
+    pd.set_option('display.max_columns', None)
     df = pd.DataFrame(data)
+    print(df)
 
     # remove all duplicate
     df.drop_duplicates(inplace=True)
