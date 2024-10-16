@@ -20,30 +20,23 @@ def parse_blocked_request(content):
     else:
         iso_format_datetime = None
 
-    # Match pour l'ID de requête (exemple : 29682)
-    id_match = re.search(r'\s+(\d+)\s+INACTIVE', content)
+    # Extraction de l'état (ACTIVE ou INACTIVE)
+    state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
+    state = state_match.group(1) if state_match else None
+
+    # Extraction des autres informations
+    id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
     request_id = id_match.group(1) if id_match else None
 
-    # Match pour le nom de la table (première ligne avec un mot seul après la date)
+    sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
+    sql_address = sql_address_match.group(2) if sql_address_match else None
+
     table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
     table_name = table_match.group(1) if table_match else None
 
-    # Match pour l'état (INACTIVE)
-    state_match = re.search(r'\b(INACTIVE|ACTIVE)\b', content)
-    state = state_match.group(1) if state_match else None
-
-    # Match pour l'adresse SQL de la requête (exemple : 5j067zm8mp28h)
-    sql_address_match = re.search(r'INACTIVE\s+(\w+)', content)
-    sql_address = sql_address_match.group(1) if sql_address_match else None
-
-    # Match pour l'utilisateur
     user_matches = re.findall(r'^\s*([a-zA-Z0-9_]+)\s*$', content, re.MULTILINE)
-    if user_matches and len(user_matches) >= 2:
-        user_name = user_matches[1]  # Prend le deuxième utilisateur trouvé
-    else:
-        user_name = None
+    user_name = user_matches[1] if len(user_matches) >= 2 else None
 
-    # Résultat final avec date et heure combinées au format ISO 8601
     return {
         "type": "bloquee",
         "date": iso_format_datetime,
@@ -118,10 +111,6 @@ def parse_log(file_path):
         current_block = []
 
         for i, line in enumerate(lines):
-
-            # if "ligne créée" in line:
-            #     logs.append({"type": "ligne_creee"})
-
             if date_regex.match(line):
                 if current_block:
                     block_content = "\n".join(current_block)
@@ -129,11 +118,8 @@ def parse_log(file_path):
                     # Vérifie si le bloc est une requête bloquée ou perdue
                     if "BLOQUE" in block_content:
                         parsed_data = parse_blocked_request(block_content)
-                    # elif "INACTIVE" in block_content:
-                    #     parsed_data = parse_lost_request(block_content)
                     else:
                         parsed_data = None
-
 
                     if parsed_data:
                         logs.append(parsed_data)
@@ -142,8 +128,11 @@ def parse_log(file_path):
             else:
                 current_block.append(line.strip())
 
-    return logs
+        if current_block:
+            block_content = "\n".join(current_block)
+            if "BLOQUE" in block_content:
+                parsed_data = parse_blocked_request(block_content)
+                if parsed_data:
+                    logs.append(parsed_data)
 
-# Usage
-log_file = "GCE_10-30-02_17_07-10-2024.txt"
-parsed_logs = parse_log(log_file)
+    return logs
