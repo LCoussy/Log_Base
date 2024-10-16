@@ -11,7 +11,7 @@ from kivy.uix.filechooser import FileChooserIconView
 import os
 import batchOpen as bo
 
-
+Window.size = (1000, 600)
 
 class DragDropScreen(Screen):
     path = StringProperty()
