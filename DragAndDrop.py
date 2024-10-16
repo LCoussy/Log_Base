@@ -84,37 +84,20 @@ class DragDropScreen(Screen):
         selection = filechooser.selection
         if selection:
             selected_path = selection[0]
-            print(f"Sélectionné : {selected_path}")
 
             # Store the selected path
             self.path = selected_path
 
             # If it's a directory, call batchOpen to process files
             if os.path.isdir(selected_path):
-                print(f"{selected_path} est un dossier.")
-                try:
-                    files = bo.batchOpen(selected_path)  # Ensure batchOpen returns a list of files
-                    for file in files:
-                        print(f"Ouvrir le fichier : {file}")
-                except Exception as e:
-                    print(f"Erreur lors de l'ouverture des fichiers dans {selected_path} : {e}")
-            else:
-                print(f"{selected_path} est un fichier.")
-                try:
-                    bo.batchOpen(selected_path)
-                except Exception as e:
-                    print(f"Erreur lors de l'ouverture du fichier {selected_path} : {e}")
+                files = bo.batchOpen(selected_path)
 
             # Update the drop_label with the selected path
             self.drop_label.text = f"Fichier sélectionné : {selected_path}"
 
-            # Update LogExplorer within DisplayArray
-            try:
-                display_array_screen = self.manager.get_screen('display_array')  # Updated screen name
-                log_explorer = display_array_screen.log_explorer  # Access the embedded LogExplorer
-                log_explorer.update_directory(selected_path)  # Update with the new path
-            except Exception as e:
-                print(f"Erreur lors de la mise à jour de LogExplorer : {e}")
+            # Mettre à jour LogExplorer avec le nouveau chemin sélectionné
+            log_explorer = self.manager.get_screen('log_screen').children[0]  # LogExplorer est le seul widget de log_screen
+            log_explorer.update_directory(selected_path)  # Mise à jour avec le chemin
 
             # Close the popup
             self.popup.dismiss()
@@ -133,35 +116,15 @@ class DragDropScreen(Screen):
     def on_file_drop(self, window, file_path):
         # Update the path property when a file is dropped
         self.path = file_path.decode("utf-8")
-        self.drop_label.text = f"Sélectionné par drag-and-drop : {self.path}"
-        print(f"Sélectionné par drag-and-drop : {self.path}")
+        self.drop_label.text = f"{self.path}"
 
-        # Open the file or directory with batchOpen
-        if os.path.isdir(self.path):
-            print(f"{self.path} est un dossier.")
-            try:
-                files = bo.batchOpen(self.path)  # Ensure batchOpen returns a list of files
-                for file in files:
-                    print(f"Ouvrir le fichier : {file}")
-            except Exception as e:
-                print(f"Erreur lors de l'ouverture des fichiers dans {self.path} : {e}")
-        else:
-            print(f"{self.path} est un fichier.")
-            try:
-                bo.batchOpen(self.path)
-            except Exception as e:
-                print(f"Erreur lors de l'ouverture du fichier {self.path} : {e}")
+        # Ouvrir le fichier/dossier avec batchOpen
+        bo.batchOpen(self.path)
 
-        # Update LogExplorer within DisplayArray
-        try:
-            display_array_screen = self.manager.get_screen('display_array')  # Updated screen name
-            log_explorer = display_array_screen.log_explorer  # Access the embedded LogExplorer
-            log_explorer.update_directory(self.path)  # Update with the new path
-        except Exception as e:
-            print(f"Erreur lors de la mise à jour de LogExplorer : {e}")
-
-        # Switch to the DisplayArray screen after dropping the file
-        self.manager.current = 'display_array'  # Updated screen name
+        display_array_screen = self.manager.get_screen('display_array')
+        log_explorer = display_array_screen.log_explorer
+        log_explorer.update_directory(self.path)
+        self.manager.current = 'display_array'
 
     def go_to_graph(self, instance):
         # Navigate to the 'array' screen (assuming it's the name for DisplayArray)
