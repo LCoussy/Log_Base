@@ -10,10 +10,10 @@ def parse_blocked_request(content):
     if blocking_date_match:
         blocking_date = blocking_date_match.group(1)  # Deuxième date
         blocking_time = blocking_date_match.group(2)  # Deuxième heure
-        
+
         # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
         try:
-            combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%d/%m/%y %H:%M:%S")
+            combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%m/%d/%y %H:%M:%S")
             iso_format_datetime = combined_datetime.strftime("%Y-%m-%d %H:%M:%S")
         except ValueError:
             iso_format_datetime = None
@@ -60,7 +60,7 @@ def parse_lost_request(content):
     if blocking_date_match:
         blocking_date = blocking_date_match.group(1)  # Deuxième date
         blocking_time = blocking_date_match.group(2)  # Deuxième heure
-        
+
         # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
         try:
             combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%d/%m/%y %H:%M:%S")
@@ -108,19 +108,19 @@ def parse_lost_request(content):
 
 def parse_log(file_path):
     logs = []
-    
+
     # Regex for identifying the start of a block with a date
     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
-    
+
     # Use the correct encoding to read the file
     with open(file_path, 'r', encoding='ISO-8859-1') as file:
         lines = file.readlines()
         current_block = []
-        
+
         for i, line in enumerate(lines):
 
-            if "ligne créée" in line:
-                logs.append({"type": "ligne_creee"})
+            # if "ligne créée" in line:
+            #     logs.append({"type": "ligne_creee"})
 
             if date_regex.match(line):
                 if current_block:
@@ -133,7 +133,7 @@ def parse_log(file_path):
                     #     parsed_data = parse_lost_request(block_content)
                     else:
                         parsed_data = None
-                    
+
 
                     if parsed_data:
                         logs.append(parsed_data)
