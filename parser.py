@@ -37,13 +37,22 @@ def parse_blocked_request(content):
     else:
         iso_format_datetime = None
 
-    # Extract other information: ID, table name, state, SQL address, user
-    request_id = re.search(r'\s+(\d+)\s+INACTIVE', content).group(1) if re.search(r'\s+(\d+)\s+INACTIVE', content) else None
-    table_name = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE).group(1) if re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE) else None
-    state = re.search(r'\b(INACTIVE|ACTIVE)\b', content).group(1) if re.search(r'\b(INACTIVE|ACTIVE)\b', content) else None
-    sql_address = re.search(r'INACTIVE\s+(\w+)', content).group(1) if re.search(r'INACTIVE\s+(\w+)', content) else None
+    # Extraction de l'état (ACTIVE ou INACTIVE)
+    state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
+    state = state_match.group(1) if state_match else None
+
+    # Extraction des autres informations
+    id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
+    request_id = id_match.group(1) if id_match else None
+
+    sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
+    sql_address = sql_address_match.group(2) if sql_address_match else None
+
+    table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
+    table_name = table_match.group(1) if table_match else None
+
     user_matches = re.findall(r'^\s*([a-zA-Z0-9_]+)\s*$', content, re.MULTILINE)
-    user_name = user_matches[1] if user_matches and len(user_matches) >= 2 else None
+    user_name = user_matches[1] if len(user_matches) >= 2 else None
 
     return {
         "type": "bloquee",
@@ -143,5 +152,12 @@ def parse_log(file_path):
                 current_block = [line.strip()]
             else:
                 current_block.append(line.strip())
+
+        if current_block:
+            block_content = "\n".join(current_block)
+            if "BLOQUE" in block_content:
+                parsed_data = parse_blocked_request(block_content)
+                if parsed_data:
+                    logs.append(parsed_data)
 
     return logs
