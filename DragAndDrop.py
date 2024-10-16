@@ -95,9 +95,10 @@ class DragDropScreen(Screen):
             # Update the drop_label with the selected path
             self.drop_label.text = f"Fichier sélectionné : {selected_path}"
 
-            # Mettre à jour LogExplorer avec le nouveau chemin sélectionné
-            log_explorer = self.manager.get_screen('log_screen').children[0]  # LogExplorer est le seul widget de log_screen
-            log_explorer.update_directory(selected_path)  # Mise à jour avec le chemin
+
+            display_array_screen = self.manager.get_screen('display_array')
+            log_explorer = display_array_screen.log_explorer
+            log_explorer.update_directory(self.path)
 
             # Close the popup
             self.popup.dismiss()
