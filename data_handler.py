@@ -9,12 +9,11 @@ def createTableBlockedRequest(data):
     df.reset_index(drop=True, inplace=True) # reset all index
     if df.empty:
         return None
-    if  not (df.columns.__contains__("datetime")):
+    if  not (df.columns.__contains__("date")):
         return None
-    return df[['datetime','table','user' ,'id','adress',]]
+    return df[['date','table','utilisateur' ,'id','adresse',]]
 
 
 # not implemented yet
 def createCsvBlockedRequest(dataFrame):
     dataFrame.to_csv('data.csv', index=False)
-    print('Data saved to data.csv')

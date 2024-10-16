@@ -46,12 +46,12 @@ def parse_blocked_request(content):
     # Résultat final avec date et heure combinées au format ISO 8601
     return {
         "type": "bloquee",
-        "datetime": iso_format_datetime,
+        "date": iso_format_datetime,
         "id": request_id,
         "state": state,
-        "adress": sql_address,
+        "adresse": sql_address,
         "table": table_name,
-        "user": user_name
+        "utilisateur": user_name
     }
 
 def parse_lost_request(content):
@@ -95,7 +95,7 @@ def parse_lost_request(content):
 
     return {
         "type": "perdue",
-        "datetime": iso_format_datetime,
+        "Date": iso_format_datetime,
         "heure": blocking_time,
         "id": request_id,
         "state": state,
@@ -147,21 +147,3 @@ def parse_log(file_path):
 # Usage
 log_file = "GCE_10-30-02_17_07-10-2024.txt"
 parsed_logs = parse_log(log_file)
-
-# pd.set_option('display.max_columns', None)
-
-# print(dh.createTableBlockedRequest(parsed_logs))
-
-# df = pd.DataFrame(parsed_logs)
-# df.drop_duplicates(inplace=True)
-# df.reset_index(drop=True, inplace=True)
-#
-# print(df[['datetime','table','user' ,'id','adress',]])
-#
-#
-# df.to_csv('requete.csv', index=False)
-
-# with open('requêtes.json', 'w') as json_file:
-#     json.dump(parsed_logs, json_file, indent=4)
-
-# print("Les données ont été écrites dans 'requêtes.csv'.")

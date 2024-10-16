@@ -82,19 +82,13 @@ class DragDropScreen(Screen):
         selection = filechooser.selection
         if selection:
             selected_path = selection[0]
-            print(f"Sélectionné : {selected_path}")
 
             # Stocker le chemin sélectionné dans la variable path
             self.path = selected_path
 
             # Si c'est un dossier, appeler batchOpen pour ouvrir les fichiers
             if os.path.isdir(selected_path):
-                print(f"{selected_path} est un dossier.")
                 files = bo.batchOpen(selected_path)
-                for file in files:
-                    print(file)
-            else:
-                print(f"{selected_path} est un fichier.")
 
             # Mettre à jour le texte du label avec le chemin sélectionné
             self.drop_label.text = f"Fichier sélectionné : {selected_path}"
@@ -119,7 +113,6 @@ class DragDropScreen(Screen):
         # Mettre à jour la propriété path lors du drag-and-drop
         self.path = file_path.decode("utf-8")
         self.drop_label.text = f"{self.path}"
-        print(f"Sélectionné par drag-and-drop : {self.path}")
         
         # Ouvrir le fichier/dossier avec batchOpen
         bo.batchOpen(self.path)

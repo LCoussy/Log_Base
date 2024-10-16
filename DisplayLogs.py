@@ -43,7 +43,6 @@ class LogExplorer(BoxLayout):
 
     def populate_treeview(self, log_directory):
         if not os.path.exists(log_directory):
-            print(f"Le dossier {log_directory} n'existe pas.")
             return
 
             # Nettoyer l'arborescence actuelle
@@ -172,7 +171,6 @@ class LogExplorer(BoxLayout):
 
                 self.colorize()
 
-                print(f"Fichiers sélectionnés : {self.selected_files}")
                 self.parseAndDisplay(self.selected_files)
 
     def parseAndDisplay(self, selected_files):
