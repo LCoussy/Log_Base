@@ -14,13 +14,32 @@ import batchOpen as bo
 Window.size = (1000, 600)
 
 class DragDropScreen(Screen):
+    """
+    DragDropScreen is a Kivy Screen that provides a drag-and-drop interface for selecting files or directories.
+    It allows the user to drop files, open a file chooser, and process selected directories   with batchOpen.
+
+    Attributes:
+        path (str): The currently selected file or directory path.
+    """
+
     path = StringProperty()
 
     def __init__(self, **kwargs):
+        """
+        Initialize the DragDropScreen widget.
+        
+        Args:
+            **kwargs: Additional keyword arguments for Kivy's Screen initializer.
+        """
+
         super(DragDropScreen, self).__init__(**kwargs)
         self.build_ui()
 
     def build_ui(self):
+        """
+        Build the user interface, which consists of a label for drag-and-drop and a button for opening the file chooser.
+        """
+
         main_layout = BoxLayout(orientation='horizontal')
 
         # Left Layout: Drop Label
@@ -59,6 +78,13 @@ class DragDropScreen(Screen):
         self.add_widget(main_layout)
 
     def open_filechooser(self, instance):
+        """
+        Open a file chooser popup to select a file or directory.
+        
+        Args:
+            instance (Button): The button that triggered the method.
+        """
+
         # Create a FileChooserIconView instance
         filechooser = FileChooserIconView(path=os.path.expanduser("~"), filters=["*"], dirselect=True)
 
@@ -80,6 +106,13 @@ class DragDropScreen(Screen):
         self.popup.open()
 
     def selected_file_or_dir(self, filechooser):
+        """
+        Handle the selection of a file or directory from the file chooser.
+        
+        Args:
+            filechooser (FileChooserIconView): The file chooser widget instance.
+        """
+
         # Retrieve the selection
         selection = filechooser.selection
         if selection:
@@ -107,10 +140,18 @@ class DragDropScreen(Screen):
             self.manager.current = 'display_array'  # Updated screen name
 
     def on_enter(self):
+        """
+        Called when entering the DragDropScreen. Binds the file drop event to the window.
+        """
+
         # Bind the on_dropfile event when entering the screen
         Window.bind(on_dropfile=self.on_file_drop)
 
     def on_leave(self):
+        """
+        Called when leaving the DragDropScreen. Unbinds the file drop event from the window.
+        """
+
         # Unbind the on_dropfile event when leaving the screen
         Window.unbind(on_dropfile=self.on_file_drop)
 
@@ -118,8 +159,15 @@ class DragDropScreen(Screen):
         # Update the path property when a file is dropped
         self.path = file_path.decode("utf-8")
         self.drop_label.text = f"{self.path}"
+        """
+        Handle file drop events and update the path property accordingly.
+        
+        Args:
+            window (Window): The Kivy window instance.
+            file_path (bytes): The dropped file's path in bytes.
+        """
 
-        # Ouvrir le fichier/dossier avec batchOpen
+        # Open the file/directory with batchOpen
         bo.batchOpen(self.path)
 
         display_array_screen = self.manager.get_screen('display_array')
@@ -128,9 +176,22 @@ class DragDropScreen(Screen):
         self.manager.current = 'display_array'
 
     def go_to_graph(self, instance):
-        # Navigate to the 'array' screen (assuming it's the name for DisplayArray)
+        """
+        Navigate to the 'array' screen (presumably a screen for displaying graphs or data arrays).
+        
+        Args:
+            instance (Button): The button that triggered the navigation.
+        """
+
         self.manager.current = 'array'
 
     # New function to return the path
     def get_path(self):
+        """
+        Return the currently selected path (file or directory).
+
+        Returns:
+            str: The currently selected file or directory path.
+        """
+
         return self.path
