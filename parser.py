@@ -5,6 +5,26 @@ import pandas as pd
 import data_handler as dh
 
 def parse_blocked_request(content):
+    """
+    Parse a blocked request from the log content.
+
+    This function extracts key details such as the request date, time, ID, table name, 
+    state, SQL address, and user name for a blocked request. The data is returned in a dictionary format.
+
+    Args:
+        content (str): The content block containing the blocked request information.
+
+    Returns:
+        dict: Parsed information about the blocked request with keys:
+            - "type": Type of request, always 'bloquee' for blocked requests.
+            - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
+            - "id": Request ID (str) or None.
+            - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
+            - "adresse": SQL address (str) or None.
+            - "table": Name of the table involved (str) or None.
+            - "utilisateur": User name associated with the request or None.
+    """
+
     # Match pour la date et l'heure (deuxième occurrence)
     blocking_date_match = re.search(r'\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\s+\w+\s+(\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2})', content)
     if blocking_date_match:
@@ -48,6 +68,27 @@ def parse_blocked_request(content):
     }
 
 def parse_lost_request(content):
+    """
+    Parse a lost request from the log content.
+
+    Similar to the blocked request parsing, this function extracts the date, time, ID, 
+    table name, state, SQL address, and user for a lost request.
+
+    Args:
+        content (str): The content block containing the lost request information.
+
+    Returns:
+        dict: Parsed information about the lost request with keys:
+            - "type": Type of request, always 'perdue' for lost requests.
+            - "Date": Date of the request in 'YYYY-MM-DD' format or None.
+            - "heure": Time of the request or None.
+            - "id": Request ID (str) or None.
+            - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
+            - "address": SQL address (str) or None.
+            - "table": Name of the table involved (str) or None.
+            - "user": User name associated with the request or None.
+    """
+
     # Match pour la date et l'heure (deuxième occurrence)
     blocking_date_match = re.search(r'\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\s+\w+\s+(\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2})', content)
     if blocking_date_match:
@@ -100,6 +141,19 @@ def parse_lost_request(content):
 
 
 def parse_log(file_path):
+    """
+    Parse the log file and extract data from each log block.
+
+    The log file is expected to contain different types of requests (blocked or lost).
+    Each block in the log is processed, and if it's identified as blocked or lost, its details are parsed and added to a list.
+
+    Args:
+        file_path (str): The path to the log file to be parsed.
+
+    Returns:
+        list: A list of dictionaries, where each dictionary contains details of either a blocked or lost request.
+    """
+
     logs = []
 
     # Regex for identifying the start of a block with a date
