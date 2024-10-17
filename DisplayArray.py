@@ -16,11 +16,33 @@ import data_handler as dh
 from DisplayLogs import LogExplorer
 
 class DisplayArray(Screen):
+    """
+    Screen that displays a grid of logs and includes a log explorer.
+    
+    Attributes:
+        log_explorer (LogExplorer): Instance of the log explorer UI component.
+        grid_layout (GridLayout): Layout used to display log data in a table format.
+    """
+
     def __init__(self, **kwargs):
+        """
+        Initialize the DisplayArray screen.
+        
+        Args:
+            **kwargs: Additional keyword arguments passed to the Screen initializer.
+        """
+
         super(DisplayArray, self).__init__(**kwargs)
         self.build_ui()
 
     def build_ui(self):
+        """
+        Build the user interface of the DisplayArray screen.
+        
+        It includes a horizontal layout with two sections: a log explorer (on the left) 
+        and a scrollable grid (on the right) that will display log data.
+        """
+
         main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
 
         # Left Layout: LogExplorer (TreeView)
@@ -64,6 +86,17 @@ class DisplayArray(Screen):
         self.add_widget(main_layout)
 
     def updateTable(self, selected_files):
+        """
+        Update the grid layout with log data from the selected files.
+
+        This method parses the selected log files, processes the data to create 
+        a combined DataFrame, and displays it in the grid. The table is updated 
+        to remove duplicates and dynamically adjust the number of columns.
+
+        Args:
+            selected_files (list of str): List of file paths to be parsed and displayed.
+        """
+
         self.grid_layout.clear_widgets()
         df_combined = pd.DataFrame()
 
