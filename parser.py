@@ -6,23 +6,7 @@ import data_handler as dh
 
 def parse_blocked_request(content):
     """
-    Parse a blocked request from the log content.
-
-    This function extracts key details such as the request date, time, ID, table name, 
-    state, SQL address, and user name for a blocked request. The data is returned in a dictionary format.
-
-    Args:
-        content (str): The content block containing the blocked request information.
-
-    Returns:
-        dict: Parsed information about the blocked request with keys:
-            - "type": Type of request, always 'bloquee' for blocked requests.
-            - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
-            - "id": Request ID (str) or None.
-            - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
-            - "adresse": SQL address (str) or None.
-            - "table": Name of the table involved (str) or None.
-            - "utilisateur": User name associated with the request or None.
+    USELESS 
     """
 
     # Match pour la date et l'heure (deuxième occurrence)
