@@ -6,7 +6,23 @@ import data_handler as dh
 
 def parse_blocked_request(content):
     """
-    USELESS 
+    Parse a blocked request from the log content.
+
+    This function extracts key details such as the request date, time, ID, table name, 
+    state, SQL address, and user name for a blocked request. The data is returned in a dictionary format.
+
+    Args:
+        content (str): The content block containing the blocked request information.
+
+    Returns:
+        dict: Parsed information about the blocked request with keys:
+            - "type": Type of request, always 'bloquee' for blocked requests.
+            - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
+            - "id": Request ID (str) or None.
+            - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
+            - "adresse": SQL address (str) or None.
+            - "table": Name of the table involved (str) or None.
+            - "utilisateur": User name associated with the request or None.
     """
 
     # Match pour la date et l'heure (deuxième occurrence)
@@ -53,24 +69,7 @@ def parse_blocked_request(content):
 
 def parse_lost_request(content):
     """
-    Parse a lost request from the log content.
-
-    Similar to the blocked request parsing, this function extracts the date, time, ID, 
-    table name, state, SQL address, and user for a lost request.
-
-    Args:
-        content (str): The content block containing the lost request information.
-
-    Returns:
-        dict: Parsed information about the lost request with keys:
-            - "type": Type of request, always 'perdue' for lost requests.
-            - "Date": Date of the request in 'YYYY-MM-DD' format or None.
-            - "heure": Time of the request or None.
-            - "id": Request ID (str) or None.
-            - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
-            - "address": SQL address (str) or None.
-            - "table": Name of the table involved (str) or None.
-            - "user": User name associated with the request or None.
+    Useless
     """
 
     # Match pour la date et l'heure (deuxième occurrence)
