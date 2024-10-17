@@ -243,4 +243,4 @@ class LogExplorer(BoxLayout):
         Args:
             selected_files (list of str): List of selected file paths.
         """
-         self.display_array.updateTable(selected_files)
+        self.display_array.updateTable(selected_files)
