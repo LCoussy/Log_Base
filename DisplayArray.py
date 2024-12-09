@@ -13,7 +13,7 @@ import pandas as pd
 import parser as par
 import data_handler as dh
 
-from DisplayLogs import LogExplorer
+from DisplayLogTree import LogExplorer
 
 class DisplayArray(Screen):
     """
