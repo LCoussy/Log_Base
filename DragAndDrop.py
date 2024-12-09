@@ -21,14 +21,14 @@ class DragDropScreen(Screen):
         self.build_ui()
 
     def build_ui(self):
-        main_layout = BoxLayout(orientation='horizontal')
-        main_layout.add_widget(self.create_left_layout())
-        main_layout.add_widget(self.create_right_layout())
-        self.add_widget(main_layout)
+        mainLayout = BoxLayout(orientation='horizontal')
+        mainLayout.add_widget(self.create_left_layout())
+        mainLayout.add_widget(self.create_right_layout())
+        self.add_widget(mainLayout)
 
     def create_left_layout(self):
-        left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
-        self.drop_label = Label(
+        leftLayout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
+        self.dropLabel = Label(
             text="Drag and Drop",
             size_hint=(1, 0.2),
             font_size='20sp',
@@ -36,31 +36,31 @@ class DragDropScreen(Screen):
             valign='middle',
             text_size=(Window.width * 0.3, None)
         )
-        left_layout.add_widget(self.drop_label)
-        return left_layout
+        leftLayout.add_widget(self.dropLabel)
+        return leftLayout
 
     def create_right_layout(self):
-        right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
-        float_layout = FloatLayout()
-        btn_open = Button(
+        rightLayout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
+        floatLayout = FloatLayout()
+        btnOpen = Button(
             text="Open",
             size_hint=(0.15, 0.07),
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             font_size='18sp'
         )
-        btn_open.bind(on_press=self.open_filechooser)
-        float_layout.add_widget(btn_open)
-        right_layout.add_widget(float_layout)
-        return right_layout
+        btnOpen.bind(on_press=self.open_filechooser)
+        floatLayout.add_widget(btnOpen)
+        rightLayout.add_widget(floatLayout)
+        return rightLayout
 
     def open_filechooser(self, instance):
         filechooser = FileChooserIconView(path=os.path.expanduser("~"), filters=["*"], dirselect=True)
-        select_btn = Button(text="Sélectionner", size_hint=(1, 0.1), font_size='18sp')
-        select_btn.bind(on_press=lambda x: self.selected_file_or_dir(filechooser))
+        selectBtn = Button(text="Sélectionner", size_hint=(1, 0.1), font_size='18sp')
+        selectBtn.bind(on_press=lambda x: self.selected_file_or_dir(filechooser))
 
         layout = BoxLayout(orientation='vertical')
         layout.add_widget(filechooser)
-        layout.add_widget(select_btn)
+        layout.add_widget(selectBtn)
 
         self.popup = Popup(
             title="Sélectionner un fichier ou un dossier",
@@ -82,7 +82,7 @@ class DragDropScreen(Screen):
 
     def on_file_drop(self, window, file_path):
         self.path = file_path.decode("utf-8")
-        self.drop_label.text = f"{self.path}"
+        self.dropLabel.text = f"{self.path}"
         if validate_directory(self.path):
             process_directory(self.path)
             self.update_ui_and_navigate()
@@ -90,8 +90,8 @@ class DragDropScreen(Screen):
             self.show_error_popup("Fichier invalide.")
 
     def update_ui_and_navigate(self):
-        display_array_screen = self.manager.get_screen('display_array')
-        display_array_screen.log_explorer.update_directory(self.path)
+        displayArrayScreen = self.manager.get_screen('display_array')
+        displayArrayScreen.log_explorer.update_directory(self.path)
         self.manager.current = 'display_array'
 
     def show_error_popup(self, message):
