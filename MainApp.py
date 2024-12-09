@@ -3,10 +3,10 @@
 import os
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen
-from pandas.core.window import Window
+# from pandas.core.window import Window
 
-from DisplayArray import DisplayArray
 from DragAndDrop import DragDropScreen  # Assuming this is another screen
+from Display import Display
 
 
 class MainApp(App):
@@ -17,7 +17,7 @@ class MainApp(App):
 
     def build(self):
         """
-        Build the application by initializing the ScreenManager and adding screens for drag-and-drop functionality 
+        Build the application by initializing the ScreenManager and adding screens for drag-and-drop functionality
         and data display. This is the entry point for starting the app.
 
         Returns:
@@ -26,10 +26,10 @@ class MainApp(App):
 
         sm = ScreenManager()
 
-        sm.add_widget(DragDropScreen(name='drag_drop'))
+        # sm.add_widget(DragDropScreen(name='drag_drop'))
 
         # Create and add DisplayArray Screen
-        display_array_screen = DisplayArray(name='display_array')
+        display_array_screen = Display(name='display_array')
         sm.add_widget(display_array_screen)
 
         return sm
