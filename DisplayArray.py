@@ -101,7 +101,7 @@ class DisplayArray(Screen):
         df_combined = pd.DataFrame()
 
         for file in selected_files:
-            df = dh.createTableBlockedRequest(par.parse_log(file))
+            df = dh.create_table_blocked_request(par.parse_log(file))
 
             if df is not None and not df.empty:
                 df_combined = pd.concat([df_combined, df], ignore_index=True)
