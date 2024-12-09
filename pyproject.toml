@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ihm-kivy"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+kivy = "2.3.0"
+pandas = ">=2.2"
+kivymd = "1.2.0"
+matplotlib = "3.9.2"
+numpy = "<2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
