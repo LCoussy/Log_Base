@@ -17,6 +17,10 @@ import data_handler as dh
 
 # from DisplayLogs import LogExplorer
 
+
+
+
+
 class DisplayArray(Screen):
     """
     Screen that displays a grid of logs and includes a log explorer.
@@ -37,6 +41,55 @@ class DisplayArray(Screen):
         super(DisplayArray, self).__init__(**kwargs)
         self.build_ui()
 
+    def show_file_content(self, file_path):
+        """
+        Display the content of a log file in a popup.
+
+        Args:
+            file_path (str): Path of the file to be displayed.
+        """
+        from kivy.uix.popup import Popup
+        from kivy.uix.scrollview import ScrollView
+        from kivy.uix.label import Label
+        from kivy.uix.boxlayout import BoxLayout
+        import os
+
+        try:
+            # Lire le contenu du fichier
+            with open(file_path, 'r', encoding='ISO-8859-1') as f:
+                file_content = f.read()
+
+            # Créer un widget ScrollView pour afficher un contenu potentiellement long
+            scroll_view = ScrollView(size_hint=(1, 1))
+            content_label = Label(
+                text=file_content,
+                size_hint_y=None,
+                text_size=(Window.width * 0.9, None),
+                halign='left',
+                valign='top'
+            )
+            content_label.bind(texture_size=content_label.setter('size'))  # Ajuster la taille
+            scroll_view.add_widget(content_label)
+
+            # Créer une popup pour afficher le contenu
+            popup = Popup(
+                title=f"Contenu de {os.path.basename(file_path)}",
+                content=scroll_view,
+                size_hint=(0.9, 0.9),
+                auto_dismiss=True
+            )
+            popup.open()
+        except Exception as e:
+            # Gérer les erreurs si le fichier ne peut pas être lu
+            error_popup = Popup(
+                title="Erreur",
+                content=Label(text=f"Erreur en ouvrant le fichier : {str(e)}"),
+                size_hint=(0.6, 0.4),
+                auto_dismiss=True
+            )
+            error_popup.open()
+
+            
     def build_ui(self):
         """
         Build the user interface of the DisplayArray screen.
@@ -93,33 +146,41 @@ class DisplayArray(Screen):
         """
         Update the grid layout with log data from the selected files.
 
-        This method parses the selected log files, processes the data to create
-        a combined DataFrame, and displays it in the grid. The table is updated
-        to remove duplicates and dynamically adjust the number of columns.
-
         Args:
             selected_files (list of str): List of file paths to be parsed and displayed.
         """
-
         self.grid_layout.clear_widgets()
         df_combined = pd.DataFrame()
 
+        file_paths = {}  # Dictionnaire pour relier les lignes aux fichiers log
+
         for file in selected_files:
-            df = dh.create_table_blocked_request(parser.parse_log(file))
+            parsed_logs = parser.parse_log(file)
+            df = dh.create_table_blocked_request(parsed_logs)
             if df is not None and not df.empty:
                 df_combined = pd.concat([df_combined, df], ignore_index=True)
-        # if df is not None and not df.empty:
-        #     df_combined = pd.concat([df_combined, df], ignore_index=True)
+                for log in parsed_logs:
+                    file_paths[log["id"]] = file
 
-
-        # Enlève les duplicatas après la fusion
+        # Supprimer les duplicatas
         df_combined.drop_duplicates(inplace=True)
         df_combined.reset_index(drop=True, inplace=True)
 
         if not df_combined.empty:
-            self.grid_layout.cols = df_combined.shape[1]
+            self.grid_layout.cols = df_combined.shape[1] + 1  # Ajouter une colonne pour les boutons
             for header in df_combined.columns:
                 self.grid_layout.add_widget(Label(text=header, bold=True))
-            for row in df_combined.values:
+            self.grid_layout.add_widget(Label(text="Log entiere", bold=True))  # En-tête pour les boutons
+
+            for index, row in df_combined.iterrows():
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))
+
+                # Ajouter un bouton pour chaque ligne
+                file_path = file_paths.get(row["id"])
+                if file_path:
+                    view_button = Button(text="Afficher")
+                    view_button.bind(on_release=lambda instance, fp=file_path: self.show_file_content(fp))
+                    self.grid_layout.add_widget(view_button)
+                else:
+                    self.grid_layout.add_widget(Label(text="N/A"))
