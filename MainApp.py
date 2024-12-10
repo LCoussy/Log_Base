@@ -29,8 +29,8 @@ class MainApp(App):
         # sm.add_widget(DragDropScreen(name='drag_drop'))
 
         # Create and add DisplayArray Screen
-        display_array_screen = Display(name='display_array')
-        sm.add_widget(display_array_screen)
+        display_screen = Display(name='display')
+        sm.add_widget(display_screen)
 
         return sm
 

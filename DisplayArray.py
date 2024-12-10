@@ -5,7 +5,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
-# from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
 
@@ -17,7 +17,7 @@ import data_handler as dh
 
 # from DisplayLogs import LogExplorer
 
-class DisplayArray(Widget):
+class DisplayArray(Screen):
     """
     Screen that displays a grid of logs and includes a log explorer.
 
@@ -44,8 +44,8 @@ class DisplayArray(Widget):
         It includes a horizontal layout with two sections: a log explorer (on the left)
         and a scrollable grid (on the right) that will display log data.
         """
-
-        main_layout = BoxLayout(orientation='vertical', size_hint=(1, 1), padding=0, spacing=0)
+        print(self.size[0])
+        main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
 
         # Left Layout: LogExplorer (TreeView)
         # left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
@@ -80,7 +80,7 @@ class DisplayArray(Widget):
 
         scroll_view.add_widget(self.grid_layout)  # Add the grid layout to the scroll view
         # right_layout.add_widget(scroll_view)  # Add the scroll view to the right layout
-        # main_layout.add_widget(scroll_view)  # Add the scroll view to the right layout
+        down_layout.add_widget(scroll_view)  # Add the scroll view to the right layout
 
         # Assemble the main layout
         # main_layout.add_widget(left_layout)
@@ -116,8 +116,6 @@ class DisplayArray(Widget):
         # Enlève les duplicatas après la fusion
         df_combined.drop_duplicates(inplace=True)
         df_combined.reset_index(drop=True, inplace=True)
-        # df_combined.dropna(inplace=True)
-        print(df_combined)
 
         if not df_combined.empty:
             self.grid_layout.cols = df_combined.shape[1]

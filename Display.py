@@ -23,7 +23,7 @@ class Display(Screen):
 
         # Create an instance of DisplayArray
         self.display_array = DisplayArray()
-        # self.display_array.updateTable(batchOpen("/home/coussy/log-base/ihm_kivy/log/"))
+        self.display_array.updateTable(batchOpen("/home/coussy/log-base/ihm_kivy/log/"))
         right_layout.add_widget(self.display_array)
         main_layout.add_widget(left_layout)
         main_layout.add_widget(right_layout)
