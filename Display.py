@@ -1,7 +1,8 @@
 # Display.py
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
-from DisplayArray import DisplayArray
+# from DisplayArray import DisplayArray
+from DisplayData import DisplayData
 from batchOpen import batchOpen
 from DisplayLogTree import LogExplorer
 
@@ -13,6 +14,7 @@ class Display(Screen):
     def __init__(self, fileOrDirectoryPath, **kwargs):
         super(Display, self).__init__(**kwargs)
         self.fileOrDirectoryPath = fileOrDirectoryPath
+        # self.on_file_selected = on_file_selected
         self.build_ui()
 
     def build_ui(self):
@@ -24,16 +26,18 @@ class Display(Screen):
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
 
         # Create an instance of DisplayArray
-        self.displayArray = DisplayArray()
+        # self.displayArray = DisplayArray()
+        self.displayData = DisplayData(fileOrDirectoryPath=self.fileOrDirectoryPath)
         self.logExplorer = LogExplorer(log_directory=self.fileOrDirectoryPath, on_file_selected=self.on_file_selected)
 
         left_layout.add_widget(self.logExplorer)
-        right_layout.add_widget(self.displayArray)
+        right_layout.add_widget(self.displayData)
 
         main_layout.add_widget(left_layout)
         main_layout.add_widget(right_layout)
 
         self.add_widget(main_layout)
+
 
     def on_file_selected(self, selected_files):
         """
@@ -43,4 +47,4 @@ class Display(Screen):
             selected_files (list of str): List of selected file paths.
         """
         print("Selected files:", selected_files)
-        self.displayArray.updateTable(selected_files)
+        self.displayData.displayArray.updateTable(selected_files)
