@@ -12,6 +12,7 @@ pandas = ">=2.2"
 kivymd = "1.2.0"
 matplotlib = "3.9.2"
 numpy = "<2.0"
+kivy-garden = "^0.1.5"
 
 
 [build-system]
