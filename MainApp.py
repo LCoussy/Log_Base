@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 
 from DragAndDrop import DragDropScreen  # Assuming this is another screen
 from Display import Display
+from DisplayStat import DisplayStat
 
 
 class MainApp(App):
@@ -25,12 +26,16 @@ class MainApp(App):
         """
 
         sm = ScreenManager()
+        """
         dragDropScreen = DragDropScreen(name='drag_drop')
         sm.add_widget(dragDropScreen)
 
         # Create and add DisplayArray Screen
         display_screen = Display(name='display', fileOrDirectoryPath=dragDropScreen.path)
         sm.add_widget(display_screen)
+        """
+
+        sm.add_widget(DisplayStat(name="display_stat"))
 
         return sm
 
