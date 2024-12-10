@@ -27,7 +27,7 @@ def create_table_blocked_request(data):
     if df.empty or 'date' not in df.columns:
         return None
 
-    requiredColumns = ['date', 'table', 'utilisateur', 'id']
+    requiredColumns = ['date', 'table', 'utilisateur','id', 'poste']
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
 
 

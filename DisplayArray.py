@@ -55,23 +55,24 @@ class DisplayArray(Screen):
         import os
 
         try:
-            # Lire le contenu du fichier
             with open(file_path, 'r', encoding='ISO-8859-1') as f:
                 file_content = f.read()
 
-            # Créer un widget ScrollView pour afficher un contenu potentiellement long
             scroll_view = ScrollView(size_hint=(1, 1))
+
             content_label = Label(
                 text=file_content,
                 size_hint_y=None,
-                text_size=(Window.width * 0.9, None),
-                halign='left',
-                valign='top'
+                text_size=(Window.width * 0.9, None),  
+                halign='left', 
+                valign='top', 
+                width=Window.width * 0.9,
+                padding=(Window.width * 0.1, 0), 
             )
-            content_label.bind(texture_size=content_label.setter('size'))  # Ajuster la taille
-            scroll_view.add_widget(content_label)
+            content_label.bind(texture_size=content_label.setter('size')) 
 
-            # Créer une popup pour afficher le contenu
+            scroll_view.add_widget(content_label) 
+
             popup = Popup(
                 title=f"Contenu de {os.path.basename(file_path)}",
                 content=scroll_view,
@@ -80,7 +81,6 @@ class DisplayArray(Screen):
             )
             popup.open()
         except Exception as e:
-            # Gérer les erreurs si le fichier ne peut pas être lu
             error_popup = Popup(
                 title="Erreur",
                 content=Label(text=f"Erreur en ouvrant le fichier : {str(e)}"),
@@ -88,6 +88,10 @@ class DisplayArray(Screen):
                 auto_dismiss=True
             )
             error_popup.open()
+
+
+
+
 
             
     def build_ui(self):

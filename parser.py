@@ -4,6 +4,18 @@ from datetime import datetime
 import pandas as pd
 import data_handler as dh
 
+import re
+import json
+from datetime import datetime
+
+import re
+import json
+from datetime import datetime
+
+import re
+import json
+from datetime import datetime
+
 def parse_request(content, request_type):
     """
     Parse a request from the log content.
@@ -47,15 +59,27 @@ def parse_request(content, request_type):
     # Extraction des autres informations
     id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
     request_id = id_match.group(1) if id_match else None
+    poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)  # Cherche le premier mot de la 6e ligne
+    if poste_match:
+        poste = poste_match.group(1)  # Le premier mot de la 6e ligne
+    else:
+        poste = None
+
 
     sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
     sql_address = sql_address_match.group(2) if sql_address_match else None
 
+    # Extraction de l'ID de l'utilisateur dans ce cas particulier où il est sur la ligne contenant "svc_halimede"
+    user_match = re.search(r'\n\s*(\w+)\s*$', content)
+    user_name = user_match.group(1) if user_match else None
+
+    # Utiliser l'utilisateur trouvé pour l'ID si ce n'est pas déjà défini
+    if not request_id and user_name:
+        request_id = user_name  # Utiliser le nom d'utilisateur comme ID dans ce cas
+
+    # Extraction du nom de la table
     table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
     table_name = table_match.group(1) if table_match else None
-
-    user_matches = re.findall(r'^\s*([a-zA-Z0-9_]+)\s*$', content, re.MULTILINE)
-    user_name = user_matches[1] if len(user_matches) >= 2 else None
 
     return {
         "type": "bloquee" if request_type == "BLOCKED" else "LOST",
@@ -64,8 +88,12 @@ def parse_request(content, request_type):
         "state": state,
         "adresse": sql_address,
         "table": table_name,
-        "utilisateur": user_name
+        "utilisateur": user_name,
+        "poste": poste
     }
+
+
+
 
 
 def parse_log(file_path):
