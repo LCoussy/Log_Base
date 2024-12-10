@@ -26,16 +26,15 @@ class MainApp(App):
         """
 
         sm = ScreenManager()
-        """
         dragDropScreen = DragDropScreen(name='drag_drop')
         sm.add_widget(dragDropScreen)
 
         # Create and add DisplayArray Screen
         display_screen = Display(name='display', fileOrDirectoryPath=dragDropScreen.path)
         sm.add_widget(display_screen)
-        """
 
-        sm.add_widget(DisplayStat(name="display_stat"))
+
+        # sm.add_widget(DisplayStat(name="display_stat"))
 
         return sm
 
