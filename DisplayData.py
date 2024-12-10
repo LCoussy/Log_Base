@@ -1,10 +1,7 @@
 # Display.py
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.pagelayout import PageLayout
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import ScreenManager, Screen
 from DisplayArray import DisplayArray
-from batchOpen import batchOpen
-from DisplayLogTree import LogExplorer
 from HandleSwitch import HandleSwitch
 from DisplayStat import DisplayStat
 
@@ -13,38 +10,40 @@ class DisplayData(Screen):
     Screen that contains the DisplayArray and manages its layout.
     """
 
-    def __init__(self, fileOrDirectoryPath, **kwargs):
+    def __init__(self, **kwargs):
         super(DisplayData, self).__init__(**kwargs)
-        self.fileOrDirectoryPath = fileOrDirectoryPath
         self.build_ui()
 
     def build_ui(self):
         """
         Build the user interface of the Display screen.
         """
-        # mainLayout = BoxLayout(orientation='horizontal', padding=0, spacing=0)
-        mainLayout = PageLayout()
-        statLayout = BoxLayout(orientation='vertical', size_hint=(1, 1), padding=10, spacing=10)
-        arrayLayout = BoxLayout(orientation='vertical', size_hint=(1, 1), padding=10, spacing=10)
-        # statLayout = PageLayout(size_hint=(1, 1))
-        # ArrayLayout = PageLayout(size_hint=(1, 1))
+        mainBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
+        # buttonLayout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=50)
+        screenManager = ScreenManager()
 
-        # Create an instance of DisplayArray
+        # Create screens for DisplayArray and DisplayStat
+        array_screen = Screen(name='array')
+        stat_screen = Screen(name='stat')
+
+        # Create instances of DisplayArray and DisplayStat
         self.displayArray = DisplayArray()
         self.displayStat = DisplayStat()
 
-        # self.logExplorer = LogExplorer(log_directory=self.fileOrDirectoryPath, on_file_selected=self.on_file_selected)
-        # Add the HandleSwitch button to each page
-        handleSwitchArray = HandleSwitch(pageLayout=mainLayout)
-        handleSwitchStat = HandleSwitch(pageLayout=mainLayout)
-        arrayLayout.add_widget(handleSwitchArray)
-        statLayout.add_widget(handleSwitchStat)
+        # Add DisplayArray and DisplayStat to their respective screens
+        array_screen.add_widget(self.displayArray)
+        stat_screen.add_widget(self.displayStat)
 
+        # Add screens to the ScreenManager
+        screenManager.add_widget(array_screen)
+        screenManager.add_widget(stat_screen)
 
-        statLayout.add_widget(self.displayStat)
-        arrayLayout.add_widget(self.displayArray)
+        # Add the HandleSwitch button to the button layout
+        self.handleSwitch = HandleSwitch(screenManager=screenManager)
+        # buttonLayout.add_widget(handleSwitch)
 
-        mainLayout.add_widget(statLayout)
-        mainLayout.add_widget(arrayLayout)
+        # Add the button layout and the ScreenManager to the main layout
+        # mainBoxLayout.add_widget(buttonLayout)
+        mainBoxLayout.add_widget(screenManager)
 
-        self.add_widget(mainLayout)
+        self.add_widget(mainBoxLayout)

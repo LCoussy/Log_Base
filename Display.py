@@ -24,18 +24,22 @@ class Display(Screen):
         main_layout = BoxLayout(orientation='horizontal', padding=0, spacing=0)
         left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
         right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
+        switchButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
+        logTreeLayout = BoxLayout(orientation='vertical', size_hint=(1, 0.9), padding=10, spacing=10)
 
+        left_layout.add_widget(logTreeLayout)
+        left_layout.add_widget(switchButton)
         # Create an instance of DisplayArray
         # self.displayArray = DisplayArray()
-        self.displayData = DisplayData(fileOrDirectoryPath=self.fileOrDirectoryPath)
+        self.displayData = DisplayData()
         self.logExplorer = LogExplorer(log_directory=self.fileOrDirectoryPath, on_file_selected=self.on_file_selected)
 
-        left_layout.add_widget(self.logExplorer)
+        logTreeLayout.add_widget(self.logExplorer)
         right_layout.add_widget(self.displayData)
+        switchButton.add_widget(self.displayData.handleSwitch)
 
         main_layout.add_widget(left_layout)
         main_layout.add_widget(right_layout)
-
         self.add_widget(main_layout)
 
 

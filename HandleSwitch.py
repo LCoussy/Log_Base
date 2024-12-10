@@ -3,18 +3,18 @@ from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 
 class HandleSwitch(BoxLayout):
-    def __init__(self, pageLayout, **kwargs):
+    def __init__(self, screenManager, **kwargs):
         super(HandleSwitch, self).__init__(**kwargs)
-        self.pageLayout = pageLayout
+        self.screenManager = screenManager
         self.orientation = 'horizontal'
         self.size_hint = (1, None)
         self.height = 50
 
-        self.switch_button = Button(text="Switch Page")
-        self.switch_button.bind(on_press=self.switch_page)
+        self.switch_button = Button(text="Switch Screen")
+        self.switch_button.bind(on_press=self.switch_screen)
         self.add_widget(self.switch_button)
 
-    def switch_page(self, instance):
-        current_page = self.pageLayout.page
-        next_page = (current_page + 1) % len(self.pageLayout.children)
-        self.pageLayout.page = next_page
+    def switch_screen(self, instance):
+        current_screen = self.screenManager.current
+        next_screen = 'stat' if current_screen == 'array' else 'array'
+        self.screenManager.current = next_screen
