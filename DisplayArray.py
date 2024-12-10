@@ -44,7 +44,6 @@ class DisplayArray(Screen):
         It includes a horizontal layout with two sections: a log explorer (on the left)
         and a scrollable grid (on the right) that will display log data.
         """
-        print(self.size[0])
         main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
 
         # Left Layout: LogExplorer (TreeView)

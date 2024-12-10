@@ -18,8 +18,8 @@ class DragDropScreen(Screen):
 
     def __init__(self, **kwargs):
         super(DragDropScreen, self).__init__(**kwargs)
+        self.filesList = []
         self.build_ui()
-
     def build_ui(self):
         mainLayout = BoxLayout(orientation='horizontal')
         mainLayout.add_widget(self.create_left_layout())
@@ -90,9 +90,9 @@ class DragDropScreen(Screen):
             self.show_error_popup("Fichier invalide.")
 
     def update_ui_and_navigate(self):
-        displayArrayScreen = self.manager.get_screen('display_array')
-        displayArrayScreen.log_explorer.update_directory(self.path)
-        self.manager.current = 'display_array'
+        displayScreen = self.manager.get_screen('display')
+        displayScreen.logExplorer.update_directory(self.path)
+        self.manager.current = 'display'
 
     def show_error_popup(self, message):
         popup = Popup(

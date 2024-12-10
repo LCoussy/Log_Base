@@ -4,10 +4,10 @@ import batchOpen as bo
 def validate_directory(path):
     """
     Valide si le chemin est un dossier valide.
-    
+
     Args:
         path (str): Chemin à valider.
-    
+
     Returns:
         bool: True si le chemin est un dossier valide, sinon False.
     """
@@ -16,7 +16,7 @@ def validate_directory(path):
 def process_directory(path):
     """
     Traite le dossier sélectionné en appelant la fonction batchOpen.
-    
+
     Args:
         path (str): Chemin du dossier à traiter.
     """
