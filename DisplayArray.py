@@ -67,7 +67,7 @@ class DisplayArray(Screen):
                 halign='left', 
                 valign='top', 
                 width=Window.width * 0.9,
-                padding=(Window.width * 0.1, 0), 
+                padding=(Window.width * 0.05, 0), 
             )
             content_label.bind(texture_size=content_label.setter('size')) 
 
