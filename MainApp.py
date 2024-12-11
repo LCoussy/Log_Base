@@ -5,6 +5,7 @@ from kivy.uix.button import Button
 
 from DragAndDrop import DragDropScreen
 from Display import Display
+from HandleSwitch import HandleSwitch
 
 from kivy.uix.button import Button
 
@@ -24,18 +25,12 @@ class MainApp(App):
         display_lost_screen = Display(name='displayLost', type='L', fileOrDirectoryPath=dragDropScreen.path)
         sm.add_widget(display_lost_screen)
 
-        # Créer un bouton pour chaque écran
-        display_block_screen.add_widget(Button(
-            text="Voir les Lost",
-            size_hint=(1, 0.1),
-            on_press=self.go_to_lost_page
-        ))
+        # Add separate HandleSwitch instances to each screen
+        handle_switch_block = HandleSwitch(sm,'displayLost')
+        display_block_screen.add_widget(handle_switch_block)
 
-        display_lost_screen.add_widget(Button(
-            text="Voir les Block",
-            size_hint=(1, 0.1),
-            on_press=self.go_to_block_page
-        ))
+        handle_switch_lost = HandleSwitch(sm,'displayBlock')
+        display_lost_screen.add_widget(handle_switch_lost)
 
         return sm
 

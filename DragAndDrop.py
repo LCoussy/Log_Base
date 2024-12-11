@@ -90,8 +90,10 @@ class DragDropScreen(Screen):
             self.show_error_popup("Fichier invalide.")
 
     def update_ui_and_navigate(self):
-        displayScreen = self.manager.get_screen('displayBlock')
-        displayScreen.logExplorer.update_directory(self.path)
+        blockScreen = self.manager.get_screen('displayBlock')
+        lostScreen = self.manager.get_screen('displayLost')
+        blockScreen.logExplorer.update_directory(self.path)
+        lostScreen.logExplorer.update_directory(self.path)
         self.manager.current = 'displayBlock'
 
     def show_error_popup(self, message):
