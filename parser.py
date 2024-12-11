@@ -102,7 +102,6 @@ def parse_log(file_path):
                         parsed_data = parse_request(block_content, "BLOCKED")
                     else:
                         parsed_data = None
-
                     if parsed_data:
                         logs.append(parsed_data)
 

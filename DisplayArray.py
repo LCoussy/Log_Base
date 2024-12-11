@@ -29,7 +29,7 @@ class DisplayArray(Screen):
 
         # Titre
         title = Label(
-            text="Tableaux des logs",
+            text="Tableaux des logs : requetes " + self.myType,
             size_hint=(0.8, 1),
             font_size='20sp',
             halign='center',

@@ -18,11 +18,11 @@ class MainApp(App):
         sm.add_widget(dragDropScreen)
 
         # Display Block screen
-        display_block_screen = Display(name='displayBlock', type='B', fileOrDirectoryPath=dragDropScreen.path)
+        display_block_screen = Display(name='displayBlock', type='bloquees', fileOrDirectoryPath=dragDropScreen.path)
         sm.add_widget(display_block_screen)
 
         # Display Lost screen
-        display_lost_screen = Display(name='displayLost', type='L', fileOrDirectoryPath=dragDropScreen.path)
+        display_lost_screen = Display(name='displayLost', type='perdues', fileOrDirectoryPath=dragDropScreen.path)
         sm.add_widget(display_lost_screen)
 
         # Add separate HandleSwitch instances to each screen
