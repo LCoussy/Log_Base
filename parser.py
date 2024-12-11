@@ -3,6 +3,25 @@ import json
 from datetime import datetime
 import pandas as pd
 import data_handler as dh
+def extract_first_line(text):
+    return text.splitlines()[0] if text.splitlines() else ""
+
+def check_request_status(content):
+    log_line = extract_first_line(content)
+
+    # Regex pour capturer les dates au format JJ/MM/AA HH:MM:SS
+    date_pattern = r"\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}"
+
+    # Cherche toutes les dates dans la ligne
+    dates = re.findall(date_pattern, log_line)
+
+    # Vérifie le nombre de dates trouvées
+    if len(dates) == 3:
+        return "BLOCKED"
+    elif len(dates) == 2:
+        return "LOST"
+    else:
+        return "UNKNOWN"
 
 def parse_request(content, request_type):
     """
@@ -24,7 +43,6 @@ def parse_request(content, request_type):
             - "table": Name of the table involved (str) or None.
             - "utilisateur": User name associated with the request or None.
     """
-
     # Match pour la date et l'heure (deuxième occurrence)
     blocking_date_match = re.search(r'\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\s+\w+\s+(\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2})', content)
     if blocking_date_match:
@@ -98,10 +116,7 @@ def parse_log(file_path):
                     block_content = "\n".join(current_block)
 
                     # Vérifie si le bloc est une requête bloquée ou perdue
-                    if "BLOQUE" in block_content:
-                        parsed_data = parse_request(block_content, "BLOCKED")
-                    else:
-                        parsed_data = None
+                    parsed_data = parse_request(block_content, check_request_status(block_content))
                     if parsed_data:
                         logs.append(parsed_data)
 
@@ -111,9 +126,8 @@ def parse_log(file_path):
 
         if current_block:
             block_content = "\n".join(current_block)
-            if "BLOQUE" in block_content:
-                parsed_data = parse_request(block_content, "BLOCKED")
-                if parsed_data:
-                    logs.append(parsed_data)
+            parsed_data = parse_request(block_content, check_request_status(block_content))
+            if parsed_data:
+                logs.append(parsed_data)
 
     return logs
