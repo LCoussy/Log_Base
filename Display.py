@@ -5,6 +5,8 @@ from kivy.uix.screenmanager import Screen
 from DisplayData import DisplayData
 from batchOpen import batchOpen
 from DisplayLogTree import LogExplorer
+import pandas as pd
+
 
 class Display(Screen):
     """
@@ -51,4 +53,12 @@ class Display(Screen):
             selected_files (list of str): List of selected file paths.
         """
         print("Selected files:", selected_files)
-        self.displayData.displayArray.updateTable(selected_files)
+        data = self.displayData.displayArray.updateTable(selected_files)
+        # Example of updating the graph with new data
+        # data = pd.DataFrame({
+        #     'x': [0, 1, 2, 3, 4],
+        #     'y': [1, 2, 8, 9, 4],
+        #     'table': ['table1', 'table2', 'table1', 'table3', 'table2']
+        # })
+        print(data)
+        self.displayData.displayStat.updateGraph(data)
