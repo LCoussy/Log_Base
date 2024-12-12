@@ -37,9 +37,23 @@ class GraphDailyBlock(BoxLayout):
         if 'date' in data.columns:
             # Convertir la colonne 'date' en datetime pour faciliter le traitement
             data['date'] = pd.to_datetime(data['date'])
+
+            print ("////////////////////////")
+            print(data['date'])
             
             # Grouper les données par jour et compter les occurrences
             daily_counts = data.groupby(data['date'].dt.date).size()
+
+            print("----------------------")
+            print(daily_counts)
+
+            # Remplacer les index par le jour de la semaine
+            daily_counts.index = [
+                pd.Timestamp(date).strftime('%A') for date in daily_counts.index
+            ]
+
+            print("******************************")
+            print(daily_counts)
 
             # Tracer le graphique des blocages par jour
             daily_counts.plot(kind='bar', ax=self.ax)
