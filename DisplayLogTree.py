@@ -13,7 +13,7 @@ class LogExplorer(BoxLayout):
 
     log_directory = StringProperty()
     selected_files = ListProperty()
-    on_files_selected = ObjectProperty(None)  # Callback function triggered when files are selected
+    on_files_selected = ObjectProperty(None)  # Callback function triggered when     files are selected
 
     # def __init__(self, log_directory, display_array, **kwargs):
     def __init__(self, log_directory, on_file_selected=None, **kwargs):
