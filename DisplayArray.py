@@ -113,28 +113,6 @@ class DisplayArray(Screen):
 
         self.add_widget(main_layout)
 
-    def remove_duplicates(self, df):
-        """
-        Remove duplicate entries based on 'id' and keep only the most recent entry for each 'id' 
-        (based on the 'date' column).
-        
-        Args:
-            df (DataFrame): The DataFrame containing the logs.
-        
-        Returns:
-            DataFrame: A DataFrame with duplicates removed, keeping the most recent entry for each 'id'.
-        """
-        # Ensure 'date' is a datetime object for comparison
-        df['date'] = pd.to_datetime(df['date'], errors='coerce')
-
-        # Sort the DataFrame by 'id' and 'date' in descending order (most recent first)
-        df_sorted = df.sort_values(by=['id', 'date'], ascending=[True, False])
-
-        # Drop duplicates, keeping the first (most recent) occurrence of each 'id'
-        df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
-
-        # Return the cleaned DataFrame
-        return df_unique
 
     def updateTable(self, selected_files):
         """
