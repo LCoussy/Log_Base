@@ -52,6 +52,13 @@ class GraphDailyBlock(BoxLayout):
                 pd.Timestamp(date).strftime('%A') for date in daily_counts.index
             ]
 
+             # Créer un index fixe avec les jours de la semaine dans l'ordre
+            days_of_week = [
+                'Monday', 'Tuesday', 'Wednesday', 'Thursday', 
+                'Friday', 'Saturday', 'Sunday'
+            ]
+            daily_counts = daily_counts.reindex(days_of_week, fill_value=0)
+
             print("******************************")
             print(daily_counts)
 
