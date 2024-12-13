@@ -20,9 +20,6 @@ import data_handler as dh
 # from DisplayLogs import LogExplorer
 
 
-
-
-
 class DisplayArray(Screen):
     """
     Screen that displays a grid of logs and includes a log explorer.
@@ -42,55 +39,26 @@ class DisplayArray(Screen):
 
         super(DisplayArray, self).__init__(**kwargs)
         self.build_ui()
-
-    def show_file_content(self, file_path):
+    def show_segment(self, logs, segment_id):
         """
-        Display the content of a log file in a popup.
+        Display the raw content of a log segment in a popup.
 
         Args:
-            file_path (str): Path of the file to be displayed.
+            logs (list): List of logs parsed from files.
+            segment_id (str): The unique ID of the segment to display.
         """
         from kivy.uix.popup import Popup
-        from kivy.uix.scrollview import ScrollView
         from kivy.uix.label import Label
-        from kivy.uix.boxlayout import BoxLayout
-        import os
 
-        try:
-            with open(file_path, 'r', encoding='ISO-8859-1') as f:
-                file_content = f.read()
+        segment_content = parser.get_segment_by_id(logs, segment_id)
 
-            scroll_view = ScrollView(size_hint=(1, 1))
-
-            content_label = Label(
-                text=file_content,
-                size_hint_y=None,
-                text_size=(Window.width * 0.9, None),  
-                halign='left', 
-                valign='top', 
-                width=Window.width * 0.9,
-                padding=(Window.width * 0.05, 0), 
-            )
-            content_label.bind(texture_size=content_label.setter('size')) 
-
-            scroll_view.add_widget(content_label) 
-
-            popup = Popup(
-                title=f"Contenu de {os.path.basename(file_path)}",
-                content=scroll_view,
-                size_hint=(0.9, 0.9),
-                auto_dismiss=True
-            )
-            popup.open()
-        except Exception as e:
-            error_popup = Popup(
-                title="Erreur",
-                content=Label(text=f"Erreur en ouvrant le fichier : {str(e)}"),
-                size_hint=(0.6, 0.4),
-                auto_dismiss=True
-            )
-            error_popup.open()
-
+        popup = Popup(
+            title=f"Segment {segment_id}",
+            content=Label(text=segment_content, halign='left', valign='top'),
+            size_hint=(0.9, 0.9),
+            auto_dismiss=True
+        )
+        popup.open()
 
             
     def build_ui(self):
@@ -175,41 +143,42 @@ class DisplayArray(Screen):
         Args:
             selected_files (list of str): List of file paths to be parsed and displayed.
         """
-        self.grid_layout.clear_widgets()
-        df_combined = pd.DataFrame()
-
-        file_paths = {}  # Dictionnaire pour relier les lignes aux fichiers log
+        self.grid_layout.clear_widgets()  # Clear existing widgets in the grid layout
+        logs = []
 
         for file in selected_files:
-            parsed_logs = parser.parse_log(file)
-            df = dh.create_table_blocked_request(parsed_logs)
-            if df is not None and not df.empty:
-                df_combined = pd.concat([df_combined, df], ignore_index=True)
-                for log in parsed_logs:
-                    file_paths[log["id"]] = file
-        
-        # Remove duplicates based on 'id' and keep the most recent log for each 'id'
-        df_combined = self.remove_duplicates(df_combined)  
+            file_logs = parser.parse_log(file)
+            logs.extend(file_logs)
 
-        # Supprimer les duplicatas supplémentaires
-        df_combined.drop_duplicates(inplace=True)
-        df_combined.reset_index(drop=True, inplace=True)
+        if logs:
+            df_combined = dh.create_table_blocked_request(logs)
 
-        if not df_combined.empty:
-            self.grid_layout.cols = df_combined.shape[1] + 1  # Ajouter une colonne pour les boutons
-            for header in df_combined.columns:
-                self.grid_layout.add_widget(Label(text=header, bold=True))
-            self.grid_layout.add_widget(Label(text="Log entiere", bold=True))  # En-tête pour les boutons
+            if df_combined is not None and not df_combined.empty:
+                # Remove duplicates and reset the index
+                df_combined = self.remove_duplicates(df_combined)
+                df_combined.drop_duplicates(inplace=True)
+                df_combined.reset_index(drop=True, inplace=True)
 
-            for index, row in df_combined.iterrows():
-                for cell in row:
-                    self.grid_layout.add_widget(Label(text=str(cell)))
+                # Exclude 'segment_id' and 'id' columns for display purposes
+                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
 
-                # Ajouter un bouton pour chaque ligne
-                file_path = file_paths.get(row["id"])
-                if file_path:
+                # Configure the number of columns in the grid layout
+                self.grid_layout.cols = len(df_combined2.columns) + 1  
+
+                # Add headers to the grid
+                for header in df_combined2.columns:
+                    self.grid_layout.add_widget(Label(text=header, bold=True))
+
+                # Add a header for the "segment" button column
+                self.grid_layout.add_widget(Label(text="segment", bold=True))  
+
+                # Add rows of data to the grid
+                for index, row in df_combined2.iterrows():
+                    for cell in row:
+                        self.grid_layout.add_widget(Label(text=str(cell)))  # Display data cells
+
+                    # Add the "Afficher" button for each row
+                    segment_id = df_combined.loc[index, "segment_id"]  # Retrieve segment_id from the original DataFrame
                     view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, fp=file_path: self.show_file_content(fp))
+                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(logs, sid))
                     self.grid_layout.add_widget(view_button)
-                else:
-                    self.grid_layout.add_widget(Label(text="N/A"))

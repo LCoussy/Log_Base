@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-
+import uuid
 def convert_seconds_to_dhm(seconds):
     """
     Converts a duration in seconds into a readable format: days, hours, minutes.
@@ -19,6 +19,43 @@ def convert_seconds_to_dhm(seconds):
     else:
         return f"{int(hours)} heures, {int(minutes)} minutes"
 
+def get_log_segment(file_path, request_id):
+    """
+    Retrieve the log segment corresponding to a specific request ID.
+
+    Args:
+        file_path (str): The path to the log file.
+        request_id (str): The request ID to search for.
+
+    Returns:
+        str: The segment of the log containing the specified request ID, or None if not found.
+    """
+    date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
+
+    with open(file_path, 'r', encoding='ISO-8859-1') as file:
+        lines = file.readlines()
+        current_block = []
+        matching_block = None
+
+        for line in lines:
+            if date_regex.match(line):
+                # Start a new block
+                if current_block:
+                    block_content = "\n".join(current_block)
+                    if f" {request_id} " in block_content:
+                        matching_block = block_content
+                        break
+                current_block = [line.strip()]
+            else:
+                current_block.append(line.strip())
+
+        # Check the last block
+        if not matching_block and current_block:
+            block_content = "\n".join(current_block)
+            if f" {request_id} " in block_content:
+                matching_block = block_content
+
+        return matching_block
 
 def parse_request(content, request_type):
     """
@@ -112,7 +149,6 @@ def update_logs_with_duration(logs):
     Returns:
         list: Updated logs with correct durations and duplicates removed.
     """
-    # Dictionnaire pour suivre la dernière apparition et la première date de blocage
     requests = {}
 
     for log in logs:
@@ -127,14 +163,11 @@ def update_logs_with_duration(logs):
                 "start_blocking": second_date
             }
         else:
-            # Si la requête est déjà suivie, on met à jour la dernière apparition
             if first_date > requests[request_id]["last_appearance"]:
                 requests[request_id]["last_appearance"] = first_date
-            # On garde toujours la première date de blocage (première fois qu'elle est bloquée)
             if not requests[request_id]["start_blocking"]:
                 requests[request_id]["start_blocking"] = second_date
 
-    # Calculer la durée pour chaque requête
     for log in logs:
         request_id = log["id"]
         if request_id in requests:
@@ -154,10 +187,12 @@ def parse_log(file_path):
         file_path (str): The path to the log file to be parsed.
 
     Returns:
-        list: A list of dictionaries, where each dictionary contains details of either a blocked or lost request.
+        list: A list of dictionaries, where each dictionary contains details of either a blocked or lost request,
+              including a unique ID and the raw segment content.
     """
     logs = []
     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
+    segment_id_counter = 0
 
     with open(file_path, 'r', encoding='ISO-8859-1') as file:
         lines = file.readlines()
@@ -169,6 +204,9 @@ def parse_log(file_path):
                     block_content = "\n".join(current_block)
                     if "BLOQUE" in block_content:
                         parsed_data = parse_request(block_content, "BLOCKED")
+                        segment_id = str(uuid.uuid4()) 
+                        parsed_data["segment_id"] = segment_id
+                        parsed_data["raw_content"] = block_content
                         logs.append(parsed_data)
                 current_block = [line.strip()]
             else:
@@ -178,9 +216,27 @@ def parse_log(file_path):
             block_content = "\n".join(current_block)
             if "BLOQUE" in block_content:
                 parsed_data = parse_request(block_content, "BLOCKED")
+                segment_id = str(uuid.uuid4()) 
+                parsed_data["segment_id"] = segment_id
+                parsed_data["raw_content"] = block_content
                 logs.append(parsed_data)
 
-    # Mettre à jour les logs avec les durées
     logs = update_logs_with_duration(logs)
 
-    return(logs)
+    return logs
+
+def get_segment_by_id(logs, segment_id):
+    """
+    Retrieve the raw content of a log segment by its unique ID.
+
+    Args:
+        logs (list): List of parsed logs containing segment IDs and raw content.
+        segment_id (str): The unique ID of the segment to retrieve.
+
+    Returns:
+        str: The raw content of the log segment or a message if not found.
+    """
+    for log in logs:
+        if log.get("segment_id") == segment_id:
+            return log.get("raw_content", f"Segment pour l'ID {segment_id} introuvable.")
+    return f"Segment pour l'ID {segment_id} introuvable."
