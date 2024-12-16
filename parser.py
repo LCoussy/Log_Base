@@ -17,7 +17,10 @@ def convert_seconds_to_dhm(seconds):
     if days >= 1:
         return f"{int(days)} jours, {int(hours)} heures, {int(minutes)} minutes"
     else:
-        return f"{int(hours)} heures, {int(minutes)} minutes"
+        if hours >= 1:
+            return f"{int(hours)} heures, {int(minutes)} minutes"
+        else:
+            return f"{int(minutes)} minutes"
 
 def get_log_segment(file_path, request_id):
     """
