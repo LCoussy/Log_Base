@@ -38,11 +38,23 @@ class GraphDailyBlock(BoxLayout):
             # Convertir la colonne 'date' en datetime pour faciliter le traitement
             data['date'] = pd.to_datetime(data['date'])
 
+            # Calcul du nombre de semaines entre la date la plus ancienne et la plus récente
+            min_date = data['date'].min()
+            max_date = data['date'].max()
+            num_weeks = round((max_date - min_date).days / 7)
+
+            print(f"Date la plus ancienne : {min_date}")
+            print(f"Date la plus récente : {max_date}")
+            print(f"Nombre de semaines entre les deux dates : {num_weeks:.2f}")
+
             print ("////////////////////////")
             print(data['date'])
             
             # Grouper les données par jour et compter les occurrences
             daily_counts = data.groupby(data['date'].dt.date).size()
+
+            # Diviser les nombres par le nombre de semaines
+            daily_counts /= num_weeks
 
             print("----------------------")
             print(daily_counts)
