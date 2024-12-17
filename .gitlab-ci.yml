@@ -3,8 +3,12 @@ stages:
 
 build:
   stage: build
+  before_script:
+    - echo "Vérification de Python et pip"
+    - python3 --version || sudo apt-get update && sudo apt-get install -y python3
+    - pip3 --version || sudo apt-get install -y python3-pip
   script:
-    - pip install -r requirements.txt -t ./dependencies
+    - pip3 install -r requirements.txt -t ./dependencies
     - zip -r dependencies.zip ./dependencies
   artifacts:
     paths:
