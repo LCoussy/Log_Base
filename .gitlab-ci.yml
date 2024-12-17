@@ -6,11 +6,7 @@ build:
   tags:
     - docker
   image: python:3.12  # Utilisation de l'image officielle Python
-  before_script:
-    - echo "Vérification de Python et pip"
-    - python --version
-    - pip --version
-    - apt-get update && apt-get install -y zip  # Installation de zip
+
   script:
     - pip install -r requirements.txt -t ./dependencies  # Installation des dépendances
     - zip -r dependencies.zip ./dependencies             # Création du fichier ZIP
