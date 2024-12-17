@@ -1,6 +1,7 @@
 # Display.py
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import ScreenManager
 from DisplayArray import DisplayArray
 from batchOpen import batchOpen
 from DisplayLogTree import LogExplorer
@@ -58,5 +59,8 @@ class Display(Screen):
         Args:
             selected_files (list of str): List of selected file paths.
         """
-        print("Selected files:", selected_files)
-        self.displayArray.update_table(selected_files)
+        # print("Selected files:", selected_files)
+        if self.myType == 'bloquees':
+            self.displayArray.update_table_blocked(selected_files)
+        elif self.myType == 'perdues':
+            self.displayArray.update_table_lost(selected_files)

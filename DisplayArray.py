@@ -14,11 +14,13 @@ import pandas as pd
 
 import parser
 import data_handler as dh
+import GetContentLog
 
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
-        self.df_combined = pd.DataFrame()  # Stocker les données pour réutilisation
+        self.df_combined_lost = pd.DataFrame()  # Stocker les données pour réutilisation
+        self.df_combined_blocked = pd.DataFrame()  # Stocker les données pour réutilisation
         self.myType = type
         self.build_ui()
 
@@ -50,22 +52,48 @@ class DisplayArray(Screen):
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
 
-    def update_table(self, selected_files):
+    def update_table_blocked(self, selected_files):
         self.grid_layout.clear_widgets()
-        self.df_combined = pd.DataFrame()
+        self.df_combined_blocked = pd.DataFrame()
 
         for file in selected_files:
-            df = dh.create_table_blocked_request(parser.parse_log(file))
-            if df is not None and not df.empty:
-                self.df_combined = pd.concat([self.df_combined, df], ignore_index=True)
 
-        self.df_combined.drop_duplicates(inplace=True)
-        self.df_combined.reset_index(drop=True, inplace=True)
+            # df = dh.create_table_blocked_request(parser.parse_log(file))
+            fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
+            df_blocked = dh.create_table_blocked_request(fileParsedFiltered.get('BLOCKED'))
+            if df_blocked is not None and not df_blocked.empty:
+                self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
-        if not self.df_combined.empty:
-            self.grid_layout.cols = self.df_combined.shape[1]
-            for header in self.df_combined.columns:
+        self.df_combined_blocked.drop_duplicates(inplace=True)
+        self.df_combined_blocked.reset_index(drop=True, inplace=True)
+
+        if not self.df_combined_blocked.empty:
+            self.grid_layout.cols = self.df_combined_blocked.shape[1]
+            for header in self.df_combined_blocked.columns:
                 self.grid_layout.add_widget(Label(text=header, bold=True))
-            for row in self.df_combined.values:
+            for row in self.df_combined_blocked.values:
+                for cell in row:
+                    self.grid_layout.add_widget(Label(text=str(cell)))
+
+    def update_table_lost(self, selected_files):
+        self.grid_layout.clear_widgets()
+        self.df_combined_lost = pd.DataFrame()
+
+        for file in selected_files:
+
+            # df = dh.create_table_blocked_request(parser.parse_log(file))
+            fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
+            df_lost = dh.create_table_lost_request(fileParsedFiltered.get('LOST'))
+            if df_lost is not None and not df_lost.empty:
+                self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
+
+        self.df_combined_lost.drop_duplicates(inplace=True)
+        self.df_combined_lost.reset_index(drop=True, inplace=True)
+
+        if not self.df_combined_lost.empty:
+            self.grid_layout.cols = self.df_combined_lost.shape[1]
+            for header in self.df_combined_lost.columns:
+                self.grid_layout.add_widget(Label(text=header, bold=True))
+            for row in self.df_combined_lost.values:
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))

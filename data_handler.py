@@ -1,5 +1,34 @@
 import pandas as pd
 
+def filter_request_datafile(data):
+    """
+    Filters the provided data based on the 'type' attribute.
+
+    This function takes a list of dictionaries and filters it based on the 'type' attribute.
+    If the 'type' attribute is 'blocked', the dictionary is added to the 'blocked' list.
+    If the 'type' attribute is 'lost', the dictionary is added to the 'lost' list.
+    If the 'type' attribute is neither 'blocked' nor 'lost', the dictionary is ignored.
+
+    Args:
+        data (list of dict): A list of dictionaries where each dictionary contains information
+                             about a request.
+
+    Returns:
+        dict: A dictionary containing two lists of dictionaries. The first list contains dictionaries
+              with a 'type' attribute equal to 'blocked', and the second list contains dictionaries
+              with a 'type' attribute equal to 'lost'.
+    """
+    blocked = []
+    lost = []
+    for entry in data:
+        if isinstance(entry, dict) and 'type' in entry:
+            if entry['type'] == 'BLOCKED':
+                blocked.append(entry)
+            elif entry['type'] == 'LOST':
+                lost.append(entry)
+    # print({'BLOCKED': blocked, 'LOST': lost})
+    return {'BLOCKED': blocked, 'LOST': lost}
+
 def create_table_blocked_request(data):
     """
     Creates a pandas DataFrame for blocked requests based on provided data.
@@ -28,6 +57,36 @@ def create_table_blocked_request(data):
         return None
 
     requiredColumns = ['date', 'table', 'utilisateur', 'id', 'adresse']
+    return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
+
+def create_table_lost_request(data):
+    """
+    Creates a pandas DataFrame for blocked requests based on provided data.
+
+    This function converts the provided data into a pandas DataFrame, removes any duplicate
+    rows, and resets the index. If the DataFrame is empty or does not contain a 'date' column,
+    it returns None. Otherwise, it returns a DataFrame with selected columns.
+
+    Args:
+        data (list of dict): A list of dictionaries where each dictionary contains information
+                             about a blocked request.
+
+    Returns:
+        pd.DataFrame or None: A DataFrame containing the 'date', 'table', 'utilisateur', 'id',
+                              and 'adresse' columns, or None if the DataFrame is empty or
+                              does not contain a 'date' column.
+    """
+    if not data:
+        return None
+
+    df = pd.DataFrame(data)
+    df.drop_duplicates(inplace=True)
+    df.reset_index(drop=True, inplace=True)
+
+    if df.empty or 'date' not in df.columns:
+        return None
+
+    requiredColumns = ['date', 'utilisateur', 'id', 'adresse']
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
 
 
