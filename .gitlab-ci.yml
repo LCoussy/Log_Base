@@ -1,6 +1,7 @@
 stages:
   - build
-
+tags:
+  - docker
 build:
   stage: build
   before_script:
