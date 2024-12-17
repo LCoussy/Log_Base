@@ -1,16 +1,18 @@
 stages:
   - build
-tags:
-  - docker
+
 build:
   stage: build
+  tags:
+    - docker
+  image: python:3.12  # Image officielle avec Python 3.12 et pip préinstallés
   before_script:
     - echo "Vérification de Python et pip"
-    - python3 --version || sudo apt-get update && sudo apt-get install -y python3
-    - pip3 --version || sudo apt-get install -y python3-pip
+    - python --version  # Vérifie la version de Python
+    - pip --version     # Vérifie que pip est disponible
   script:
-    - pip3 install -r requirements.txt -t ./dependencies
-    - zip -r dependencies.zip ./dependencies
+    - pip install -r requirements.txt -t ./dependencies  # Installation des dépendances
+    - zip -r dependencies.zip ./dependencies             # Création du ZIP
   artifacts:
     paths:
       - dependencies.zip
