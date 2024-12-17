@@ -64,12 +64,23 @@ class GraphDailyBlock(BoxLayout):
                 pd.Timestamp(date).strftime('%A') for date in daily_counts.index
             ]
 
-             # Créer un index fixe avec les jours de la semaine dans l'ordre
-            days_of_week = [
-                'Monday', 'Tuesday', 'Wednesday', 'Thursday', 
-                'Friday', 'Saturday', 'Sunday'
-            ]
-            daily_counts = daily_counts.reindex(days_of_week, fill_value=0)
+            translation = {
+                'Monday': 'Lundi',
+                'Tuesday': 'Mardi',
+                'Wednesday': 'Mercredi',
+                'Thursday': 'Jeudi',
+                'Friday': 'Vendredi',
+                'Saturday': 'Samedi',
+                'Sunday': 'Dimanche'
+            }
+
+            # Appliquer la traduction
+            daily_counts.index = [translation[day] for day in daily_counts.index]
+
+            # Étape 3: Créer un index fixe avec les jours de la semaine en français
+            days_of_week_fr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+
+            daily_counts = daily_counts.reindex(days_of_week_fr, fill_value=0)
 
             print("******************************")
             print(daily_counts)
