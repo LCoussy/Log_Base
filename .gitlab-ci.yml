@@ -17,7 +17,7 @@ build:
 
 
   script:
-    - poetry install --no-dev  # Installation des dépendances avec poetry
+    - poetry install --only main  # Installation des dépendances avec poetry
     - poetry export -f requirements.txt --output dependencies --without-hashes  # Export des dépendances vers requirements.txt
     - zip -r dependencies.zip dependencies  # Création du fichier ZIP
   artifacts:
