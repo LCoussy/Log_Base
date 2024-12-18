@@ -1,9 +1,9 @@
 import os
 from datetime import datetime
-
+import re
 class FilterFiles:
     """
-    FilterFiles is responsible for handling file processing tasks, such as 
+    FilterFiles is responsible for handling file processing tasks, such as
     organizing files into a hierarchical structure based on their modification times.
     """
 
@@ -11,14 +11,41 @@ class FilterFiles:
     def get_file_date(file_path):
         """
         Get the last modification date of a file.
-        
+
         Args:
             file_path (str): Path to the file.
-        
+
         Returns:
             datetime: The modification date of the file.
         """
         return datetime.fromtimestamp(os.path.getmtime(file_path))
+
+    def get_month(self, monthNumber):
+        """
+        Get the month name based on the month number.
+
+        Args:
+            monthNumber (int): The month number (1-12).
+
+        Returns:
+            str: The month name.
+        """
+        months = [
+            "Janvier",
+            "Février",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre",
+        ]
+        return months[monthNumber - 1]
+
 
     def organize_files_by_date(self, directory):
         """
@@ -33,26 +60,33 @@ class FilterFiles:
         if not os.path.exists(directory):
             return {}
 
+        # patternFilePath = re.compile(r'[^\\|/]+(?=\.[^.]+$)')
+
+        # pattern_filename = re.compile(r'[^\\|/]+(?=\d{2}-\d{2}-\d{2}\d{2}-\d{2}-\d{4})\.[^.]+$')
+        pattern_filename = re.compile(r"GCE_([_1]\d|2[0-3])-([0-5]\d)-([0-5]\d)_\d{2}_(0[1-9]|1\d|2[0-8]|29(?=-\d\d-(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|30(?!-02)|31(?=-0[13578]|-1[02]))-(0[1-9]|1[0-2])-([12]\d{3})+")
         hierarchy = {}
 
         # Walk through the directory and process files
-        for root, _, files in os.walk(directory):
+        for root, dir, files in os.walk(directory):
             for file in sorted(files, key=lambda f: os.path.getmtime(os.path.join(root, f)), reverse=True):
                 file_path = os.path.join(root, file)
-                file_date = self.get_file_date(file_path)
+                pat = re.search(pattern_filename, file_path)
+                print(pat.group(0), pat.group(1), pat.group(2), pat.group(3), pat.group(4), pat.group(5), pat.group(6))
+                # file_date = self.get_file_date(file_path)
 
                 # Extract hierarchy keys
                 year, month, day, hour = (
-                    str(file_date.year),
-                    file_date.strftime('%B'),
-                    str(file_date.day),
-                    f"{file_date.hour}:00"
+                    pat.group(6),
+                    self.get_month(int(pat.group(5))),
+                    pat.group(4),
+                    f"{pat.group(1)}:00"
                 )
 
                 # Build nested structure
                 hierarchy.setdefault(year, {}).setdefault(month, {}).setdefault(day, {}).setdefault(hour, []).append({
                     "file_path": file_path,
-                    "formatted_time": file_date.strftime('%H:%M')
+                    "formatted_time": f"{pat.group(1)}:{pat.group(2)}",
+                    # "formatted_time": file_date.strftime('%H:%M')
                 })
 
         return hierarchy
