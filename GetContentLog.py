@@ -104,12 +104,17 @@ def GetContentLog(filepath):
   return data
 
 def parse(filepath):
-  patternFilePath = re.compile(r'(?:[^/]+)(?=\.)')
+  # print(filepath)
+  # patternFilePath = re.compile(r'(?:[^/]+)(?=\.)')
+  patternFilePath = re.compile(r'[^\\|/]+(?=\.[^.]+$)')
   match = patternFilePath.search(filepath)
   # print(match.group(0))
   if match:
     file_name = match.group(0)
-    cache_file_path = f'__logcache__/{file_name}.pkl'
+    if '/' in filepath:
+      cache_file_path = f'__logcache__/{file_name}.pkl'
+    elif '\\' in filepath:
+      cache_file_path = f'__logcache__\\{file_name}.pkl'
     if not os.path.exists(cache_file_path):
         if not os.path.exists('__logcache__'):
           os.makedirs('__logcache__')

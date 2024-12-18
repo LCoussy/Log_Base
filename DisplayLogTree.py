@@ -4,6 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.treeview import TreeView, TreeViewLabel
 from kivy.uix.scrollview import ScrollView
 from FilterFiles import FilterFiles  # Import the new class
+import pprint
 
 class LogExplorer(BoxLayout):
     """
@@ -90,6 +91,9 @@ class LogExplorer(BoxLayout):
 
         # Recursively add nodes to the tree
         self.add_nodes(file_hierarchy, parent_node=root_node)
+        # for key, value in file_hierarchy.items():
+        #     print(f"{key}: {value}\n")
+        # pprint.pprint(file_hierarchy)
 
     def add_nodes(self, hierarchy, parent_node):
         """
@@ -100,6 +104,8 @@ class LogExplorer(BoxLayout):
             parent_node (TreeViewNode): The parent node to add children to.
         """
         for key, value in hierarchy.items():
+            # print("key: ", key)
+            # print("value: ", value)
             node = self.treeview.add_node(TreeViewLabel(text=key, size_hint_y=None, height=25), parent=parent_node)
             node.base_even_color = node.even_color
             node.base_odd_color = node.odd_color
