@@ -5,7 +5,7 @@ from kivy.uix.button import Button
 
 from DragAndDrop import DragDropScreen
 from Display import Display
-# from HandleSwitch import HandleSwitch
+from DisplayStat import DisplayStat
 
 from kivy.uix.button import Button
 

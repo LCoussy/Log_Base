@@ -13,7 +13,8 @@ kivymd = "1.2.0"
 matplotlib = "3.9.2"
 numpy = "<2.0"
 pickle-mixin = "^1.0.2"
-
+kivy-garden = "^0.1.5"
+kivy-matplotlib-widget = "^0.13.0"
 
 [build-system]
 requires = ["poetry-core"]

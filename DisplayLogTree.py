@@ -190,6 +190,7 @@ class LogExplorer(BoxLayout):
             instance (TreeViewLabel): The clicked node instance.
             touch (Touch): Touch event information.
         """
+        self.selected_files = []
         if instance.collide_point(*touch.pos) and hasattr(instance, 'file_path'):
             actual_node = self.treeview.get_selected_node()
             if not actual_node.is_leaf:
