@@ -22,10 +22,9 @@ import GetContentLog
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
-        self.df_combined_lost = pd.DataFrame()  # Stocker les données pour réutilisation
-        self.df_combined_blocked = pd.DataFrame()  # Stocker les données pour réutilisation
+        self.df_combined_lost = pd.DataFrame()  # Stock datas
+        self.df_combined_blocked = pd.DataFrame()  # Stock datas
         self.myType = type
-        # self.handleSwitch = handleSwitch
         self.sort_ascending = True
         self.current_df = None
         self.build_ui()
@@ -136,19 +135,9 @@ class DisplayArray(Screen):
         """
         main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
 
-        # Left Layout: LogExplorer (TreeView)
-        # left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
         up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=0, spacing=0)
         down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.9), padding=0, spacing=0)
 
-        # right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
-
-        # Create an instance of LogExplorer
-        # self.log_explorer = LogExplorer(
-        #     log_directory="",
-        #     display_array=self
-        # )
-        # left_layout.add_widget(self.log_explorer)
 
         title = Label(
             text="Tableaux des logs : requetes " + self.myType,
@@ -200,10 +189,7 @@ class DisplayArray(Screen):
 
         for file in selected_files:
 
-            # df = dh.create_table_blocked_request(parser.parse_log(file))
-            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
             df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
-            # print("content Blocked getting")
             if df_blocked is not None and not df_blocked.empty:
                 self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
@@ -225,10 +211,7 @@ class DisplayArray(Screen):
 
         for file in selected_files:
 
-            # df = dh.create_table_blocked_request(parser.parse_log(file))
-            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
             df_lost = dh.create_table_lost_request(GetContentLog.parse(file).get('LOST'))
-            # print("content lost getting")
             if df_lost is not None and not df_lost.empty:
                 self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
@@ -242,27 +225,4 @@ class DisplayArray(Screen):
             for row in self.df_combined_lost.values:
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))
-        # print("returning lost")
         return self.df_combined_lost
-
-
-    # def update_table(self, selected_files):
-    #     self.grid_layout.clear_widgets()
-    #     self.df_combined = pd.DataFrame()
-
-    #     for file in selected_files:
-    #         df = dh.create_table_blocked_request(parser.parse_log(file))
-    #         if df is not None and not df.empty:
-    #             self.df_combined = pd.concat([self.df_combined, df], ignore_index=True)
-
-    #     self.df_combined.drop_duplicates(inplace=True)
-    #     self.df_combined.reset_index(drop=True, inplace=True)
-
-    #     if not self.df_combined.empty:
-    #         self.grid_layout.cols = self.df_combined.shape[1]
-    #         for header in self.df_combined.columns:
-    #             self.grid_layout.add_widget(Label(text=header, bold=True))
-    #         for row in self.df_combined.values:
-    #             for cell in row:
-    #                 self.grid_layout.add_widget(Label(text=str(cell)))
-    #     return self.df_combined

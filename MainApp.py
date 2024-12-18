@@ -23,16 +23,3 @@ class MainApp(App):
 
 
         return sm
-
-
-    # def go_to_lost_page(self, instance):
-    #     """
-    #     Navigue vers la page displayLost lorsqu'on appuie sur le bouton global.
-    #     """
-    #     self.root.current = 'displayLost'
-
-    # def go_to_block_page(self, instance):
-    #     """
-    #     Navigue vers la page displayBlock lorsqu'on appuie sur le bouton global.
-    #     """
-    #     self.root.current = 'displayBlock'

@@ -13,7 +13,6 @@ class GraphScreen(Screen):
     def __init__(self, **kwargs):
         super(GraphScreen, self).__init__(**kwargs)
         self.build_ui()
-        # self.create_graphs()
 
     def build_ui(self):
         main_layout = BoxLayout(orientation='horizontal', padding=10, spacing=10)
@@ -78,11 +77,3 @@ class GraphScreen(Screen):
 
     def go_to_main(self, instance):
         self.manager.current = 'drag_drop'
-
-        # self.update_graph_images()
-    """
-    def update_graph_images(self):
-        for i, graph_image in enumerate(self.image_widgets):
-            graph_image.source = f"graph.png"
-            graph_image.reload()
-    """

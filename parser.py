@@ -81,7 +81,7 @@ def parse_request(content, request_type):
             - "utilisateur": User name associated with the request or None.
     """
 
-    # Match pour la première date et heure
+    # Match for the first date and time
     first_date_match = re.search(r'(\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
     first_date = None
     if first_date_match:
@@ -90,7 +90,7 @@ def parse_request(content, request_type):
         except ValueError:
             pass
 
-    # Match pour la date 2 (BLOQUE)
+    # Match for the second date (BLOQUE)
     second_date_match = re.search(r'BLOQUE (\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
     second_date = None
     if second_date_match:
@@ -106,30 +106,30 @@ def parse_request(content, request_type):
             except ValueError:
                 pass
 
-    # Extraction de l'état (ACTIVE ou INACTIVE)
+    # Extract the state (ACTIVE ou INACTIVE)
     state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
     state = state_match.group(1) if state_match else None
 
-    # Extraction de l'ID de la requête
+    # Extract the request's ID
     request_id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
     request_id = request_id_match.group(1) if request_id_match else None
 
-    # Extraction de l'adresse SQL
+    # Extract the SQL adress
     sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
     sql_address = sql_address_match.group(2) if sql_address_match else None
 
     table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
     table_name = table_match.group(1) if table_match else None
 
-    # Extraction du nom de l'utilisateur
+    # Extract the user's name
     user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
     user_name = user_match.group(1) if user_match else None
 
-    # Extraction du poste de l'utilisateur
+    # Extract the user's workstation
     poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
     poste = poste_match.group(1) if poste_match else None
 
-    # Formatage de la date en ISO si elle existe
+    # Format the date in ISO format if it exists
     formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
     formatted_second_date = second_date.strftime("%Y-%m-%d %H:%M:%S") if second_date else None
     lostRequest = {
@@ -179,10 +179,8 @@ def parse_user(content):
             - "poste": User's machine name associated with the request or None.
     """
 
-    # Match pour la première date et heure
+    # Match for the first date and time
     date_duration_match = re.search(r'((\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2}))\s+(\d{2}:\d{2}:\d{2})', content)
-    # print(date_duration_match)
-    # first_date_match = re.search(r'(\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) (\d{2}:\d{2}:\d{2})', content)
     first_date = None
     if date_duration_match.group(1):
         try:
@@ -190,58 +188,23 @@ def parse_user(content):
         except ValueError:
             pass
 
-    # Match pour la date 2 (BLOQUE)
-    # duration_match = re.findall(r'(\d{2}:\d{2}:\d{2})', content)
     duration = None
-    # if date_duration_match.group(4):
-    #     try:
-    #         duration = datetime.strptime(date_duration_match.group(4), "%H:%M:%S")
-    #         if duration.hour >= 24:
-    #             extra_days = duration.hour // 24
-    #             duration = duration.replace(hour=duration.hour % 24)
-    #             duration = duration.replace(day=duration.day + extra_days)
-    #     except ValueError:
-    #         pass
-    # # Extraction de l'état (ACTIVE ou INACTIVE)
-    # state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
-    # state = state_match.group(1) if state_match else None
 
-    # # Extraction de l'ID de la requête
-    # request_id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
-    # request_id = request_id_match.group(1) if request_id_match else None
-
-    # # Extraction de l'adresse SQL
-    # sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
-    # sql_address = sql_address_match.group(2) if sql_address_match else None
-
-    # # Extraction du nom de la table
-    # table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
-    # table_name = table_match.group(1) if table_match else None
-
-    # Extraction du nom de l'utilisateur
+    # Extract the user's name
     user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
     pattern = re.compile(r'^(?:.*\n){2}(\S+)', re.MULTILINE)
     matches = pattern.findall(content)
     user_name = matches[0] if matches else None
 
-    # # Extraction du poste de l'utilisateur
-    # poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
-    # poste = poste_match.group(1) if poste_match else None
 
-    # Formatage de la date en ISO si elle existe
+    # Format the date in ISO format if it exists
     formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
-    # formatted_duration = duration.strftime("%H:%M:%S") if duration else None
 
     return {
         "type": "USER",
         "date": formatted_first_date,
         "DuréeConnection": date_duration_match.group(4),
-        # "id": request_id,
-        # "state": state,
-        # "adresse": sql_address,
-        # "table": table_name,
-        "utilisateur": user_name,
-        # "poste": poste
+        "utilisateur": user_name
     }
 
 def update_logs_with_duration(logs):

@@ -1,14 +1,11 @@
-
-
-
 def getOnlyLost(data):
-    return data.get("LOST", None)  # Retourne les données associées à la clé "LOST"
+    return data.get("LOST", None)  # Return datas with "LOST" type
 
 def getOnlyBlocked(data):
-    return data.get("BLOCKED", None)  # Retourne les données associées à la clé "BLOCKED"
+    return data.get("BLOCKED", None)  # Return datas with "BLOCKED" type 
 
 def getOnlyUser(data):
-    return data.get("USER", None)  # Retourne les données associées à la clé "USER"
+    return data.get("USER", None)  # Return datas with "USER" type 
 
 def getByUser(data, user):
     return data[data['utilisateur'] == user]

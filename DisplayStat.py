@@ -13,7 +13,7 @@ class DisplayStat(Screen):
         self.build_ui()
 
     def build_ui(self):
-        # Créer le layout principal
+        # Creat the main layout
         main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
 
         # Créer un GridLayout pour contenir les graphiques

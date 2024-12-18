@@ -14,15 +14,15 @@ class GraphDailyBlock(BoxLayout):
         self.build_ui()
 
     def build_ui(self):
-        # Ajouter un graphique Matplotlib
+        # Add a Matplotlib graph
         self.fig, self.ax = plt.subplots(1, 1)
         self.ax.set_title('Blocages par jours')
 
-        # Créer le widget MatplotFigureSubplot
+        # Create the MatplotFigureSubplot widget
         self.figure_widget = MatplotFigureSubplot()
         self.figure_widget.figure = self.fig
 
-        # Ajouter le widget au layout principal
+        # Add the widget to the main layout
         self.add_widget(self.figure_widget)
 
     def updateGraph(self, data):
@@ -35,13 +35,13 @@ class GraphDailyBlock(BoxLayout):
 
         self.ax.clear()
         if 'date' in data.columns:
-            # Convertir la colonne 'date' en datetime pour faciliter le traitement
+            # Convert the 'date' column to datetime to facilitate processing
             data['date'] = pd.to_datetime(data['date'])
             
-            # Grouper les données par jour et compter les occurrences
+            # Group the data by day and count the occurrences
             daily_counts = data.groupby(data['date'].dt.date).size()
 
-            # Tracer le graphique des blocages par jour
+            # Plot the graph of blocks by day
             daily_counts.plot(kind='bar', ax=self.ax)
             self.ax.set_title('Blocages par jour')
             self.ax.set_xlabel('Date')
