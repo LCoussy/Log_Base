@@ -7,10 +7,18 @@ build:
     - docker
   image: python:3.12  # Utilisation de l'image officielle Python
   before_script:
-    - apt-get update && apt-get install -y zip  # Installation de zip
+    - apt-get update && apt-get install -y zip python3-pip # Installation de zip
+    - python3 -m pip install --user pipx
+    - python3 -m pipx ensurepath
+    - python3 -m pip install --user --upgrade pipx
+    - sudo pipx ensurepath --global # optional to allow pipx actions with --global argument
+    - pipx install poetry  # Installation de poetry
+    - pipx inject poetry poetry-plugin-export
+
   script:
-    - pip install -r requirements.txt -t ./dependencies  # Installation des dépendances
-    - zip -r dependencies.zip ./dependencies             # Création du fichier ZIP
+    - poetry install --no-dev  # Installation des dépendances avec poetry
+    - poetry export -f requirements.txt --output dependencies --without-hashes  # Export des dépendances vers requirements.txt
+    - zip -r dependencies.zip dependencies  # Création du fichier ZIP
   artifacts:
     paths:
       - dependencies.zip
