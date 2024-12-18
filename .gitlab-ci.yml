@@ -7,7 +7,7 @@ build:
     - docker
   image: python:3.12  # Utilisation de l'image officielle Python
   before_script:
-    - apt-get update && apt-get install -y zip python3-pip # Installation de zip
+    - apt-get update && apt-get install -y zip python3 pip # Installation de zip
     - pip install --upgrade pip
     - python3 -m pip install --user pipx
     - python3 -m pip install --user --upgrade pipx
@@ -18,7 +18,7 @@ build:
 
 
   script:
-    # - poetry lock --no-update
+    - poetry lock --no-update
     - poetry install --only main # Installation des dépendances avec poetry
     - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes  # Export des dépendances vers requirements.txt
     - pip install -r requirements-poetry.txt --target ./dependencies-logbase --upgrade
