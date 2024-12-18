@@ -1,13 +1,13 @@
-# GraphDailyBlock.py
+# GraphAverageDailyBlock.py
 import matplotlib.pyplot as plt
 from kivy.uix.boxlayout import BoxLayout
 from kivy_matplotlib_widget.uix.graph_subplot_widget import MatplotFigureSubplot
 import pandas as pd
 
 
-class GraphDailyBlock(BoxLayout):
+class GraphAverageDailyBlock(BoxLayout):
     def __init__(self, **kwargs):
-        super(GraphDailyBlock, self).__init__(**kwargs)
+        super(GraphAverageDailyBlock, self).__init__(**kwargs)
         self.orientation = 'vertical'
         self.padding = 0
         self.spacing = 0

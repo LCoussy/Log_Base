@@ -5,7 +5,7 @@ from kivy.uix.screenmanager import Screen
 import matplotlib.pyplot as plt
 from kivy_matplotlib_widget.uix.graph_subplot_widget import MatplotFigureSubplot
 from GraphBlockPerTables import GraphBlockPerTables
-from GraphDailyBlock import GraphDailyBlock
+from GraphAverageDailyBlock import GraphAverageDailyBlock
 
 class DisplayStat(Screen):
     def __init__(self, **kwargs):
@@ -32,7 +32,7 @@ class DisplayStat(Screen):
         # grid_layout.add_widget(self.figure_widget)
 
         # Ajouter une instance de GraphBlockPerTables
-        self.graph_block_per_tables = GraphDailyBlock()
+        self.graph_block_per_tables = GraphAverageDailyBlock()
         # grid_layout.add_widget(self.graph_block_per_tables)
 
         # Ajouter le GridLayout à un ScrollView
