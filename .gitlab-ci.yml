@@ -9,9 +9,8 @@ build:
   before_script:
     - apt-get update && apt-get install -y zip python3-pip # Installation de zip
     - python3 -m pip install --user pipx
-    - python3 -m pipx ensurepath
     - python3 -m pip install --user --upgrade pipx
-    - sudo pipx ensurepath --global # optional to allow pipx actions with --global argument
+    - python3 -m pipx ensurepath --global # optional to allow pipx actions with --global argument
     - pipx install poetry  # Installation de poetry
     - pipx inject poetry poetry-plugin-export
 
