@@ -32,10 +32,10 @@ class GraphBlockPerTables(BoxLayout):
         """
         self.ax.clear()
         if 'table' in data.columns:
-            print(data['table'])
+            # print(data['table'])
             table_counts = data['table'].value_counts()
             table_counts.plot(kind='bar', ax=self.ax)
-            print(table_counts)
+            # print(table_counts)
             self.ax.set_title('Blocages par table')
             self.ax.set_xlabel('Tables')
             self.ax.set_ylabel('Nombre de blocages')

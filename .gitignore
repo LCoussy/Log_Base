@@ -292,3 +292,4 @@ pyrightconfig.json
 
 requirements.txt
 log/
+__logcache__/

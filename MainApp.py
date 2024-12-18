@@ -1,30 +1,17 @@
-# MainApp.py
-
-import os
+#MainApp.py
 from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager, Screen
-# from pandas.core.window import Window
+from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.button import Button
 
-from DragAndDrop import DragDropScreen  # Assuming this is another screen
+from DragAndDrop import DragDropScreen
 from Display import Display
 from DisplayStat import DisplayStat
 
+from kivy.uix.button import Button
 
 class MainApp(App):
-    """
-    MainApp is the primary class for the Kivy application. It manages the app's screens using ScreenManager.
-    It includes a drag-and-drop screen for file selection and a display array screen for data visualization.
-    """
-
     def build(self):
-        """
-        Build the application by initializing the ScreenManager and adding screens for drag-and-drop functionality
-        and data display. This is the entry point for starting the app.
-
-        Returns:
-            ScreenManager: The manager handling navigation between app screens.
-        """
-
+        # Display Block screen
         sm = ScreenManager()
         dragDropScreen = DragDropScreen(name='drag_drop')
         sm.add_widget(dragDropScreen)
@@ -34,8 +21,18 @@ class MainApp(App):
         sm.add_widget(display_screen)
 
 
-        # sm.add_widget(DisplayStat(name="display_stat"))
 
         return sm
 
 
+    # def go_to_lost_page(self, instance):
+    #     """
+    #     Navigue vers la page displayLost lorsqu'on appuie sur le bouton global.
+    #     """
+    #     self.root.current = 'displayLost'
+
+    # def go_to_block_page(self, instance):
+    #     """
+    #     Navigue vers la page displayBlock lorsqu'on appuie sur le bouton global.
+    #     """
+    #     self.root.current = 'displayBlock'
