@@ -77,38 +77,6 @@ class LogExplorer(BoxLayout):
         self.log_directory = new_directory
         self.populate_treeview()
 
-    def create_file_hierarchy(self, log_directory):
-        """
-        Create a hierarchical structure of log files based on year, month, day, and hour.
-
-        Args:
-            log_directory (str): The directory where the log files are located.
-
-        Returns:
-            dict: A hierarchical structure of log files organized by year, month, day, and hour.
-        """
-        file_hierarchy = {}
-        pattern_filename = re.compile(r'')
-        for file in self.filter_files.get_files(log_directory):
-            file_info = self.filter_files.get_file_info(file)
-            year = file_info["year"]
-            month = self.get_month(file_info["month"])
-            day = file_info["day"]
-            hour = file_info["hour"]
-
-            if year not in file_hierarchy:
-                file_hierarchy[year] = {}
-            if month not in file_hierarchy[year]:
-                file_hierarchy[year][month] = {}
-            if day not in file_hierarchy[year][month]:
-                file_hierarchy[year][month][day] = {}
-            if hour not in file_hierarchy[year][month][day]:
-                file_hierarchy[year][month][day][hour] = []
-
-            file_hierarchy[year][month][day][hour].append(file_info)
-
-        return file_hierarchy
-
     def populate_treeview(self):
         """
         Populate the TreeView with log files organized by year, month, day, and hour.
