@@ -111,6 +111,8 @@ def parse(filepath):
     file_name = match.group(0)
     cache_file_path = f'__logcache__/{file_name}.pkl'
     if not os.path.exists(cache_file_path):
+        if not os.path.exists('__logcache__'):
+          os.makedirs('__logcache__')
         # Écrire les données dans le fichier en utilisant pickle
         with open(cache_file_path, 'wb') as file:
             pickle.dump(GetContentLog(filepath), file)
