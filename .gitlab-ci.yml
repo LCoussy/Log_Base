@@ -20,8 +20,8 @@ build:
   script:
     - poetry lock --no-update
     - poetry install --only main # Installation des dépendances avec poetry
-    - poetry export -f requirements.txt --output requirements-poetry --without-hashes  # Export des dépendances vers requirements.txt
-    - pip install -r requirements-poetry.txt --target ./dependencies-logbase --upgrade
+    - poetry export -f requirements.txt --output requirements --without-hashes  # Export des dépendances vers requirements.txt
+    - pip install -r requirements.txt --target ./dependencies-logbase --upgrade
     - zip -r dependencies-logbase.zip dependencies-logbase  # Création du fichier ZIP
   artifacts:
     paths:
