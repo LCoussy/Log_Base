@@ -11,8 +11,10 @@ build:
     - python3 -m pip install --user pipx
     - python3 -m pip install --user --upgrade pipx
     - python3 -m pipx ensurepath --global # optional to allow pipx actions with --global argument
+    - source ~/.bashrc
     - pipx install poetry  # Installation de poetry
     - pipx inject poetry poetry-plugin-export
+
 
   script:
     - poetry install --no-dev  # Installation des dépendances avec poetry
