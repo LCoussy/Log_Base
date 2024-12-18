@@ -17,7 +17,10 @@ def convert_seconds_to_dhm(seconds):
     if days >= 1:
         return f"{int(days)} jours, {int(hours)} heures, {int(minutes)} minutes"
     else:
-        return f"{int(hours)} heures, {int(minutes)} minutes"
+        if hours >= 1:
+            return f"{int(hours)} heures, {int(minutes)} minutes"
+        else:
+            return f"{int(minutes)} minutes"
 
 def get_log_segment(file_path, request_id):
     """
@@ -67,18 +70,15 @@ def parse_request(content, request_type):
     Args:
         content (str): The content block containing the request information.
         request_type (str): The type of request, either "BLOCKED" or "LOST".
-
     Returns:
         dict: Parsed information about the request with keys:
             - "type": Type of request, Blocked or Lost.
             - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
-            - "date2": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
             - "id": Request ID (str) or None.
             - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
             - "adresse": SQL address (str) or None.
             - "table": Name of the table involved (str) or None.
             - "utilisateur": User name associated with the request or None.
-            - "poste": User's machine name associated with the request or None.
     """
 
     # Match pour la première date et heure
@@ -118,7 +118,6 @@ def parse_request(content, request_type):
     sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
     sql_address = sql_address_match.group(2) if sql_address_match else None
 
-    # Extraction du nom de la table
     table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
     table_name = table_match.group(1) if table_match else None
 
@@ -287,16 +286,21 @@ def update_logs_with_duration(logs):
 
 def parse_log(file_path):
     """
-    Parse a single log file and extract data from each log block.
+    Parse the log file and extract data from each log block.
+
+    The log file is expected to contain different types of requests (blocked or lost).
+    Each block in the log is processed, and if it's identified as blocked or lost, its details are parsed and added to a list.
 
     Args:
         file_path (str): The path to the log file to be parsed.
 
     Returns:
-        list: A list of dictionaries, where each dictionary contains details of either a blocked or lost request,
-              including a unique ID and the raw segment content.
+        list: A list of dictionaries, where each dictionary contains details of either a blocked or lost request.
     """
+
     logs = []
+
+    # Regex for identifying the start of a block with a date
     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
     segment_id_counter = 0
 

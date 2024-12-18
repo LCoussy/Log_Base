@@ -1,34 +1,5 @@
 import pandas as pd
 
-# def filter_request_datafile(data):
-#     """
-#     Filters the provided data based on the 'type' attribute.
-
-#     This function takes a list of dictionaries and filters it based on the 'type' attribute.
-#     If the 'type' attribute is 'blocked', the dictionary is added to the 'blocked' list.
-#     If the 'type' attribute is 'lost', the dictionary is added to the 'lost' list.
-#     If the 'type' attribute is neither 'blocked' nor 'lost', the dictionary is ignored.
-
-#     Args:
-#         data (list of dict): A list of dictionaries where each dictionary contains information
-#                              about a request.
-
-#     Returns:
-#         dict: A dictionary containing two lists of dictionaries. The first list contains dictionaries
-#               with a 'type' attribute equal to 'blocked', and the second list contains dictionaries
-#               with a 'type' attribute equal to 'lost'.
-#     """
-#     blocked = []
-#     lost = []
-#     for entry in data:
-#         if isinstance(entry, dict) and 'type' in entry:
-#             if entry['type'] == 'BLOCKED':
-#                 blocked.append(entry)
-#             elif entry['type'] == 'LOST':
-#                 lost.append(entry)
-#     # print({'BLOCKED': blocked, 'LOST': lost})
-#     return {'BLOCKED': blocked, 'LOST': lost}
-
 def create_table_blocked_request(data):
     """
     Creates a pandas DataFrame for blocked requests based on provided data.
@@ -43,20 +14,29 @@ def create_table_blocked_request(data):
 
     Returns:
         pd.DataFrame or None: A DataFrame containing the 'date', 'table', 'utilisateur', 'id',
-                              and 'adresse' columns, or None if the DataFrame is empty or
-                              does not contain a 'date' column.
+                              'poste', 'duree', and 'segment_id' columns, or None if the DataFrame is empty
+                              or does not contain the required columns.
     """
     if not data:
         return None
 
     df = pd.DataFrame(data)
+
+    # Ensure that 'segment_id' is in the DataFrame, either by adding it or handling missing values
+    if 'segment_id' not in df.columns:
+        df['segment_id'] = None  # You can replace None with a default value if necessary
+
+    # Remove duplicates and reset index
     df.drop_duplicates(inplace=True)
     df.reset_index(drop=True, inplace=True)
 
     if df.empty or 'date' not in df.columns:
         return None
 
-    requiredColumns = ['date', 'table', 'utilisateur', 'id', 'adresse']
+    # Define the required columns, including 'segment_id'
+    requiredColumns = ['date', 'table', 'utilisateur', 'id', 'poste', 'duree', 'segment_id']
+
+    # Return the DataFrame if all required columns are present
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
 
 def create_table_lost_request(data):
