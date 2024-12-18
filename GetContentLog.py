@@ -30,8 +30,8 @@ def read_file_pickle(file_path):
 
 
 def GetContentLog(filepath):
-  print(filepath)
-  data = []
+  # print(filepath)
+  data_lost, data_blocked, data_user = [], [], []
   startbuffer = False
   buffer = ''
   date_pattern = r"^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}"
@@ -58,9 +58,9 @@ def GetContentLog(filepath):
         if re.match(date_pattern, buffer) and dates:
           # print("buffer: "+buffer)
           if (isBlocked):
-            data.append(parser.parse_request(buffer, "BLOCKED"))
+            data_blocked.append(parser.parse_request(buffer, "BLOCKED"))
           else:
-            data.append(parser.parse_request(buffer, "LOST")) #traitement de la requête
+            data_lost.append(parser.parse_request(buffer, "LOST")) #traitement de la requête
           # print("added buffer to data")
         if (dates):
           startbuffer = True
@@ -87,7 +87,7 @@ def GetContentLog(filepath):
           if dates and not re.match(date_pattern, buffer):
             # print("buffer: "+buffer)
             buffer += line
-            data.append(parser.parse_user(buffer)) #traitement de l'utilisateur
+            data_user.append(parser.parse_user(buffer)) #traitement de l'utilisateur
             # print(buffer+"-----------------")
             startbuffer = False
           else:
@@ -100,6 +100,7 @@ def GetContentLog(filepath):
 
   # data = parser.update_logs_with_duration(data)
 
+  data = {"LOST": data_lost, "BLOCKED": data_blocked, "USER": data_user}
   return data
 
 def parse(filepath):

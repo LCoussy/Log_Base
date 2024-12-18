@@ -1,8 +1,8 @@
 # Display.py
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
+import HandleSwitch as hs
 from DisplayArray import DisplayArray
-from HandleSwitch import HandleSwitch
 from DisplayStat import DisplayStat
 
 class DisplayData(Screen):
@@ -12,38 +12,70 @@ class DisplayData(Screen):
 
     def __init__(self, **kwargs):
         super(DisplayData, self).__init__(**kwargs)
+        self.instance = ['']
         self.build_ui()
+
 
     def build_ui(self):
         """
         Build the user interface of the Display screen.
         """
-        mainBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
-        # buttonLayout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=50)
         screenManager = ScreenManager()
 
-        # Create screens for DisplayArray and DisplayStat
-        array_screen = Screen(name='array')
-        stat_screen = Screen(name='stat')
+
+        mainBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
+        # buttonLayout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=50)
+        # arrayBoxLayoutUp = BoxLayout(orientation='horizontal', size_hint=(1, 0.9), padding=10, spacing=10)
+        mainBoxLayoutUp = BoxLayout(orientation='horizontal', size_hint=(1, 0.9), padding=10, spacing=10)
+        mainBoxLayoutDownButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
 
         # Create instances of DisplayArray and DisplayStat
-        self.displayArray = DisplayArray()
+        self.displayLost = DisplayArray("perdues")
+        self.displayBlocked = DisplayArray("bloquees")
         self.displayStat = DisplayStat()
 
+        # Create screens for DisplayArray and DisplayStat
+        stat_screen = Screen(name='stat')
+        lost_request_screen = Screen(name='lost')
+        blocked_request_screen = Screen(name='blocked')
+
+        # arrayBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
+
+
+
+        # Create screens for DisplayArray and DisplayStat
+
+
+        lost_request_screen.add_widget(self.displayLost)
+        blocked_request_screen.add_widget(self.displayBlocked)
+
+        # arrayBoxLayoutUp.add_widget(blocked_request_screen)
+        # arrayBoxLayoutUp.add_widget(lost_request_screen)
+
+
+        # arrayBoxLayout.add_widget(arrayBoxLayoutUp)
+
+        # Add the HandleSwitch button to the button layout
+        self.handleSwitchGraph = hs.HandleSwitchGraph(screenManager=screenManager, instance=self.instance)
+        self.handleSwitchRequest = hs.HandleSwitchRequest(screenManager=screenManager, instance=self.instance)
+        # buttonLayout.add_widget(handleSwitch)
+
+        mainBoxLayoutDownButton.add_widget(self.handleSwitchRequest)
         # Add DisplayArray and DisplayStat to their respective screens
-        array_screen.add_widget(self.displayArray)
+        # arrayBoxLayout.add_widget(arrayBoxLayoutDownButton)
+
+        # lost_request_screen.add_widget(arrayBoxLayoutUp)
+        # blocked_request_screen.add_widget(arrayBoxLayoutUp)
         stat_screen.add_widget(self.displayStat)
 
         # Add screens to the ScreenManager
-        screenManager.add_widget(array_screen)
+        screenManager.add_widget(lost_request_screen)
+        screenManager.add_widget(blocked_request_screen)
         screenManager.add_widget(stat_screen)
-
-        # Add the HandleSwitch button to the button layout
-        self.handleSwitch = HandleSwitch(screenManager=screenManager)
-        # buttonLayout.add_widget(handleSwitch)
 
         # Add the button layout and the ScreenManager to the main layout
         # mainBoxLayout.add_widget(buttonLayout)
-        mainBoxLayout.add_widget(screenManager)
-
+        mainBoxLayoutUp.add_widget(screenManager)
+        mainBoxLayout.add_widget(mainBoxLayoutUp)
+        mainBoxLayout.add_widget(mainBoxLayoutDownButton)
         self.add_widget(mainBoxLayout)

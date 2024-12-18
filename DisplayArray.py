@@ -8,6 +8,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.widget import Widget
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 
 import pandas as pd
@@ -22,13 +23,16 @@ class DisplayArray(Screen):
         self.df_combined_lost = pd.DataFrame()  # Stocker les données pour réutilisation
         self.df_combined_blocked = pd.DataFrame()  # Stocker les données pour réutilisation
         self.myType = type
+        # self.handleSwitch = handleSwitch
         self.build_ui()
 
     def build_ui(self):
         main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
         up_layout = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), padding=10, spacing=10)
-        down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.9), padding=10, spacing=10)
+        down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.8), padding=10, spacing=10)
+        # button_down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
 
+        # button_down_layout.add_widget(self.handleSwitch)
         # Titre
         title = Label(
             text="Tableaux des logs : requetes " + self.myType,
@@ -59,8 +63,9 @@ class DisplayArray(Screen):
         for file in selected_files:
 
             # df = dh.create_table_blocked_request(parser.parse_log(file))
-            fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
-            df_blocked = dh.create_table_blocked_request(fileParsedFiltered.get('BLOCKED'))
+            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
+            df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
+            # print("content Blocked getting")
             if df_blocked is not None and not df_blocked.empty:
                 self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
@@ -74,6 +79,7 @@ class DisplayArray(Screen):
             for row in self.df_combined_blocked.values:
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))
+        return self.df_combined_blocked
 
     def update_table_lost(self, selected_files):
         self.grid_layout.clear_widgets()
@@ -82,8 +88,9 @@ class DisplayArray(Screen):
         for file in selected_files:
 
             # df = dh.create_table_blocked_request(parser.parse_log(file))
-            fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
-            df_lost = dh.create_table_lost_request(fileParsedFiltered.get('LOST'))
+            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
+            df_lost = dh.create_table_lost_request(GetContentLog.parse(file).get('LOST'))
+            # print("content lost getting")
             if df_lost is not None and not df_lost.empty:
                 self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
@@ -97,3 +104,27 @@ class DisplayArray(Screen):
             for row in self.df_combined_lost.values:
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))
+        # print("returning lost")
+        return self.df_combined_lost
+
+
+    # def update_table(self, selected_files):
+    #     self.grid_layout.clear_widgets()
+    #     self.df_combined = pd.DataFrame()
+
+    #     for file in selected_files:
+    #         df = dh.create_table_blocked_request(parser.parse_log(file))
+    #         if df is not None and not df.empty:
+    #             self.df_combined = pd.concat([self.df_combined, df], ignore_index=True)
+
+    #     self.df_combined.drop_duplicates(inplace=True)
+    #     self.df_combined.reset_index(drop=True, inplace=True)
+
+    #     if not self.df_combined.empty:
+    #         self.grid_layout.cols = self.df_combined.shape[1]
+    #         for header in self.df_combined.columns:
+    #             self.grid_layout.add_widget(Label(text=header, bold=True))
+    #         for row in self.df_combined.values:
+    #             for cell in row:
+    #                 self.grid_layout.add_widget(Label(text=str(cell)))
+    #     return self.df_combined

@@ -1,33 +1,33 @@
 import pandas as pd
 
-def filter_request_datafile(data):
-    """
-    Filters the provided data based on the 'type' attribute.
+# def filter_request_datafile(data):
+#     """
+#     Filters the provided data based on the 'type' attribute.
 
-    This function takes a list of dictionaries and filters it based on the 'type' attribute.
-    If the 'type' attribute is 'blocked', the dictionary is added to the 'blocked' list.
-    If the 'type' attribute is 'lost', the dictionary is added to the 'lost' list.
-    If the 'type' attribute is neither 'blocked' nor 'lost', the dictionary is ignored.
+#     This function takes a list of dictionaries and filters it based on the 'type' attribute.
+#     If the 'type' attribute is 'blocked', the dictionary is added to the 'blocked' list.
+#     If the 'type' attribute is 'lost', the dictionary is added to the 'lost' list.
+#     If the 'type' attribute is neither 'blocked' nor 'lost', the dictionary is ignored.
 
-    Args:
-        data (list of dict): A list of dictionaries where each dictionary contains information
-                             about a request.
+#     Args:
+#         data (list of dict): A list of dictionaries where each dictionary contains information
+#                              about a request.
 
-    Returns:
-        dict: A dictionary containing two lists of dictionaries. The first list contains dictionaries
-              with a 'type' attribute equal to 'blocked', and the second list contains dictionaries
-              with a 'type' attribute equal to 'lost'.
-    """
-    blocked = []
-    lost = []
-    for entry in data:
-        if isinstance(entry, dict) and 'type' in entry:
-            if entry['type'] == 'BLOCKED':
-                blocked.append(entry)
-            elif entry['type'] == 'LOST':
-                lost.append(entry)
-    # print({'BLOCKED': blocked, 'LOST': lost})
-    return {'BLOCKED': blocked, 'LOST': lost}
+#     Returns:
+#         dict: A dictionary containing two lists of dictionaries. The first list contains dictionaries
+#               with a 'type' attribute equal to 'blocked', and the second list contains dictionaries
+#               with a 'type' attribute equal to 'lost'.
+#     """
+#     blocked = []
+#     lost = []
+#     for entry in data:
+#         if isinstance(entry, dict) and 'type' in entry:
+#             if entry['type'] == 'BLOCKED':
+#                 blocked.append(entry)
+#             elif entry['type'] == 'LOST':
+#                 lost.append(entry)
+#     # print({'BLOCKED': blocked, 'LOST': lost})
+#     return {'BLOCKED': blocked, 'LOST': lost}
 
 def create_table_blocked_request(data):
     """
