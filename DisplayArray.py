@@ -123,3 +123,4 @@ class DisplayArray(Screen):
             for row in df_combined.values:
                 for cell in row:
                     self.grid_layout.add_widget(Label(text=str(cell)))
+        return df_combined
