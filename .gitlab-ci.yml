@@ -9,6 +9,7 @@ build:
   before_script:
     - apt-get update && apt-get install -y zip python3 pip # Installation de zip
     - pip install --upgrade pip
+    # - pip install setuptools
     - python3 -m pip install --user pipx
     - python3 -m pip install --user --upgrade pipx
     - python3 -m pipx ensurepath --global # optional to allow pipx actions with --global argument
@@ -21,7 +22,8 @@ build:
     - poetry lock --no-update
     - poetry install --only main # Installation des dépendances avec poetry
     - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes  # Export des dépendances vers requirements.txt
-    - pip install -r requirements-poetry.txt --target ./dependencies-logbase --upgrade
+    # - pip install -r requirements-poetry.txt --target ./dependencies-logbase --upgrade
+    - pip install -r requirements-poetry.txt --prefix vendor --target ./dependencies-logbase --upgrade
     - zip -r dependencies-logbase.zip dependencies-logbase  # Création du fichier ZIP
   artifacts:
     paths:
