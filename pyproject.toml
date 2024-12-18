@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "LogBase"
 authors = ["Niort Team"]
 readme = "README.md"
+package-mode = false  # Ajout de package-mode
 
 [tool.poetry.dependencies]
 python = "^3.12"
