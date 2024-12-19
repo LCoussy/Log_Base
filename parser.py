@@ -278,7 +278,9 @@ def update_logs_with_duration(logs):
             last_appearance = datetime.strptime(requests[request_id]["last_appearance"], "%Y-%m-%d %H:%M:%S")
             start_blocking = datetime.strptime(requests[request_id]["start_blocking"], "%Y-%m-%d %H:%M:%S")
             duration = (last_appearance - start_blocking).total_seconds()
+            print(duration)
             log["duree"] = convert_seconds_to_dhm(duration)
+
 
     return logs
 

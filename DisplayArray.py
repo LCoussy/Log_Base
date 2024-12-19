@@ -223,6 +223,7 @@ class DisplayArray(Screen):
             self.grid_layout.add_widget(view_button)
 
     def update_table_blocked(self, selected_files):
+        self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
 
@@ -270,6 +271,7 @@ class DisplayArray(Screen):
                     self.grid_layout.add_widget(view_button)
                     
     def update_table_lost(self, selected_files):
+        self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
 

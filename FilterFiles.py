@@ -7,19 +7,6 @@ class FilterFiles:
     organizing files into a hierarchical structure based on their modification times.
     """
 
-    @staticmethod
-    def get_file_date(file_path):
-        """
-        Get the last modification date of a file.
-
-        Args:
-            file_path (str): Path to the file.
-
-        Returns:
-            datetime: The modification date of the file.
-        """
-        return datetime.fromtimestamp(os.path.getmtime(file_path))
-
     def get_month(self, monthNumber):
         """
         Get the month name based on the month number.
