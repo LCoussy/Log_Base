@@ -55,7 +55,7 @@ class GraphDailyBlock(BoxLayout):
                 data_filtered = data
 
             if data_filtered.empty:
-                self.ax.set_title('No data available')
+                self.ax.set_title('Pas de donnee valide')
                 self.figure_widget.figure.canvas.draw_idle()
                 return
 
@@ -67,9 +67,13 @@ class GraphDailyBlock(BoxLayout):
 
             # Set graph labels and title
             self.ax.set_xlabel('Date')
-            self.ax.set_ylabel(f'Number of {"blocks" if self.graph_type == "BLOCKED" else "losses"}')
+            self.ax.set_ylabel(f'Nombre de {"blocages" if self.graph_type == "BLOCKED" else "perdues"}')
+
+            self.ax.tick_params(axis='x', labelrotation=45)
+
+            self.fig.subplots_adjust(bottom=0.3)
         else:
-            self.ax.set_title('No date column found in data')
+            self.ax.set_title('Pas de date trouvee')
 
         # Update the graph display
         self.figure_widget.figure.canvas.draw_idle()

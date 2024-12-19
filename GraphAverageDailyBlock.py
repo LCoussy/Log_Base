@@ -97,8 +97,11 @@ class GraphAverageDailyBlock(BoxLayout):
 
             # Plot the data on the graph
             daily_counts.plot(kind='bar', ax=self.ax)
-            self.ax.set_xlabel('Day of the Week')
-            self.ax.set_ylabel('Average Count per Week')
+            self.ax.set_ylabel('Moyenne par jour')
+
+            self.ax.tick_params(axis='x', labelrotation=45)
+
+            self.fig.subplots_adjust(bottom=0.3)
         else:
             self.ax.set_title('No data available')
 
