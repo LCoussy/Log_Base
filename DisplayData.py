@@ -45,7 +45,6 @@ class DisplayData(Screen):
         # Add the HandleSwitch button to the button layout
         self.handleSwitchGraph = hs.HandleSwitchGraph(screenManager=screenManager, instance=self.instance)
         self.handleSwitchRequest = hs.HandleSwitchRequest(screenManager=screenManager, instance=self.instance)
-        # buttonLayout.add_widget(handleSwitch)
 
         mainBoxLayoutDownButton.add_widget(self.handleSwitchRequest)
 
