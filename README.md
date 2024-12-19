@@ -76,12 +76,8 @@ https://forge.iut-larochelle.fr/log_base/ihm_kivy
 Installer les dépendances :
 
    Ce projet utilise Kivy pour l'interface utilisateur et d'autres modules pour la manipulation des données.
-   Les dépendances nécessaires sont spécifiées dans le fichier requirements.txt.
-   Vous pouvez les installer en exécutant :
+   Vous pouvez récuperer les dépendances nécessaires en allant sur Build -> Artifacts, et télécharger la derniere version sortie
 
-```bash
-pip install -r requirements.txt
-```
 
 ## Utilisation
 Lancez l'application Kivy en exécutant le fichier principal main.py :
