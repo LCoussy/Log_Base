@@ -1,69 +1,78 @@
-# GraphAverageDailyBlock.py
 import matplotlib.pyplot as plt
 from kivy.uix.boxlayout import BoxLayout
 from kivy_matplotlib_widget.uix.graph_subplot_widget import MatplotFigureSubplot
 import pandas as pd
 
+import FilterGraphDatas
+
 
 class GraphAverageDailyBlock(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, graph_type="BLOCKED", **kwargs):
+        """
+        Initializes the GraphAverageDailyBlock class.
+
+        Args:
+            graph_type (str): The type of graph, either "BLOCKED" or "LOST".
+        """
         super(GraphAverageDailyBlock, self).__init__(**kwargs)
+        self.graph_type = graph_type.upper()  # BLOCKED or LOST
         self.orientation = 'vertical'
         self.padding = 0
         self.spacing = 0
         self.build_ui()
 
     def build_ui(self):
-        # Ajouter un graphique Matplotlib
+        # Create the Matplotlib figure
         self.fig, self.ax = plt.subplots(1, 1)
-        self.ax.set_title('Blocages par jours')
 
-        # Créer le widget MatplotFigureSubplot
+        # Create the Matplotlib widget to integrate it with Kivy
         self.figure_widget = MatplotFigureSubplot()
         self.figure_widget.figure = self.fig
                                 
         # Ajouter le widget au layout principal
         self.add_widget(self.figure_widget)
 
+
+
     def updateGraph(self, data):
         """
-        Update the graph with new data.
+        Updates the graph with new data.
 
         Args:
             data (pd.DataFrame): The new data to display in the graph.
         """
-
         self.ax.clear()
         if 'date' in data.columns:
-            # Convertir la colonne 'date' en datetime pour faciliter le traitement
+            # Convert the 'date' column to datetime for easier processing
             data['date'] = pd.to_datetime(data['date'])
 
-            # Calcul du nombre de semaines entre la date la plus ancienne et la plus récente
-            min_date = data['date'].min()
-            max_date = data['date'].max()
-            num_weeks = round((max_date - min_date).days / 7)
+            # Filter the data based on the graph type
+            if self.graph_type == "LOST" and 'LOST' in data.columns:
+                data_filtered = FilterGraphDatas.getOnlyLost(data)
+                print("LOST //////////////////////////////")
+                print(data_filtered)
+            elif self.graph_type == "BLOCKED" and 'BLOCKED' in data.columns:
+                data_filtered = FilterGraphDatas.getOnlyBlocked(data)
+                print("BLOCKED ----------------------------")
+                print(data_filtered)
+            else:
+                data_filtered = data
 
-            print(f"Date la plus ancienne : {min_date}")
-            print(f"Date la plus récente : {max_date}")
-            print(f"Nombre de semaines entre les deux dates : {num_weeks:.2f}")
+            if data_filtered.empty:
+                self.ax.set_title('No data available')
+                self.figure_widget.figure.canvas.draw_idle()
+                return
 
-            print ("////////////////////////")
-            print(data['date'])
-            
-            # Grouper les données par jour et compter les occurrences
-            daily_counts = data.groupby(data['date'].dt.date).size()
+            # Calculate the number of weeks between the earliest and the most recent date
+            min_date = data_filtered['date'].min()
+            max_date = data_filtered['date'].max()
+            num_weeks = max(1, round((max_date - min_date).days / 7))
 
-            # Diviser les nombres par le nombre de semaines
-            daily_counts /= num_weeks
+            # Group data by day and count occurrences
+            daily_counts = data_filtered.groupby(data_filtered['date'].dt.date).size()
+            daily_counts /= num_weeks  # Weekly average
 
-            print("----------------------")
-            print(daily_counts)
-
-            # Remplacer les index par le jour de la semaine
-            daily_counts.index = [
-                pd.Timestamp(date).strftime('%A') for date in daily_counts.index
-            ]
-
+            # Translate days of the week
             translation = {
                 'Monday': 'Lundi',
                 'Tuesday': 'Mardi',
@@ -74,22 +83,27 @@ class GraphAverageDailyBlock(BoxLayout):
                 'Sunday': 'Dimanche'
             }
 
-            # Appliquer la traduction
+            # Replace indices with the translated day of the week
+            daily_counts.index = [
+                pd.Timestamp(date).strftime('%A') for date in daily_counts.index
+            ]
             daily_counts.index = [translation[day] for day in daily_counts.index]
 
-            # Étape 3: Créer un index fixe avec les jours de la semaine en français
-            days_of_week_fr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+            daily_counts = daily_counts.groupby(level=0).sum()
 
-            daily_counts = daily_counts.reindex(days_of_week_fr, fill_value=0)
+            # Reorder to include all days of the week
+            days_of_week = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+            daily_counts = daily_counts.reindex(days_of_week, fill_value=0)
 
-            print("******************************")
-            print(daily_counts)
-
-            # Tracer le graphique des blocages par jour
+            # Plot the data on the graph
             daily_counts.plot(kind='bar', ax=self.ax)
-            self.ax.set_title('Blocages par jour')
-            self.ax.set_xlabel('Date')
-            self.ax.set_ylabel('Nombre de blocages')
+            self.ax.set_ylabel('Moyenne par jour')
+
+            self.ax.tick_params(axis='x', labelrotation=45)
+
+            self.fig.subplots_adjust(bottom=0.3)
         else:
-            self.ax.set_title('Aucune donnée de blocage par jour disponible')
-        self.figure_widget.figure.canvas.draw_idle()  # Utiliser draw_idle pour mettre à jour le widget
+            self.ax.set_title('No data available')
+
+        # Update the display
+        self.figure_widget.figure.canvas.draw_idle()

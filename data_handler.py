@@ -1,28 +1,12 @@
 import pandas as pd
 
 def create_table_blocked_request(data):
-    """
-    Creates a pandas DataFrame for blocked requests based on provided data.
 
-    This function converts the provided data into a pandas DataFrame, removes any duplicate
-    rows, and resets the index. If the DataFrame is empty or does not contain a 'date' column,
-    it returns None. Otherwise, it returns a DataFrame with selected columns.
-
-    Args:
-        data (list of dict): A list of dictionaries where each dictionary contains information
-                             about a blocked request.
-
-    Returns:
-        pd.DataFrame or None: A DataFrame containing the 'date', 'table', 'utilisateur', 'id',
-                              'poste', 'duree', and 'segment_id' columns, or None if the DataFrame is empty
-                              or does not contain the required columns.
-    """
     if not data:
         return None
 
     df = pd.DataFrame(data)
 
-    # Ensure that 'segment_id' is in the DataFrame, either by adding it or handling missing values
     if 'segment_id' not in df.columns:
         df['segment_id'] = None  # You can replace None with a default value if necessary
 

@@ -16,7 +16,6 @@ class HandleSwitchGraph(BoxLayout):
         self.add_widget(self.switch_button)
 
     def switch_screen(self, instance):
-        # print(self.screenManager.previous() + ' ' + self.screenManager.current)
         if self.screenManager.current != 'stat':
             instance[0] = self.screenManager.current
             self.screenManager.current = 'stat'
@@ -37,11 +36,9 @@ class HandleSwitchRequest(BoxLayout):
         self.add_widget(self.switch_button)
 
     def switch_screen(self, instance):
-        # print(self.screenManager.previous() + ' ' + self.screenManager.current)
         current_screen = self.screenManager.current
         if (current_screen == 'stat'):
             next_screen = instance[0]
-            # print(next_screen)
         else:
             instance[0] = current_screen
             next_screen = 'lost' if current_screen == 'blocked' else 'blocked'

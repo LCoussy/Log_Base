@@ -22,10 +22,9 @@ import GetContentLog
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
-        self.df_combined_lost = pd.DataFrame()  # Stocker les données pour réutilisation
-        self.df_combined_blocked = pd.DataFrame()  # Stocker les données pour réutilisation
+        self.df_combined_lost = pd.DataFrame()  # Stock datas
+        self.df_combined_blocked = pd.DataFrame()  # Stock datas
         self.myType = type
-        # self.handleSwitch = handleSwitch
         self.sort_ascending = True
         self.current_df = None
         self.build_ui()
@@ -137,19 +136,9 @@ class DisplayArray(Screen):
         """
         main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
 
-        # Left Layout: LogExplorer (TreeView)
-        # left_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
         up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=0, spacing=0)
         down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.9), padding=0, spacing=0)
 
-        # right_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1), padding=10, spacing=10)
-
-        # Create an instance of LogExplorer
-        # self.log_explorer = LogExplorer(
-        #     log_directory="",
-        #     display_array=self
-        # )
-        # left_layout.add_widget(self.log_explorer)
 
         title = Label(
             text="Tableaux des logs : requetes " + self.myType,
@@ -223,7 +212,7 @@ class DisplayArray(Screen):
             view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
             self.grid_layout.add_widget(view_button)
 
-    def update_table_blocked(self, selected_files):
+    def update_table_blocked(self, data):
         self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
@@ -273,7 +262,7 @@ class DisplayArray(Screen):
                     view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
                     self.grid_layout.add_widget(view_button)
 
-    def update_table_lost(self, selected_files):
+    def update_table_lost(self, data):
         self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus

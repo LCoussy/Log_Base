@@ -15,7 +15,6 @@ class LogExplorer(BoxLayout):
     selected_files = ListProperty()
     on_files_selected = ObjectProperty(None)  # Callback function triggered when     files are selected
 
-    # def __init__(self, log_directory, display_array, **kwargs):
     def __init__(self, log_directory, on_file_selected=None, **kwargs):
         """
         Initialize the DisplayLogsTree widget.
@@ -28,7 +27,6 @@ class LogExplorer(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.size_hint = (1, 1)
-        # self.display_array = display_array
         self.filter_files = FilterFiles()
         self.on_file_selected = on_file_selected
 
@@ -135,11 +133,6 @@ class LogExplorer(BoxLayout):
         """
         Update the color of TreeView nodes based on their selection state.
         """
-        # for node in self.treeview.iterate_all_nodes():
-        #     if hasattr(node, 'file_path'):
-        #         is_selected = node.file_path in self.selected_files
-        #         color = [.5, .5, .5, 1] if is_selected else getattr(node, 'base_even_color', [1, 1, 1, 1])
-        #         node.odd_color = node.even_color = color
 
         for node in self.treeview.iterate_all_nodes():
             if hasattr(node, 'file_path'):

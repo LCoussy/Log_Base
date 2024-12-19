@@ -33,6 +33,18 @@ class FilterFiles:
         ]
         return months[monthNumber - 1]
 
+    def convert_datetime(self, datestr):
+        """
+        Convert a string date to a datetime object.
+
+        Args:
+            datestr (str): The date string in the format 'YYYY-MM-DD HH:MM:SS'.
+
+        Returns:
+            datetime: The datetime object representing the input date.
+        """
+        datestr_good = datestr.group(6)+"-"+datestr.group(5)+"-"+datestr.group(4)+" "+datestr.group(1).replace("_","0")+":"+datestr.group(2)+":"+datestr.group(3)
+        return datetime.strptime(datestr_good, "%Y-%m-%d %H:%M:%S")
 
     def organize_files_by_date(self, directory):
         """
@@ -47,19 +59,14 @@ class FilterFiles:
         if not os.path.exists(directory):
             return {}
 
-        # patternFilePath = re.compile(r'[^\\|/]+(?=\.[^.]+$)')
-
-        # pattern_filename = re.compile(r'[^\\|/]+(?=\d{2}-\d{2}-\d{2}\d{2}-\d{2}-\d{4})\.[^.]+$')
         pattern_filename = re.compile(r"GCE_([_1]\d|2[0-3])-([0-5]\d)-([0-5]\d)_\d{2}_(0[1-9]|1\d|2[0-8]|29(?=-\d\d-(?!1[01345789]00|2[1235679]00)\d\d(?:[02468][048]|[13579][26]))|30(?!-02)|31(?=-0[13578]|-1[02]))-(0[1-9]|1[0-2])-([12]\d{3})+")
         hierarchy = {}
 
         # Walk through the directory and process files
         for root, dir, files in os.walk(directory):
-            for file in sorted(files, key=lambda f: os.path.getmtime(os.path.join(root, f)), reverse=True):
+            for file in sorted(files, key=lambda f: self.convert_datetime(re.search(pattern_filename, os.path.join(root, f))), reverse=True):
                 file_path = os.path.join(root, file)
                 pat = re.search(pattern_filename, file_path)
-                print(pat.group(0), pat.group(1), pat.group(2), pat.group(3), pat.group(4), pat.group(5), pat.group(6))
-                # file_date = self.get_file_date(file_path)
 
                 # Extract hierarchy keys
                 year, month, day, hour = (
@@ -72,8 +79,7 @@ class FilterFiles:
                 # Build nested structure
                 hierarchy.setdefault(year, {}).setdefault(month, {}).setdefault(day, {}).setdefault(hour, []).append({
                     "file_path": file_path,
-                    "formatted_time": f"{pat.group(1).replace("_","0")}:{pat.group(2)}",
-                    # "formatted_time": file_date.strftime('%H:%M')
+                    "formatted_time": f"{pat.group(1).replace("_","0")}:{pat.group(2)}"
                 })
 
         return hierarchy
