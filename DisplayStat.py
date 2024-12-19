@@ -13,7 +13,7 @@ from kivy.uix.button import Button
 class DisplayStat(Screen):
     def __init__(self, **kwargs):
         super(DisplayStat, self).__init__(**kwargs)
-        self.graphs = {}  # Dictionnaire pour stocker les instances des graphiques
+        self.graphs = {}  # Dictionary to store the graph instances
         self.build_ui()
 
 
@@ -23,11 +23,11 @@ class DisplayStat(Screen):
 
         up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=0, spacing=0)
 
-        # GridLayout avec size_hint_y=None et bind sur minimum_height
+        # GridLayout with size_hint_y=None and bind on minimum_height
         grid_layout = GridLayout(cols=2, spacing=10, padding=10, size_hint=(1, None))
         grid_layout.bind(minimum_height=grid_layout.setter('height'))
 
-        # Ajouter le titre principal
+        # Add main title
         title = Label(
             text="Statistiques :",
             size_hint=(0.8, 1),
@@ -60,8 +60,8 @@ class DisplayStat(Screen):
         grid_layout.add_widget(self.graphs['blocks_per_table'])
 
 
-        # Ajouter le GridLayout à un ScrollView
-        scroll_view = ScrollView(size_hint=(1, 0.9))  # Limiter la taille visible pour activer le défilement
+        # add GridLayout to ScrolllView
+        scroll_view = ScrollView(size_hint=(1, 0.9))  # Limit the visible size to enable scrolling
         scroll_view.add_widget(grid_layout)
 
         main_layout.add_widget(up_layout)
@@ -95,13 +95,13 @@ class DisplayStat(Screen):
         )
         title_label.bind(size=title_label.setter('text_size'))
 
-        # Ajouter le graphique
+        # Add graph
         graph_widget.size_hint_y = None
-        graph_widget.height = 200
+        graph_widget.height = 400
         box.add_widget(title_label)
         box.add_widget(graph_widget)
 
-        # Ajouter un bouton pour agrandir le graphique
+        # Add button to enlarge graph
         enlarge_button = Button(
             text="Agrandir",
             size_hint_y=None,
@@ -124,7 +124,7 @@ class DisplayStat(Screen):
         popup_layout.add_widget(Label(text=title, font_size=20, size_hint_y=None, height=40))
         popup_layout.add_widget(graph_widget)
 
-        # Ajouter un bouton pour fermer la popup
+        # Add button to close popup
         close_button = Button(
             text="Fermer",
             size_hint_y=None,
