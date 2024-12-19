@@ -19,8 +19,6 @@ class Display(Screen):
 
     def __init__(self, fileOrDirectoryPath, **kwargs):
         super(Display, self).__init__(**kwargs)
-        self.df_combined_lost_data = pd.DataFrame()  # Stock datas
-        self.df_combined_blocked_data = pd.DataFrame()  # Stock datas
         self.fileOrDirectoryPath = fileOrDirectoryPath
         self.build_ui()
 
@@ -55,23 +53,6 @@ class Display(Screen):
         Args:
             selected_files (list of str): List of selected file paths.
         """
-        for file in selected_files:
-
-            df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
-            if df_blocked is not None and not df_blocked.empty:
-                self.df_combined_blocked_data = pd.concat([self.df_combined_blocked_data, df_blocked], ignore_index=True)
-            df_lost = dh.create_table_lost_request(GetContentLog.parse(file).get('LOST'))
-            if df_lost is not None and not df_lost.empty:
-                self.df_combined_lost_data = pd.concat([self.df_combined_lost_data, df_lost], ignore_index=True)
-
-        self.df_combined_lost_data.drop_duplicates(inplace=True)
-        self.df_combined_lost_data.reset_index(drop=True, inplace=True)
-
         dataLost = self.displayData.displayLost.update_table_lost(selected_files)
-        #self.displayData.displayStat.updateGraph(dataBlocked)
-        
-        self.displayData.displayBlocked.update_table_blocked(self.df_combined_blocked_data)
-
-        self.displayData.displayLost.update_table_lost(self.df_combined_lost_data)
-
-        self.displayData.displayStat.updateGraph(self.df_combined_blocked_data, self.df_combined_lost_data)
+        dataBlocked = self.displayData.displayBlocked.update_table_blocked(selected_files)
+        self.displayData.displayStat.updateGraph(self.displayData.displayBlocked.df_combined_blocked, self.displayData.displayLost.df_combined_lost)

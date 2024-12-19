@@ -212,7 +212,7 @@ class DisplayArray(Screen):
             view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
             self.grid_layout.add_widget(view_button)
 
-    def update_table_blocked(self, data):
+    def update_table_blocked(self, selected_files):
         self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
@@ -262,7 +262,7 @@ class DisplayArray(Screen):
                     view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
                     self.grid_layout.add_widget(view_button)
 
-    def update_table_lost(self, data):
+    def update_table_lost(self, selected_files):
         self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
