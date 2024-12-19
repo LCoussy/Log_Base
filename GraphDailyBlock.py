@@ -18,6 +18,7 @@ class GraphDailyBlock(BoxLayout):
         self.orientation = 'vertical'
         self.padding = 0
         self.spacing = 0
+        self.data = pd.DataFrame()  # Initialize data attribute
         self.build_ui()
 
     def build_ui(self):
@@ -39,10 +40,10 @@ class GraphDailyBlock(BoxLayout):
         Args:
             data (pd.DataFrame): The new data to display in the graph.
         """
-        print(f"Updating graph for {self.graph_type} per day")
+        self.data = data  # Store the data
 
         self.ax.clear()
-        if 'date' in data.columns:
+        if data is not None and 'table' in data.columns:
             # Convert the 'date' column to datetime for easier processing
             data['date'] = pd.to_datetime(data['date'])
 

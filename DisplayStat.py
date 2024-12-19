@@ -107,24 +107,31 @@ class DisplayStat(Screen):
             size_hint_y=None,
             height=30
         )
-        enlarge_button.bind(on_release=lambda instance: self.show_popup(type(graph_widget)(), title))
+        enlarge_button.bind(on_release=lambda instance: self.show_popup(type(graph_widget)(), title, graph_widget.data))
 
         box.add_widget(enlarge_button)
         return box
 
-    def show_popup(self, graph_widget, title):
+    def show_popup(self, graph_widget, title, data):
         """
         Affiche un graphique dans une popup.
 
         Args:
             graph_widget (Widget): Le widget graphique à afficher.
             title (str): Le titre de la popup.
+            data (pd.DataFrame): Les données à afficher dans le graphique.
         """
         popup_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
         popup_layout.add_widget(Label(text=title, font_size=20, size_hint_y=None, height=40))
         popup_layout.add_widget(graph_widget)
 
-        # Add button to close popup
+        # Update the graph with the provided data
+        graph_widget.updateGraphBLOCKED(data)
+        graph_widget.updateGraphLOST(data)
+
+        print(data)
+
+        # Ajouter un bouton pour fermer la popup
         close_button = Button(
             text="Fermer",
             size_hint_y=None,
@@ -153,13 +160,13 @@ class DisplayStat(Screen):
             self.graphs['daily_blocks'].children[1].updateGraph(data_blocked)
 
             # Update average graphs
-            self.graphs['average_blocks'].children[1].updateGraph(data_blocked)
+            self.graphs['average_blocks'].children[1].updateGraphBLOCKED(data_blocked)
 
             # Update per table graphs
-            self.graphs['blocks_per_table'].children[1].updateGraph(data_blocked)
+            self.graphs['blocks_per_table'].children[1].updateGraphBLOCKED(data_blocked)
 
         if not data_lost.empty:
 
             self.graphs['daily_losses'].children[1].updateGraph(data_lost)
 
-            self.graphs['average_losses'].children[1].updateGraph(data_lost)
+            self.graphs['average_losses'].children[1].updateGraphLOST(data_lost)
