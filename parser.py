@@ -138,7 +138,6 @@ def parse_request(content, request_type):
         "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
         "utilisateur": user_name,
         "poste": poste
     }
@@ -148,7 +147,6 @@ def parse_request(content, request_type):
         "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
         "table": table_name,
         "utilisateur": user_name,
         "poste": poste
@@ -170,7 +168,7 @@ def parse_user(content):
         dict: Parsed information about the request with keys:
             - "type": Type of request, Blocked or Lost.
             - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
-            - "date2": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
+            - "dateExecution": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
             - "id": Request ID (str) or None.
             - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
             - "adresse": SQL address (str) or None.
@@ -259,7 +257,7 @@ def update_logs_with_duration(logs):
     for log in logs:
         request_id = log["id"]
         first_date = log["date"]
-        second_date = log["date2"]
+        second_date = log["dateExecution"]
 
 
         if request_id not in requests or first_date > requests[request_id]["last_appearance"]:

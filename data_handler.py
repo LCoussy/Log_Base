@@ -65,8 +65,11 @@ def create_table_lost_request(data):
 
     if df.empty or 'date' not in df.columns:
         return None
+    if 'segment_id' not in df.columns:
+        df['segment_id'] = None  # You can replace None with a default value if necessary
 
-    requiredColumns = ['date', 'utilisateur', 'id', 'adresse']
+    requiredColumns = ['date', 'utilisateur', 'id', 'poste', 'duree', 'segment_id']
+
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
 
 

@@ -108,5 +108,5 @@ class Display(Screen):
         dataBlocked = self.displayData.displayBlocked.update_table_blocked(selected_files)
 
         dataLost = self.displayData.displayLost.update_table_lost(selected_files)
-
-        self.displayData.displayStat.updateGraph(dataBlocked)
+        #self.displayData.displayStat.updateGraph(dataBlocked)
+        

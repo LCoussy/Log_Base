@@ -21,7 +21,7 @@ class GraphAverageDailyBlock(BoxLayout):
         # Créer le widget MatplotFigureSubplot
         self.figure_widget = MatplotFigureSubplot()
         self.figure_widget.figure = self.fig
-
+                                
         # Ajouter le widget au layout principal
         self.add_widget(self.figure_widget)
 

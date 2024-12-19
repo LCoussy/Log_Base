@@ -52,7 +52,7 @@ class DisplayArray(Screen):
                 by=column, ascending=self.sort_ascending, inplace=True
             )
             self.current_df.reset_index(drop=True, inplace=True)
-
+            print("column:", column)
             self.updateTableFromCurrentData()
 
 
@@ -193,76 +193,126 @@ class DisplayArray(Screen):
         df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
 
         return df_unique
+    def updateTableFromCurrentData(self):
+        """
+        Update the grid layout with the current DataFrame data.
+        This method is used to refresh the table after sorting.
+        """
+        self.grid_layout.clear_widgets()  
+        df_combined2 = self.current_df.drop(columns=["segment_id", "id"], errors='ignore')
+        self.grid_layout.cols = len(df_combined2.columns) + 1  
+
+        for header in df_combined2.columns:
+            sort_symbol = ""
+            if hasattr(self, 'sort_column') and self.sort_column == header:
+                sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
+
+            header_button = Button(text=f"{header}{sort_symbol}", bold=True)
+            header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+            self.grid_layout.add_widget(header_button)
+
+        self.grid_layout.add_widget(Label(text="segment", bold=True))  
+        
+        for index, row in df_combined2.iterrows():
+            print(row)
+            for cell in row:
+                self.grid_layout.add_widget(Label(text=str(cell)))  
+
+            segment_id = self.current_df.loc[index, "segment_id"]  
+            view_button = Button(text="Afficher")
+            view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
+            self.grid_layout.add_widget(view_button)
 
     def update_table_blocked(self, selected_files):
-        self.grid_layout.clear_widgets()
-        self.df_combined_blocked = pd.DataFrame()
+        logs = []
+        self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
 
         for file in selected_files:
+            file_logs = parser.parse_log(file)
+            logs.extend(file_logs)
 
-            # df = dh.create_table_blocked_request(parser.parse_log(file))
-            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
+            # Ajout du traitement pour df_blocked
             df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
-            # print("content Blocked getting")
             if df_blocked is not None and not df_blocked.empty:
                 self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
-        self.df_combined_blocked.drop_duplicates(inplace=True)
-        self.df_combined_blocked.reset_index(drop=True, inplace=True)
+        if logs:
+            df_combined = dh.create_table_blocked_request(logs)
 
-        if not self.df_combined_blocked.empty:
-            self.grid_layout.cols = self.df_combined_blocked.shape[1]
-            for header in self.df_combined_blocked.columns:
-                self.grid_layout.add_widget(Label(text=header, bold=True))
-            for row in self.df_combined_blocked.values:
-                for cell in row:
-                    self.grid_layout.add_widget(Label(text=str(cell)))
-        return self.df_combined_blocked
+            if df_combined is not None and not df_combined.empty:
+                df_combined = self.remove_duplicates(df_combined)
+                df_combined.drop_duplicates(inplace=True)
+                df_combined.reset_index(drop=True, inplace=True)
 
+                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
+
+                self.grid_layout.cols = len(df_combined2.columns) + 1  
+                self.current_df = df_combined  
+                self.logs = logs  
+
+                for header in df_combined2.columns:
+                    sort_symbol = ""
+                    if hasattr(self, 'sort_column') and self.sort_column == header:
+                        sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
+
+                    header_button = Button(text=f"{header}{sort_symbol}", bold=True)
+                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+                    self.grid_layout.add_widget(header_button)
+
+                self.grid_layout.add_widget(Label(text="segment", bold=True))  
+
+                for index, row in df_combined2.iterrows():
+                    for cell in row:
+                        self.grid_layout.add_widget(Label(text=str(cell)))  
+
+                    segment_id = df_combined.loc[index, "segment_id"] 
+                    view_button = Button(text="Afficher")
+                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
+                    self.grid_layout.add_widget(view_button)
+                    
     def update_table_lost(self, selected_files):
-        self.grid_layout.clear_widgets()
-        self.df_combined_lost = pd.DataFrame()
+        logs = []
+        self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
 
         for file in selected_files:
+            file_logs = parser.parse_log(file)
+            logs.extend(file_logs)
 
-            # df = dh.create_table_blocked_request(parser.parse_log(file))
-            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
+            # Ajout du traitement pour df_lost
             df_lost = dh.create_table_lost_request(GetContentLog.parse(file).get('LOST'))
-            # print("content lost getting")
             if df_lost is not None and not df_lost.empty:
                 self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
-        self.df_combined_lost.drop_duplicates(inplace=True)
-        self.df_combined_lost.reset_index(drop=True, inplace=True)
+        if logs:
+            df_combined = dh.create_table_lost_request(logs)
 
-        if not self.df_combined_lost.empty:
-            self.grid_layout.cols = self.df_combined_lost.shape[1]
-            for header in self.df_combined_lost.columns:
-                self.grid_layout.add_widget(Label(text=header, bold=True))
-            for row in self.df_combined_lost.values:
-                for cell in row:
-                    self.grid_layout.add_widget(Label(text=str(cell)))
-        # print("returning lost")
-        return self.df_combined_lost
+            if df_combined is not None and not df_combined.empty:
+                df_combined = self.remove_duplicates(df_combined)
+                df_combined.drop_duplicates(inplace=True)
+                df_combined.reset_index(drop=True, inplace=True)
 
+                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
 
-    # def update_table(self, selected_files):
-    #     self.grid_layout.clear_widgets()
-    #     self.df_combined = pd.DataFrame()
+                self.grid_layout.cols = len(df_combined2.columns) + 1  
+                self.current_df = df_combined  
+                self.logs = logs  
 
-    #     for file in selected_files:
-    #         df = dh.create_table_blocked_request(parser.parse_log(file))
-    #         if df is not None and not df.empty:
-    #             self.df_combined = pd.concat([self.df_combined, df], ignore_index=True)
+                for header in df_combined2.columns:
+                    sort_symbol = ""
+                    if hasattr(self, 'sort_column') and self.sort_column == header:
+                        sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
 
-    #     self.df_combined.drop_duplicates(inplace=True)
-    #     self.df_combined.reset_index(drop=True, inplace=True)
+                    header_button = Button(text=f"{header}{sort_symbol}", bold=True)
+                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+                    self.grid_layout.add_widget(header_button)
 
-    #     if not self.df_combined.empty:
-    #         self.grid_layout.cols = self.df_combined.shape[1]
-    #         for header in self.df_combined.columns:
-    #             self.grid_layout.add_widget(Label(text=header, bold=True))
-    #         for row in self.df_combined.values:
-    #             for cell in row:
-    #                 self.grid_layout.add_widget(Label(text=str(cell)))
-    #     return self.df_combined
+                self.grid_layout.add_widget(Label(text="segment", bold=True))  
+
+                for index, row in df_combined2.iterrows():
+                    for cell in row:
+                        self.grid_layout.add_widget(Label(text=str(cell)))  
+
+                    segment_id = df_combined.loc[index, "segment_id"] 
+                    view_button = Button(text="Afficher")
+                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
+                    self.grid_layout.add_widget(view_button)
