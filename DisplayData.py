@@ -39,33 +39,16 @@ class DisplayData(Screen):
         lost_request_screen = Screen(name='lost')
         blocked_request_screen = Screen(name='blocked')
 
-        # arrayBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
-
-
-
-        # Create screens for DisplayArray and DisplayStat
-
-
         lost_request_screen.add_widget(self.displayLost)
         blocked_request_screen.add_widget(self.displayBlocked)
 
-        # arrayBoxLayoutUp.add_widget(blocked_request_screen)
-        # arrayBoxLayoutUp.add_widget(lost_request_screen)
-
-
-        # arrayBoxLayout.add_widget(arrayBoxLayoutUp)
-
-        # Add the HandleSwitch button to the button layout
         self.handleSwitchGraph = hs.HandleSwitchGraph(screenManager=screenManager, instance=self.instance)
         self.handleSwitchRequest = hs.HandleSwitchRequest(screenManager=screenManager, instance=self.instance)
         # buttonLayout.add_widget(handleSwitch)
 
         mainBoxLayoutDownButton.add_widget(self.handleSwitchRequest)
         # Add DisplayArray and DisplayStat to their respective screens
-        # arrayBoxLayout.add_widget(arrayBoxLayoutDownButton)
 
-        # lost_request_screen.add_widget(arrayBoxLayoutUp)
-        # blocked_request_screen.add_widget(arrayBoxLayoutUp)
         stat_screen.add_widget(self.displayStat)
 
         # Add screens to the ScreenManager

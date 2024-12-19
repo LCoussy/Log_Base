@@ -200,8 +200,6 @@ class DisplayArray(Screen):
 
         for file in selected_files:
 
-            # df = dh.create_table_blocked_request(parser.parse_log(file))
-            # fileParsedFiltered = dh.filter_request_datafile(GetContentLog.parse(file))
             df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
             # print("content Blocked getting")
             if df_blocked is not None and not df_blocked.empty:
@@ -245,24 +243,3 @@ class DisplayArray(Screen):
         # print("returning lost")
         return self.df_combined_lost
 
-
-    # def update_table(self, selected_files):
-    #     self.grid_layout.clear_widgets()
-    #     self.df_combined = pd.DataFrame()
-
-    #     for file in selected_files:
-    #         df = dh.create_table_blocked_request(parser.parse_log(file))
-    #         if df is not None and not df.empty:
-    #             self.df_combined = pd.concat([self.df_combined, df], ignore_index=True)
-
-    #     self.df_combined.drop_duplicates(inplace=True)
-    #     self.df_combined.reset_index(drop=True, inplace=True)
-
-    #     if not self.df_combined.empty:
-    #         self.grid_layout.cols = self.df_combined.shape[1]
-    #         for header in self.df_combined.columns:
-    #             self.grid_layout.add_widget(Label(text=header, bold=True))
-    #         for row in self.df_combined.values:
-    #             for cell in row:
-    #                 self.grid_layout.add_widget(Label(text=str(cell)))
-    #     return self.df_combined

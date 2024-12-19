@@ -30,6 +30,8 @@ class GraphBlockPerTables(BoxLayout):
         Args:
             data (pd.DataFrame): The new data to display in the graph.
         """
+        print("Rentrer dans BlockParTable")
+
         self.ax.clear()
         if 'table' in data.columns:
             # print(data['table'])

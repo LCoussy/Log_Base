@@ -32,6 +32,8 @@ class GraphDailyBlock(BoxLayout):
         Args:
             data (pd.DataFrame): The new data to display in the graph.
         """
+        print("Rentrer dans GraphDailyBlocks")
+
 
         self.ax.clear()
         if 'date' in data.columns:

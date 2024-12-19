@@ -121,7 +121,7 @@ def parse(filepath):
         # Écrire les données dans le fichier en utilisant pickle
         with open(cache_file_path, 'wb') as file:
             pickle.dump(GetContentLog(filepath), file)
-        print(f"Cache file created: {cache_file_path}")
+        # print(f"Cache file created: {cache_file_path}")
     # Lire et retourner les données mises en cache à partir du fichier
     result = read_file_pickle(cache_file_path)
     if result is not None:

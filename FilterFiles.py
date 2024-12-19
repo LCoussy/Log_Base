@@ -71,7 +71,7 @@ class FilterFiles:
             for file in sorted(files, key=lambda f: os.path.getmtime(os.path.join(root, f)), reverse=True):
                 file_path = os.path.join(root, file)
                 pat = re.search(pattern_filename, file_path)
-                print(pat.group(0), pat.group(1), pat.group(2), pat.group(3), pat.group(4), pat.group(5), pat.group(6))
+                # print(pat.group(0), pat.group(1), pat.group(2), pat.group(3), pat.group(4), pat.group(5), pat.group(6))
                 # file_date = self.get_file_date(file_path)
 
                 # Extract hierarchy keys

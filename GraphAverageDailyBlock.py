@@ -32,9 +32,13 @@ class GraphAverageDailyBlock(BoxLayout):
         Args:
             data (pd.DataFrame): The new data to display in the graph.
         """
-
+        print("Rentrer dans AverageDailyBlocks", data)
         self.ax.clear()
         if 'date' in data.columns:
+
+            print("Rentrer dans AverageDailyBlocks : IF")
+
+
             # Convertir la colonne 'date' en datetime pour faciliter le traitement
             data['date'] = pd.to_datetime(data['date'])
 
@@ -43,12 +47,7 @@ class GraphAverageDailyBlock(BoxLayout):
             max_date = data['date'].max()
             num_weeks = round((max_date - min_date).days / 7)
 
-            print(f"Date la plus ancienne : {min_date}")
-            print(f"Date la plus récente : {max_date}")
-            print(f"Nombre de semaines entre les deux dates : {num_weeks:.2f}")
 
-            print ("////////////////////////")
-            print(data['date'])
             
             # Grouper les données par jour et compter les occurrences
             daily_counts = data.groupby(data['date'].dt.date).size()
@@ -56,8 +55,7 @@ class GraphAverageDailyBlock(BoxLayout):
             # Diviser les nombres par le nombre de semaines
             daily_counts /= num_weeks
 
-            print("----------------------")
-            print(daily_counts)
+
 
             # Remplacer les index par le jour de la semaine
             daily_counts.index = [
@@ -82,8 +80,7 @@ class GraphAverageDailyBlock(BoxLayout):
 
             daily_counts = daily_counts.reindex(days_of_week_fr, fill_value=0)
 
-            print("******************************")
-            print(daily_counts)
+
 
             # Tracer le graphique des blocages par jour
             daily_counts.plot(kind='bar', ax=self.ax)

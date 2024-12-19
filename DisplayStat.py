@@ -1,63 +1,143 @@
+import pandas as pd
+from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
-import matplotlib.pyplot as plt
-from kivy_matplotlib_widget.uix.graph_subplot_widget import MatplotFigureSubplot
+from kivy.uix.label import Label
 from GraphBlockPerTables import GraphBlockPerTables
 from GraphAverageDailyBlock import GraphAverageDailyBlock
+from GraphDailyBlock import GraphDailyBlock
+from kivy.uix.popup import Popup
+from kivy.uix.button import Button
+
 
 class DisplayStat(Screen):
     def __init__(self, **kwargs):
         super(DisplayStat, self).__init__(**kwargs)
+        self.graphs = {}  # Dictionnaire pour stocker les instances des graphiques
         self.build_ui()
 
+
     def build_ui(self):
-        # Créer le layout principal
-        main_layout = BoxLayout(orientation='vertical', padding=0, spacing=0)
+        main_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        # Créer un GridLayout pour contenir les graphiques
-        # grid_layout = GridLayout(padding=10, spacing=10)
-        # grid_layout.bind(minimum_height=grid_layout.setter('height'))  # Bind height to the number of children
+        up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=0, spacing=0)
 
-        # Ajouter un graphique Matplotlib
-        # self.fig, self.ax = plt.subplots(1, 1)
-        # self.ax.set_title('Exemple de graphique')
+        # GridLayout avec size_hint_y=None et bind sur minimum_height
+        grid_layout = GridLayout(cols=2, spacing=10, padding=10, size_hint=(1, None))
+        grid_layout.bind(minimum_height=grid_layout.setter('height'))
 
-        # # Créer le widget MatplotFigureSubplot
-        # self.figure_widget = MatplotFigureSubplot()
-        # self.figure_widget.figure = self.fig
+        # Ajouter le titre principal
+        title = Label(
+            text="Statistiques :",
+            size_hint=(0.8, 1),
+            font_size='20sp',
+            halign='center',
+            valign='middle',
+            text_size=(Window.width * 0.7, None)
+        )
+        up_layout.add_widget(title)
 
-        # Ajouter le widget au GridLayout
-        # grid_layout.add_widget(self.figure_widget)
+        # Ajouter chaque graphique
+        self.graphs['daily'] = self.create_graph_with_title("Blocages par jour", GraphDailyBlock())
+        self.graphs['average'] = self.create_graph_with_title("Moyenne des blocages par jour", GraphAverageDailyBlock())
+        self.graphs['per_table'] = self.create_graph_with_title("Blocages par table", GraphBlockPerTables())
 
-        # Ajouter une instance de GraphBlockPerTables
-        self.graph_block_per_tables = GraphAverageDailyBlock()
-        # grid_layout.add_widget(self.graph_block_per_tables)
+        grid_layout.add_widget(self.graphs['daily'])
+        grid_layout.add_widget(self.graphs['average'])
+        grid_layout.add_widget(self.graphs['per_table'])
 
         # Ajouter le GridLayout à un ScrollView
-        # scroll_view = ScrollView(size_hint=(1, 0.9))
-        # scroll_view.add_widget(grid_layout)
+        scroll_view = ScrollView(size_hint=(1, 0.9))  # Limiter la taille visible pour activer le défilement
+        scroll_view.add_widget(grid_layout)
 
-        # # Ajouter le ScrollView au layout principal
-        # main_layout.add_widget(scroll_view)
-        # main_layout.add_widget(self.figure_widget)
-        main_layout.add_widget(self.graph_block_per_tables)
-        # Ajouter le layout principal à l'écran
+        main_layout.add_widget(up_layout)
+        main_layout.add_widget(scroll_view)
+
         self.add_widget(main_layout)
+
+    def create_graph_with_title(self, title, graph_widget):
+        """
+        Crée un BoxLayout vertical contenant un titre et un graphique.
+
+        Args:
+            title (str): Le titre à afficher au-dessus du graphique.
+            graph_widget (Widget): Le widget graphique à inclure.
+
+        Returns:
+            BoxLayout: Un BoxLayout contenant le titre et le graphique.
+        """
+        box = BoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
+        box.bind(minimum_height=box.setter('height'))
+
+        # Ajouter un Label pour le titre
+        title_label = Label(
+            text=title,
+            size_hint_y=None,
+            height=30,
+            font_size=18,
+            bold=True,
+            halign="center",
+            valign="middle"
+        )
+        title_label.bind(size=title_label.setter('text_size'))
+
+        # Ajouter le graphique
+        graph_widget.size_hint_y = None
+        graph_widget.height = 200
+        box.add_widget(title_label)
+        box.add_widget(graph_widget)
+
+        # Ajouter un bouton pour agrandir le graphique
+        enlarge_button = Button(
+            text="Agrandir",
+            size_hint_y=None,
+            height=30
+        )
+        enlarge_button.bind(on_release=lambda instance: self.show_popup(type(graph_widget)(), title))
+
+        box.add_widget(enlarge_button)
+        return box
+
+    def show_popup(self, graph_widget, title):
+        """
+        Affiche un graphique dans une popup.
+
+        Args:
+            graph_widget (Widget): Le widget graphique à afficher.
+            title (str): Le titre de la popup.
+        """
+        popup_layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        popup_layout.add_widget(Label(text=title, font_size=20, size_hint_y=None, height=40))
+        popup_layout.add_widget(graph_widget)
+
+        # Ajouter un bouton pour fermer la popup
+        close_button = Button(
+            text="Fermer",
+            size_hint_y=None,
+            height=30
+        )
+        close_button.bind(on_release=lambda instance: popup.dismiss())
+        popup_layout.add_widget(close_button)
+
+        popup = Popup(
+            title=title,
+            content=popup_layout,
+            size_hint=(0.9, 0.9)
+        )
+        popup.open()
 
     def updateGraph(self, data):
         """
-        Update the graph with new data.
+        Met à jour les graphiques avec de nouvelles données.
 
         Args:
-            data (pd.DataFrame): The new data to display in the graph.
+            data (pd.DataFrame): Les nouvelles données à afficher dans les graphiques.
         """
-        # self.ax.clear()
-        # self.ax.plot(data['x'], data['y'], label='Ligne 1')
-        # self.ax.set_title('Graphique mis à jour')
-        # self.ax.legend()
-        # self.figure_widget.figure.canvas.draw_idle()  # Utiliser draw_idle pour mettre à jour le widget
+        if not data.empty:
+            self.graphs['daily'].children[1].updateGraph(data)
+            self.graphs['average'].children[1].updateGraph(data)
+            self.graphs['per_table'].children[1].updateGraph(data)
 
-        # Mettre à jour le graphique de GraphBlockPerTables
-        self.graph_block_per_tables.updateGraph(data)
+

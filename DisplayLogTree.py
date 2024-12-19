@@ -4,7 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.treeview import TreeView, TreeViewLabel
 from kivy.uix.scrollview import ScrollView
 from FilterFiles import FilterFiles  # Import the new class
-import pprint
+
 
 class LogExplorer(BoxLayout):
     """
@@ -124,9 +124,7 @@ class LogExplorer(BoxLayout):
 
         # Recursively add nodes to the tree
         self.add_nodes(file_hierarchy, parent_node=root_node)
-        # for key, value in file_hierarchy.items():
-        #     print(f"{key}: {value}\n")
-        # pprint.pprint(file_hierarchy)
+
 
     def add_nodes(self, hierarchy, parent_node):
         """
@@ -174,11 +172,6 @@ class LogExplorer(BoxLayout):
         """
         Update the color of TreeView nodes based on their selection state.
         """
-        # for node in self.treeview.iterate_all_nodes():
-        #     if hasattr(node, 'file_path'):
-        #         is_selected = node.file_path in self.selected_files
-        #         color = [.5, .5, .5, 1] if is_selected else getattr(node, 'base_even_color', [1, 1, 1, 1])
-        #         node.odd_color = node.even_color = color
 
         for node in self.treeview.iterate_all_nodes():
             if hasattr(node, 'file_path'):
