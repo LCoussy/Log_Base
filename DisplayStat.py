@@ -38,14 +38,30 @@ class DisplayStat(Screen):
         )
         up_layout.add_widget(title)
 
-        # Ajouter chaque graphique
-        self.graphs['daily'] = self.create_graph_with_title("Blocages par jour", GraphDailyBlock())
-        self.graphs['average'] = self.create_graph_with_title("Moyenne des blocages par jour", GraphAverageDailyBlock())
-        self.graphs['per_table'] = self.create_graph_with_title("Blocages par table", GraphBlockPerTables())
 
-        grid_layout.add_widget(self.graphs['daily'])
-        grid_layout.add_widget(self.graphs['average'])
-        grid_layout.add_widget(self.graphs['per_table'])
+        self.graphs['daily_blocks'] = self.create_graph_with_title(
+            "Blocages par jour", GraphDailyBlock(graph_type="BLOCKED"))
+        self.graphs['daily_losses'] = self.create_graph_with_title(
+            "Pertes par jour", GraphDailyBlock(graph_type="LOST"))
+
+        self.graphs['average_blocks'] = self.create_graph_with_title(
+            "Moyenne des blocages par jour", GraphAverageDailyBlock(graph_type="BLOCKED"))
+        self.graphs['average_losses'] = self.create_graph_with_title(
+            "Moyenne des pertes par jour", GraphAverageDailyBlock(graph_type="LOST"))
+
+        self.graphs['blocks_per_table'] = self.create_graph_with_title(
+            "Blocages par table", GraphBlockPerTables(graph_type="BLOCKED"))
+        self.graphs['losses_per_table'] = self.create_graph_with_title(
+            "Pertes par table", GraphBlockPerTables(graph_type="LOST"))
+
+
+        grid_layout.add_widget(self.graphs['daily_blocks'])
+        grid_layout.add_widget(self.graphs['daily_losses'])
+        grid_layout.add_widget(self.graphs['average_blocks'])
+        grid_layout.add_widget(self.graphs['average_losses'])
+        grid_layout.add_widget(self.graphs['blocks_per_table'])
+        grid_layout.add_widget(self.graphs['losses_per_table'])
+
 
         # Ajouter le GridLayout à un ScrollView
         scroll_view = ScrollView(size_hint=(1, 0.9))  # Limiter la taille visible pour activer le défilement
@@ -129,14 +145,29 @@ class DisplayStat(Screen):
 
     def updateGraph(self, data):
         """
-        Update the graph with new data.
+        Update the graphs with new data.
 
         Args:
-            data (pd.DataFrame): The new data to display in the graph.
+            data (pd.DataFrame): The new data to display in the graphs.
         """
         if not data.empty:
-            self.graphs['daily'].children[1].updateGraph(data)
-            self.graphs['average'].children[1].updateGraph(data)
-            self.graphs['per_table'].children[1].updateGraph(data)
+            # Update daily block graphs
+            if 'daily_blocks' in self.graphs:
+                self.graphs['daily_blocks'].children[0].updateGraph(data)
+            if 'daily_losses' in self.graphs:
+                self.graphs['daily_losses'].children[0].updateGraph(data)
+
+            # Update average graphs
+            if 'average_blocks' in self.graphs:
+                self.graphs['average_blocks'].children[0].updateGraph(data)
+            if 'average_losses' in self.graphs:
+                self.graphs['average_losses'].children[0].updateGraph(data)
+
+            # Update per table graphs
+            if 'blocks_per_table' in self.graphs:
+                self.graphs['blocks_per_table'].children[0].updateGraph(data)
+            if 'losses_per_table' in self.graphs:
+                self.graphs['losses_per_table'].children[0].updateGraph(data)
+
 
 
