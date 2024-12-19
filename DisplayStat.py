@@ -126,8 +126,7 @@ class DisplayStat(Screen):
         popup_layout.add_widget(graph_widget)
 
         # Update the graph with the provided data
-        graph_widget.updateGraphBLOCKED(data)
-        graph_widget.updateGraphLOST(data)
+        graph_widget.updateGraph(data)
 
         print(data)
 
@@ -160,13 +159,13 @@ class DisplayStat(Screen):
             self.graphs['daily_blocks'].children[1].updateGraph(data_blocked)
 
             # Update average graphs
-            self.graphs['average_blocks'].children[1].updateGraphBLOCKED(data_blocked)
+            self.graphs['average_blocks'].children[1].updateGraph(data_blocked)
 
             # Update per table graphs
-            self.graphs['blocks_per_table'].children[1].updateGraphBLOCKED(data_blocked)
+            self.graphs['blocks_per_table'].children[1].updateGraph(data_blocked)
 
         if not data_lost.empty:
 
             self.graphs['daily_losses'].children[1].updateGraph(data_lost)
 
-            self.graphs['average_losses'].children[1].updateGraphLOST(data_lost)
+            self.graphs['average_losses'].children[1].updateGraph(data_lost)

@@ -43,7 +43,7 @@ class GraphDailyBlock(BoxLayout):
         self.data = data  # Store the data
 
         self.ax.clear()
-        if data is not None and 'table' in data.columns:
+        if 'date' in data.columns:
             # Convert the 'date' column to datetime for easier processing
             data['date'] = pd.to_datetime(data['date'])
 
