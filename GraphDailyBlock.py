@@ -1,51 +1,74 @@
-# GraphDailyBlock.py
 import matplotlib.pyplot as plt
 from kivy.uix.boxlayout import BoxLayout
 from kivy_matplotlib_widget.uix.graph_subplot_widget import MatplotFigureSubplot
 import pandas as pd
+import FilterGraphDatas
 
 
 class GraphDailyBlock(BoxLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, graph_type="BLOCKED", **kwargs):
+        """
+        Initializes the GraphDailyBlock class.
+
+        Args:
+            graph_type (str): The type of graph, either "BLOCKED" or "LOST".
+        """
         super(GraphDailyBlock, self).__init__(**kwargs)
+        self.graph_type = graph_type.upper()  # BLOCKED or LOST
         self.orientation = 'vertical'
         self.padding = 0
         self.spacing = 0
+        self.data = pd.DataFrame()  # Initialize data attribute
         self.build_ui()
 
     def build_ui(self):
-        # Ajouter un graphique Matplotlib
+        # Create a Matplotlib figure
         self.fig, self.ax = plt.subplots(1, 1)
-        self.ax.set_title('Blocages par jours')
 
-        # Créer le widget MatplotFigureSubplot
+        # Create the Matplotlib widget to integrate into Kivy
         self.figure_widget = MatplotFigureSubplot()
         self.figure_widget.figure = self.fig
 
-        # Ajouter le widget au layout principal
+        # Add the widget to the main layout
         self.add_widget(self.figure_widget)
+
 
     def updateGraph(self, data):
         """
-        Update the graph with new data.
+        Updates the graph with new data.
 
         Args:
             data (pd.DataFrame): The new data to display in the graph.
         """
+        self.data = data  # Store the data
 
         self.ax.clear()
         if 'date' in data.columns:
-            # Convertir la colonne 'date' en datetime pour faciliter le traitement
+            # Convert the 'date' column to datetime for easier processing
             data['date'] = pd.to_datetime(data['date'])
-            
-            # Grouper les données par jour et compter les occurrences
-            daily_counts = data.groupby(data['date'].dt.date).size()
 
-            # Tracer le graphique des blocages par jour
+            data_filtered = data
+
+            if data_filtered.empty:
+                self.ax.set_title('Pas de donnee valide')
+                self.figure_widget.figure.canvas.draw_idle()
+                return
+
+            # Group the data by day and count the occurrences
+            daily_counts = data_filtered.groupby(data_filtered['date'].dt.date).size()
+
+            # Plot the graph
             daily_counts.plot(kind='bar', ax=self.ax)
-            self.ax.set_title('Blocages par jour')
+
+            # Set graph labels and title
             self.ax.set_xlabel('Date')
-            self.ax.set_ylabel('Nombre de blocages')
+            self.ax.set_ylabel(f'Nombre de {"blocages" if self.graph_type == "BLOCKED" else "perdues"}')
+
+            self.ax.tick_params(axis='x', labelrotation=45)
+
+            self.fig.subplots_adjust(bottom=0.3)
         else:
-            self.ax.set_title('Aucune donnée de blocage par jour disponible')
-        self.figure_widget.figure.canvas.draw_idle()  # Utiliser draw_idle pour mettre à jour le widget
+            self.ax.set_title('Pas de date trouvee')
+
+        # Update the graph display
+        self.figure_widget.figure.canvas.draw_idle()

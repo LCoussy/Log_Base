@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 import uuid
+
 def convert_seconds_to_dhm(seconds):
     """
     Converts a duration in seconds into a readable format: days, hours, minutes.
@@ -11,54 +12,16 @@ def convert_seconds_to_dhm(seconds):
     Returns:
         str: A formatted string representing the duration in days, hours, minutes.
     """
-    days = seconds // (24 * 3600) -177
+    days = seconds // (24 * 3600)
     hours = (seconds % (24 * 3600)) // 3600
     minutes = (seconds % 3600) // 60
+
     if days >= 1:
         return f"{int(days)} jours, {int(hours)} heures, {int(minutes)} minutes"
+    elif hours >= 1:
+        return f"{int(hours)} heures, {int(minutes)} minutes"
     else:
-        if hours >= 1:
-            return f"{int(hours)} heures, {int(minutes)} minutes"
-        else:
-            return f"{int(minutes)} minutes"
-
-def get_log_segment(file_path, request_id):
-    """
-    Retrieve the log segment corresponding to a specific request ID.
-
-    Args:
-        file_path (str): The path to the log file.
-        request_id (str): The request ID to search for.
-
-    Returns:
-        str: The segment of the log containing the specified request ID, or None if not found.
-    """
-    date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
-
-    with open(file_path, 'r', encoding='ISO-8859-1') as file:
-        lines = file.readlines()
-        current_block = []
-        matching_block = None
-
-        for line in lines:
-            if date_regex.match(line):
-                # Start a new block
-                if current_block:
-                    block_content = "\n".join(current_block)
-                    if f" {request_id} " in block_content:
-                        matching_block = block_content
-                        break
-                current_block = [line.strip()]
-            else:
-                current_block.append(line.strip())
-
-        # Check the last block
-        if not matching_block and current_block:
-            block_content = "\n".join(current_block)
-            if f" {request_id} " in block_content:
-                matching_block = block_content
-
-        return matching_block
+        return f"{int(minutes)} minutes"
 
 def parse_request(content, request_type):
     """
@@ -81,7 +44,7 @@ def parse_request(content, request_type):
             - "utilisateur": User name associated with the request or None.
     """
 
-    # Match pour la première date et heure
+    # Match for the first date and time
     first_date_match = re.search(r'(\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
     first_date = None
     if first_date_match:
@@ -90,7 +53,7 @@ def parse_request(content, request_type):
         except ValueError:
             pass
 
-    # Match pour la date 2 (BLOQUE)
+    # Match for the second date (BLOQUE)
     second_date_match = re.search(r'BLOQUE (\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
     second_date = None
     if second_date_match:
@@ -106,30 +69,30 @@ def parse_request(content, request_type):
             except ValueError:
                 pass
 
-    # Extraction de l'état (ACTIVE ou INACTIVE)
+    # Extract the state (ACTIVE ou INACTIVE)
     state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
     state = state_match.group(1) if state_match else None
 
-    # Extraction de l'ID de la requête
+    # Extract the request's ID
     request_id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
     request_id = request_id_match.group(1) if request_id_match else None
 
-    # Extraction de l'adresse SQL
+    # Extract the SQL adress
     sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
     sql_address = sql_address_match.group(2) if sql_address_match else None
 
     table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
     table_name = table_match.group(1) if table_match else None
 
-    # Extraction du nom de l'utilisateur
+    # Extract the user's name
     user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
     user_name = user_match.group(1) if user_match else None
 
-    # Extraction du poste de l'utilisateur
+    # Extract the user's workstation
     poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
     poste = poste_match.group(1) if poste_match else None
 
-    # Formatage de la date en ISO si elle existe
+    # Format the date in ISO format if it exists
     formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
     formatted_second_date = second_date.strftime("%Y-%m-%d %H:%M:%S") if second_date else None
     lostRequest = {
@@ -138,9 +101,10 @@ def parse_request(content, request_type):
         "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
         "utilisateur": user_name,
-        "poste": poste
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
     }
     blockedRequest = {
         "type": request_type,
@@ -148,10 +112,11 @@ def parse_request(content, request_type):
         "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
         "table": table_name,
         "utilisateur": user_name,
-        "poste": poste
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
     }
     return blockedRequest if request_type == "BLOCKED" else lostRequest
 
@@ -170,7 +135,7 @@ def parse_user(content):
         dict: Parsed information about the request with keys:
             - "type": Type of request, Blocked or Lost.
             - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
-            - "date2": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
+            - "dateExecution": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
             - "id": Request ID (str) or None.
             - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
             - "adresse": SQL address (str) or None.
@@ -179,10 +144,8 @@ def parse_user(content):
             - "poste": User's machine name associated with the request or None.
     """
 
-    # Match pour la première date et heure
+    # Match for the first date and time
     date_duration_match = re.search(r'((\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2}))\s+(\d{2}:\d{2}:\d{2})', content)
-    # print(date_duration_match)
-    # first_date_match = re.search(r'(\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) (\d{2}:\d{2}:\d{2})', content)
     first_date = None
     if date_duration_match.group(1):
         try:
@@ -190,58 +153,23 @@ def parse_user(content):
         except ValueError:
             pass
 
-    # Match pour la date 2 (BLOQUE)
-    # duration_match = re.findall(r'(\d{2}:\d{2}:\d{2})', content)
     duration = None
-    # if date_duration_match.group(4):
-    #     try:
-    #         duration = datetime.strptime(date_duration_match.group(4), "%H:%M:%S")
-    #         if duration.hour >= 24:
-    #             extra_days = duration.hour // 24
-    #             duration = duration.replace(hour=duration.hour % 24)
-    #             duration = duration.replace(day=duration.day + extra_days)
-    #     except ValueError:
-    #         pass
-    # # Extraction de l'état (ACTIVE ou INACTIVE)
-    # state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
-    # state = state_match.group(1) if state_match else None
 
-    # # Extraction de l'ID de la requête
-    # request_id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
-    # request_id = request_id_match.group(1) if request_id_match else None
-
-    # # Extraction de l'adresse SQL
-    # sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
-    # sql_address = sql_address_match.group(2) if sql_address_match else None
-
-    # # Extraction du nom de la table
-    # table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
-    # table_name = table_match.group(1) if table_match else None
-
-    # Extraction du nom de l'utilisateur
+    # Extract the user's name
     user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
     pattern = re.compile(r'^(?:.*\n){2}(\S+)', re.MULTILINE)
     matches = pattern.findall(content)
     user_name = matches[0] if matches else None
 
-    # # Extraction du poste de l'utilisateur
-    # poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
-    # poste = poste_match.group(1) if poste_match else None
 
-    # Formatage de la date en ISO si elle existe
+    # Format the date in ISO format if it exists
     formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
-    # formatted_duration = duration.strftime("%H:%M:%S") if duration else None
 
     return {
         "type": "USER",
         "date": formatted_first_date,
         "DuréeConnection": date_duration_match.group(4),
-        # "id": request_id,
-        # "state": state,
-        # "adresse": sql_address,
-        # "table": table_name,
-        "utilisateur": user_name,
-        # "poste": poste
+        "utilisateur": user_name
     }
 
 def update_logs_with_duration(logs):
@@ -259,7 +187,7 @@ def update_logs_with_duration(logs):
     for log in logs:
         request_id = log["id"]
         first_date = log["date"]
-        second_date = log["date2"]
+        second_date = log["dateExecution"]
 
 
         if request_id not in requests or first_date > requests[request_id]["last_appearance"]:
@@ -279,7 +207,9 @@ def update_logs_with_duration(logs):
             last_appearance = datetime.strptime(requests[request_id]["last_appearance"], "%Y-%m-%d %H:%M:%S")
             start_blocking = datetime.strptime(requests[request_id]["start_blocking"], "%Y-%m-%d %H:%M:%S")
             duration = (last_appearance - start_blocking).total_seconds()
+            print(duration)
             log["duree"] = convert_seconds_to_dhm(duration)
+
 
     return logs
 
@@ -346,7 +276,11 @@ def get_segment_by_id(logs, segment_id):
     Returns:
         str: The raw content of the log segment or a message if not found.
     """
+    if None in logs:
+        logs = [log for log in logs if log is not None]
     for log in logs:
-        if log.get("segment_id") == segment_id:
-            return log.get("raw_content", f"Segment pour l'ID {segment_id} introuvable.")
+        for aLog in log:
+            # print(aLog, "--------------------------------------------")
+            if aLog.get("segment_id") == segment_id:
+                return aLog.get("content", f"Segment pour l'ID {segment_id} introuvable.")
     return f"Segment pour l'ID {segment_id} introuvable."

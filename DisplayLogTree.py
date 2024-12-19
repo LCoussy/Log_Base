@@ -4,7 +4,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.treeview import TreeView, TreeViewLabel
 from kivy.uix.scrollview import ScrollView
 from FilterFiles import FilterFiles  # Import the new class
-import pprint
 
 class LogExplorer(BoxLayout):
     """
@@ -16,7 +15,6 @@ class LogExplorer(BoxLayout):
     selected_files = ListProperty()
     on_files_selected = ObjectProperty(None)  # Callback function triggered when     files are selected
 
-    # def __init__(self, log_directory, display_array, **kwargs):
     def __init__(self, log_directory, on_file_selected=None, **kwargs):
         """
         Initialize the DisplayLogsTree widget.
@@ -29,7 +27,6 @@ class LogExplorer(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = 'vertical'
         self.size_hint = (1, 1)
-        # self.display_array = display_array
         self.filter_files = FilterFiles()
         self.on_file_selected = on_file_selected
 
@@ -88,13 +85,9 @@ class LogExplorer(BoxLayout):
 
         # Get the organized file structure
         file_hierarchy = self.filter_files.organize_files_by_date(self.log_directory)
-        # print(self.log_directory)
 
         # Recursively add nodes to the tree
         self.add_nodes(file_hierarchy, parent_node=root_node)
-        # for key, value in file_hierarchy.items():
-        #     print(f"{key}: {value}\n")
-        # pprint.pprint(file_hierarchy)
 
     def add_nodes(self, hierarchy, parent_node):
         """
@@ -105,8 +98,6 @@ class LogExplorer(BoxLayout):
             parent_node (TreeViewNode): The parent node to add children to.
         """
         for key, value in hierarchy.items():
-            # print("key: ", key)
-            # print("value: ", value)
             node = self.treeview.add_node(TreeViewLabel(text=key, size_hint_y=None, height=25), parent=parent_node)
             node.base_even_color = node.even_color
             node.base_odd_color = node.odd_color
@@ -142,11 +133,6 @@ class LogExplorer(BoxLayout):
         """
         Update the color of TreeView nodes based on their selection state.
         """
-        # for node in self.treeview.iterate_all_nodes():
-        #     if hasattr(node, 'file_path'):
-        #         is_selected = node.file_path in self.selected_files
-        #         color = [.5, .5, .5, 1] if is_selected else getattr(node, 'base_even_color', [1, 1, 1, 1])
-        #         node.odd_color = node.even_color = color
 
         for node in self.treeview.iterate_all_nodes():
             if hasattr(node, 'file_path'):
@@ -197,7 +183,6 @@ class LogExplorer(BoxLayout):
             instance (TreeViewLabel): The clicked node instance.
             touch (Touch): Touch event information.
         """
-        self.selected_files = []
         if instance.collide_point(*touch.pos) and hasattr(instance, 'file_path'):
             actual_node = self.treeview.get_selected_node()
             if not actual_node.is_leaf:

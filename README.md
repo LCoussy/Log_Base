@@ -1,6 +1,6 @@
 # Projet Log Base
 
-Ce projet permet d'analyser des logs de requêtes SQL bloquées et de générer des tableaux à partir de ces logs. 
+Ce projet permet d'analyser des logs de requêtes SQL bloquées et perdues, de générer des tableaux et des statistiques à partir de ces logs. 
 Il fournit également une interface utilisateur graphique pour ouvrir des fichiers ou des dossiers et afficher les résultats dans une table.
 
 ## Fonctionnalités
@@ -8,10 +8,10 @@ Il fournit également une interface utilisateur graphique pour ouvrir des fichie
 - **Analyse des requêtes bloquées**
 - **Interface utilisateur**
 - **Génération de tableaux**
+- **Génération de statistiques**
   
 ## Structure du projet
 ```
-
 ├── batchOpen.py # Gestion des fichiers dans les dossiers 
 
 ├── data_handler.py # Module pour la gestion des données des logs 
@@ -24,13 +24,34 @@ Il fournit également une interface utilisateur graphique pour ouvrir des fichie
 
 ├── DisplayArray.py # Affichage des résultats dans un tableau 
 
-├── DisplayLogs.py # Affichage de navigation dans les fichiers
+├── DisplayLogTree.py # Interface pour explorer et sélectionner des fichiers logs
 
 ├── parser.py # Fonctions d'analyse des logs
 
 ├── requirements.txt # Liste des dépendances 
 
-└── README.md # Ce fichier 
+├── README.md # Ce fichier 
+
+├── Display.py # fichiers principal pour l'affichage des données et la navigation dans les fichiers
+
+├── DisplayStat.py #
+
+├── FilterFiles.py # Organisation des fichiers en hiérarchie basée sur leurs dates de modification
+
+├── GetContentLog.py # Gestion de la mise en cache et du traitement des fichiers log avec Pickle
+
+├── GraphAverageDailyBlock.py # Affichage des graphique des blocages moyens par jour
+
+├── GraphBlockPerTables.py # Graphique des blocages par table
+
+├── GraphDailyBlock.py # Graphique des blocages quotidiens
+
+├── GraphScreen.py # Affichage d'images de graphiques 
+
+├── HandleSwitch.py # Commutation entre les écrans avec des boutons dans Kivy.
+
+└── processing.py # Valide et traite un dossier avec gestion d'erreur.
+
 ```
 
 
@@ -55,27 +76,26 @@ https://forge.iut-larochelle.fr/log_base/ihm_kivy
 Installer les dépendances :
 
    Ce projet utilise Kivy pour l'interface utilisateur et d'autres modules pour la manipulation des données.
-   Les dépendances nécessaires sont spécifiées dans le fichier requirements.txt.
-   Vous pouvez les installer en exécutant :
+   Vous pouvez récuperer les dépendances nécessaires en allant sur Build -> Artifacts, et télécharger la derniere version sortie
 
-```bash
-pip install -r requirements.txt
-```
 
 ## Utilisation
+Lancez l'application Kivy en exécutant le fichier principal main.py :
 
-
-Lancer l'application Kivy en exécutant le fichier main.py :
-
-```bash
+```py
 python main.py
 ```
 
-Utilisez l'interface de glisser-déposer ou le bouton pour charger un fichier ou un dossier contenant des logs à analyser. Les résultats seront affichés dans le tableau situé a droite.
+### Interface Utilisateur
+Glisser-déposer ou bouton pour charger des fichiers/dossiers logs
+Vous pouvez charger un fichier ou un dossier contenant des logs SQL à analyser via l'interface graphique.
 
-En effectuant un [Ctrl]+[clic], vous ouvrirez toute la hiérarchie des fichiers sélectionnés, tandis qu'un simple [clic] ouvrira le dernier fichier de la hiérarchie.
-
-Si vous voulez changer de dossier de logs, vous devez relancer l'application.
+Exploration des fichiers
 
 
+### Changement entre les vues
+Vous pouvez basculer entre les vues de "Requêtes bloquées", "Requêtes perdues" et les "Statistiques" via les boutons en bas.
+
+
+Si vous souhaitez changer de dossier de logs, relancez l'application.
 

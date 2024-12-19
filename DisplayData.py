@@ -24,8 +24,6 @@ class DisplayData(Screen):
 
 
         mainBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
-        # buttonLayout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=50)
-        # arrayBoxLayoutUp = BoxLayout(orientation='horizontal', size_hint=(1, 0.9), padding=10, spacing=10)
         mainBoxLayoutUp = BoxLayout(orientation='horizontal', size_hint=(1, 0.9), padding=10, spacing=10)
         mainBoxLayoutDownButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
 
@@ -39,33 +37,17 @@ class DisplayData(Screen):
         lost_request_screen = Screen(name='lost')
         blocked_request_screen = Screen(name='blocked')
 
-        # arrayBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
-
-
-
         # Create screens for DisplayArray and DisplayStat
-
 
         lost_request_screen.add_widget(self.displayLost)
         blocked_request_screen.add_widget(self.displayBlocked)
 
-        # arrayBoxLayoutUp.add_widget(blocked_request_screen)
-        # arrayBoxLayoutUp.add_widget(lost_request_screen)
-
-
-        # arrayBoxLayout.add_widget(arrayBoxLayoutUp)
-
         # Add the HandleSwitch button to the button layout
         self.handleSwitchGraph = hs.HandleSwitchGraph(screenManager=screenManager, instance=self.instance)
         self.handleSwitchRequest = hs.HandleSwitchRequest(screenManager=screenManager, instance=self.instance)
-        # buttonLayout.add_widget(handleSwitch)
 
         mainBoxLayoutDownButton.add_widget(self.handleSwitchRequest)
-        # Add DisplayArray and DisplayStat to their respective screens
-        # arrayBoxLayout.add_widget(arrayBoxLayoutDownButton)
 
-        # lost_request_screen.add_widget(arrayBoxLayoutUp)
-        # blocked_request_screen.add_widget(arrayBoxLayoutUp)
         stat_screen.add_widget(self.displayStat)
 
         # Add screens to the ScreenManager
@@ -74,7 +56,6 @@ class DisplayData(Screen):
         screenManager.add_widget(stat_screen)
 
         # Add the button layout and the ScreenManager to the main layout
-        # mainBoxLayout.add_widget(buttonLayout)
         mainBoxLayoutUp.add_widget(screenManager)
         mainBoxLayout.add_widget(mainBoxLayoutUp)
         mainBoxLayout.add_widget(mainBoxLayoutDownButton)
