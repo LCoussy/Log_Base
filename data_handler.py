@@ -18,7 +18,7 @@ def create_table_blocked_request(data):
         return None
 
     # Define the required columns, including 'segment_id'
-    requiredColumns = ['date', 'table', 'utilisateur', 'id', 'poste', 'duree', 'segment_id']
+    requiredColumns = ['date', 'table', 'utilisateur', 'id', 'poste']
 
     # Return the DataFrame if all required columns are present
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None

@@ -60,7 +60,6 @@ class GraphBlockPerTables(BoxLayout):
             table_counts.plot(kind='bar', ax=self.ax)
 
             # Set graph labels and title
-            self.ax.set_title(self.get_graph_title())
             self.ax.set_xlabel('Tables')
             self.ax.set_ylabel(f'Number of {"blocks" if self.graph_type == "BLOCKED" else "losses"}')
         else:

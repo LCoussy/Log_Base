@@ -183,18 +183,11 @@ class DisplayArray(Screen):
 
         return df_unique
 
-    def update_table_blocked(self, selected_files):
+    def update_table_blocked(self, data):
         self.grid_layout.clear_widgets()
         self.df_combined_blocked = pd.DataFrame()
 
-        for file in selected_files:
-
-            df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
-            if df_blocked is not None and not df_blocked.empty:
-                self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
-
-        self.df_combined_blocked.drop_duplicates(inplace=True)
-        self.df_combined_blocked.reset_index(drop=True, inplace=True)
+        self.df_combined_blocked = data
 
         if not self.df_combined_blocked.empty:
             self.grid_layout.cols = self.df_combined_blocked.shape[1]
@@ -205,18 +198,11 @@ class DisplayArray(Screen):
                     self.grid_layout.add_widget(Label(text=str(cell)))
         return self.df_combined_blocked
 
-    def update_table_lost(self, selected_files):
+    def update_table_lost(self, data):
         self.grid_layout.clear_widgets()
         self.df_combined_lost = pd.DataFrame()
 
-        for file in selected_files:
-
-            df_lost = dh.create_table_lost_request(GetContentLog.parse(file).get('LOST'))
-            if df_lost is not None and not df_lost.empty:
-                self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
-
-        self.df_combined_lost.drop_duplicates(inplace=True)
-        self.df_combined_lost.reset_index(drop=True, inplace=True)
+        self.df_combined_lost = data
 
         if not self.df_combined_lost.empty:
             self.grid_layout.cols = self.df_combined_lost.shape[1]

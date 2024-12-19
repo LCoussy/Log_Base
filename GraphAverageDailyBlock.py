@@ -49,8 +49,12 @@ class GraphAverageDailyBlock(BoxLayout):
             # Filter the data based on the graph type
             if self.graph_type == "LOST" and 'LOST' in data.columns:
                 data_filtered = FilterGraphDatas.getOnlyLost(data)
+                print("LOST //////////////////////////////")
+                print(data_filtered)
             elif self.graph_type == "BLOCKED" and 'BLOCKED' in data.columns:
                 data_filtered = FilterGraphDatas.getOnlyBlocked(data)
+                print("BLOCKED ----------------------------")
+                print(data_filtered)
             else:
                 data_filtered = data
 
@@ -70,13 +74,13 @@ class GraphAverageDailyBlock(BoxLayout):
 
             # Translate days of the week
             translation = {
-                'Monday': 'Monday',
-                'Tuesday': 'Tuesday',
-                'Wednesday': 'Wednesday',
-                'Thursday': 'Thursday',
-                'Friday': 'Friday',
-                'Saturday': 'Saturday',
-                'Sunday': 'Sunday'
+                'Monday': 'Lundi',
+                'Tuesday': 'Mardi',
+                'Wednesday': 'Mercredi',
+                'Thursday': 'Jeudi',
+                'Friday': 'Vendredi',
+                'Saturday': 'Samedi',
+                'Sunday': 'Dimanche'
             }
 
             # Replace indices with the translated day of the week
@@ -85,13 +89,14 @@ class GraphAverageDailyBlock(BoxLayout):
             ]
             daily_counts.index = [translation[day] for day in daily_counts.index]
 
+            daily_counts = daily_counts.groupby(level=0).sum()
+
             # Reorder to include all days of the week
-            days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            days_of_week = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
             daily_counts = daily_counts.reindex(days_of_week, fill_value=0)
 
             # Plot the data on the graph
             daily_counts.plot(kind='bar', ax=self.ax)
-            self.ax.set_title(self.get_graph_title())
             self.ax.set_xlabel('Day of the Week')
             self.ax.set_ylabel('Average Count per Week')
         else:

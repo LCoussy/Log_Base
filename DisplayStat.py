@@ -51,8 +51,6 @@ class DisplayStat(Screen):
 
         self.graphs['blocks_per_table'] = self.create_graph_with_title(
             "Blocages par table", GraphBlockPerTables(graph_type="BLOCKED"))
-        self.graphs['losses_per_table'] = self.create_graph_with_title(
-            "Pertes par table", GraphBlockPerTables(graph_type="LOST"))
 
 
         grid_layout.add_widget(self.graphs['daily_blocks'])
@@ -60,7 +58,6 @@ class DisplayStat(Screen):
         grid_layout.add_widget(self.graphs['average_blocks'])
         grid_layout.add_widget(self.graphs['average_losses'])
         grid_layout.add_widget(self.graphs['blocks_per_table'])
-        grid_layout.add_widget(self.graphs['losses_per_table'])
 
 
         # Ajouter le GridLayout à un ScrollView
@@ -143,31 +140,26 @@ class DisplayStat(Screen):
         )
         popup.open()
 
-    def updateGraph(self, data):
+    def updateGraph(self, data_blocked, data_lost):
         """
         Update the graphs with new data.
 
         Args:
             data (pd.DataFrame): The new data to display in the graphs.
         """
-        if not data.empty:
+        if not data_blocked.empty:
+
             # Update daily block graphs
-            if 'daily_blocks' in self.graphs:
-                self.graphs['daily_blocks'].children[0].updateGraph(data)
-            if 'daily_losses' in self.graphs:
-                self.graphs['daily_losses'].children[0].updateGraph(data)
+            self.graphs['daily_blocks'].children[1].updateGraph(data_blocked)
 
             # Update average graphs
-            if 'average_blocks' in self.graphs:
-                self.graphs['average_blocks'].children[0].updateGraph(data)
-            if 'average_losses' in self.graphs:
-                self.graphs['average_losses'].children[0].updateGraph(data)
+            self.graphs['average_blocks'].children[1].updateGraph(data_blocked)
 
             # Update per table graphs
-            if 'blocks_per_table' in self.graphs:
-                self.graphs['blocks_per_table'].children[0].updateGraph(data)
-            if 'losses_per_table' in self.graphs:
-                self.graphs['losses_per_table'].children[0].updateGraph(data)
+            self.graphs['blocks_per_table'].children[1].updateGraph(data_blocked)
 
+        if not data_lost.empty:
 
+            self.graphs['daily_losses'].children[1].updateGraph(data_lost)
 
+            self.graphs['average_losses'].children[1].updateGraph(data_lost)
