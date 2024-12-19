@@ -46,13 +46,7 @@ class GraphDailyBlock(BoxLayout):
             # Convert the 'date' column to datetime for easier processing
             data['date'] = pd.to_datetime(data['date'])
 
-            # Filter the data based on the graph type
-            if self.graph_type == "LOST" and 'LOST' in data.columns:
-                data_filtered = FilterGraphDatas.getOnlyLost(data)
-            elif self.graph_type == "BLOCKED" and 'BLOCKED' in data.columns:
-                data_filtered = FilterGraphDatas.getOnlyBlocked(data)
-            else:
-                data_filtered = data
+            data_filtered = data
 
             if data_filtered.empty:
                 self.ax.set_title('Pas de donnee valide')

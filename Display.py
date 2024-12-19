@@ -1,16 +1,9 @@
 # Display.py
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
-from kivy.uix.screenmanager import ScreenManager
 from DisplayData import DisplayData
-from DisplayArray import DisplayArray
 from batchOpen import batchOpen
 from DisplayLogTree import LogExplorer
-from kivy.app import App
-import pandas as pd
-
-import data_handler as dh
-import GetContentLog
 
 class Display(Screen):
     """

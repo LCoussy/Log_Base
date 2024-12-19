@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 from kivy.uix.boxlayout import BoxLayout
 from kivy_matplotlib_widget.uix.graph_subplot_widget import MatplotFigureSubplot
-import pandas as pd
-import FilterGraphDatas
 
 
 class GraphBlockPerTables(BoxLayout):
@@ -42,13 +40,7 @@ class GraphBlockPerTables(BoxLayout):
 
         self.ax.clear()
         if 'table' in data.columns:
-            # Filter data based on the graph type
-            if self.graph_type == "LOST" and 'LOST' in data.columns:
-                data_filtered = FilterGraphDatas.getOnlyLost(data)
-            elif self.graph_type == "BLOCKED" and 'BLOCKED' in data.columns:
-                data_filtered = FilterGraphDatas.getOnlyBlocked(data)
-            else:
-                data_filtered = data
+            data_filtered = data
 
             if data_filtered.empty:
                 self.ax.set_title('Pas de donnee valide')
