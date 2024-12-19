@@ -56,36 +56,36 @@ class DisplayArray(Screen):
             self.updateTableFromCurrentData()
 
 
-    def populate_table(self, df_combined):
-        """
-        Populate the grid layout with data from the DataFrame.
+    # def populate_table(self, df_combined):
+    #     """
+    #     Populate the grid layout with data from the DataFrame.
 
-        Args:
-            df_combined (pd.DataFrame): The DataFrame containing the log data to display.
-        """
-        self.grid_layout.clear_widgets()
+    #     Args:
+    #         df_combined (pd.DataFrame): The DataFrame containing the log data to display.
+    #     """
+    #     self.grid_layout.clear_widgets()
 
-        df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
+    #     df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
 
-        self.grid_layout.cols = len(df_combined2.columns) + 1
+    #     self.grid_layout.cols = len(df_combined2.columns) + 1
 
-        for header in df_combined2.columns:
-            header_button = Button(text=header, bold=True)
-            header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
-            self.grid_layout.add_widget(header_button)
+    #     for header in df_combined2.columns:
+    #         header_button = Button(text=header, bold=True)
+    #         header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+    #         self.grid_layout.add_widget(header_button)
 
-        self.grid_layout.add_widget(Label(text="segment", bold=True))
+    #     self.grid_layout.add_widget(Label(text="segment", bold=True))
 
-        # Add rows of data to the grid
-        for index, row in df_combined2.iterrows():
-            for cell in row:
-                self.grid_layout.add_widget(Label(text=str(cell)))
+    #     # Add rows of data to the grid
+    #     for index, row in df_combined2.iterrows():
+    #         for cell in row:
+    #             self.grid_layout.add_widget(Label(text=str(cell)))
 
-            # Add the "Afficher" button for each row
-            segment_id = df_combined.loc[index, "segment_id"]
-            view_button = Button(text="Afficher")
-            view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.current_df.to_dict('records'), sid))
-            self.grid_layout.add_widget(view_button)
+    #         # Add the "Afficher" button for each row
+    #         segment_id = df_combined.loc[index, "segment_id"]
+    #         view_button = Button(text="Afficher")
+    #         view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.current_df.to_dict('records'), sid))
+    #         self.grid_layout.add_widget(view_button)
 
     def clean_text(self,text):
         """
@@ -105,6 +105,7 @@ class DisplayArray(Screen):
         """
         from kivy.uix.popup import Popup
         from kivy.uix.label import Label
+        # print(logs)
 
         segment_content = parser.get_segment_by_id(logs, segment_id)
         segment_content = self.clean_text(segment_content)
@@ -198,9 +199,9 @@ class DisplayArray(Screen):
         Update the grid layout with the current DataFrame data.
         This method is used to refresh the table after sorting.
         """
-        self.grid_layout.clear_widgets()  
+        self.grid_layout.clear_widgets()
         df_combined2 = self.current_df.drop(columns=["segment_id", "id"], errors='ignore')
-        self.grid_layout.cols = len(df_combined2.columns) + 1  
+        self.grid_layout.cols = len(df_combined2.columns) + 1
 
         for header in df_combined2.columns:
             sort_symbol = ""
@@ -211,13 +212,13 @@ class DisplayArray(Screen):
             header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
             self.grid_layout.add_widget(header_button)
 
-        self.grid_layout.add_widget(Label(text="segment", bold=True))  
+        self.grid_layout.add_widget(Label(text="segment", bold=True))
 
         for index, row in df_combined2.iterrows():
             for cell in row:
-                self.grid_layout.add_widget(Label(text=str(cell)))  
+                self.grid_layout.add_widget(Label(text=str(cell)))
 
-            segment_id = self.current_df.loc[index, "segment_id"]  
+            segment_id = self.current_df.loc[index, "segment_id"]
             view_button = Button(text="Afficher")
             view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
             self.grid_layout.add_widget(view_button)
@@ -228,16 +229,18 @@ class DisplayArray(Screen):
         self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
 
         for file in selected_files:
-            file_logs = parser.parse_log(file)
-            logs.extend(file_logs)
+            # file_logs = parser.parse_log(file)
+            # logs.extend(file_logs)
 
             # Ajout du traitement pour df_blocked
-            df_blocked = dh.create_table_blocked_request(GetContentLog.parse(file).get('BLOCKED'))
+            aLog = GetContentLog.parse(file).get('BLOCKED')
+            logs.append(aLog)
+            df_blocked = dh.create_table_blocked_request(aLog)
             if df_blocked is not None and not df_blocked.empty:
                 self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
         if logs:
-            df_combined = dh.create_table_blocked_request(logs)
+            df_combined = self.df_combined_blocked
 
             if df_combined is not None and not df_combined.empty:
                 df_combined = self.remove_duplicates(df_combined)
@@ -246,9 +249,9 @@ class DisplayArray(Screen):
 
                 df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
 
-                self.grid_layout.cols = len(df_combined2.columns) + 1  
-                self.current_df = df_combined  
-                self.logs = logs  
+                self.grid_layout.cols = len(df_combined2.columns) + 1
+                self.current_df = df_combined
+                self.logsBlocked = logs
 
                 for header in df_combined2.columns:
                     sort_symbol = ""
@@ -259,33 +262,33 @@ class DisplayArray(Screen):
                     header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
                     self.grid_layout.add_widget(header_button)
 
-                self.grid_layout.add_widget(Label(text="segment", bold=True))  
+                self.grid_layout.add_widget(Label(text="segment", bold=True))
 
                 for index, row in df_combined2.iterrows():
                     for cell in row:
-                        self.grid_layout.add_widget(Label(text=str(cell)))  
+                        self.grid_layout.add_widget(Label(text=str(cell)))
 
-                    segment_id = df_combined.loc[index, "segment_id"] 
+                    segment_id = df_combined.loc[index, "segment_id"]
                     view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
+                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
                     self.grid_layout.add_widget(view_button)
-                    
+
     def update_table_lost(self, selected_files):
         self.grid_layout.clear_widgets()
         logs = []
         self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
 
         for file in selected_files:
-            file_logs = parser.parse_log(file)
-            logs.extend(file_logs)
-
-            # Ajout du traitement pour df_lost
-            df_lost = dh.create_table_lost_request(GetContentLog.parse(file).get('LOST'))
+            # file_logs = parser.parse_log(file)
+            # logs.extend(file_logs)
+            aLog = GetContentLog.parse(file).get('LOST')
+            logs.append(aLog)
+            df_lost = dh.create_table_lost_request(aLog)
             if df_lost is not None and not df_lost.empty:
                 self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
         if logs:
-            df_combined = dh.create_table_lost_request(logs)
+            df_combined = self.df_combined_lost
 
             if df_combined is not None and not df_combined.empty:
                 df_combined = self.remove_duplicates(df_combined)
@@ -294,9 +297,9 @@ class DisplayArray(Screen):
 
                 df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
 
-                self.grid_layout.cols = len(df_combined2.columns) + 1  
-                self.current_df = df_combined  
-                self.logs = logs  
+                self.grid_layout.cols = len(df_combined2.columns) + 1
+                self.current_df = df_combined
+                self.logsLost = logs
 
                 for header in df_combined2.columns:
                     sort_symbol = ""
@@ -307,13 +310,13 @@ class DisplayArray(Screen):
                     header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
                     self.grid_layout.add_widget(header_button)
 
-                self.grid_layout.add_widget(Label(text="segment", bold=True))  
+                self.grid_layout.add_widget(Label(text="segment", bold=True))
 
                 for index, row in df_combined2.iterrows():
                     for cell in row:
-                        self.grid_layout.add_widget(Label(text=str(cell)))  
+                        self.grid_layout.add_widget(Label(text=str(cell)))
 
-                    segment_id = df_combined.loc[index, "segment_id"] 
+                    segment_id = df_combined.loc[index, "segment_id"]
                     view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
+                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
                     self.grid_layout.add_widget(view_button)

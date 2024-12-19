@@ -23,43 +23,43 @@ def convert_seconds_to_dhm(seconds):
     else:
         return f"{int(minutes)} minutes"
 
-def get_log_segment(file_path, request_id):
-    """
-    Retrieve the log segment corresponding to a specific request ID.
+# def get_log_segment(file_path, request_id):
+#     """
+#     Retrieve the log segment corresponding to a specific request ID.
 
-    Args:
-        file_path (str): The path to the log file.
-        request_id (str): The request ID to search for.
+#     Args:
+#         file_path (str): The path to the log file.
+#         request_id (str): The request ID to search for.
 
-    Returns:
-        str: The segment of the log containing the specified request ID, or None if not found.
-    """
-    date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
+#     Returns:
+#         str: The segment of the log containing the specified request ID, or None if not found.
+#     """
+#     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
 
-    with open(file_path, 'r', encoding='ISO-8859-1') as file:
-        lines = file.readlines()
-        current_block = []
-        matching_block = None
+#     with open(file_path, 'r', encoding='ISO-8859-1') as file:
+#         lines = file.readlines()
+#         current_block = []
+#         matching_block = None
 
-        for line in lines:
-            if date_regex.match(line):
-                # Start a new block
-                if current_block:
-                    block_content = "\n".join(current_block)
-                    if f" {request_id} " in block_content:
-                        matching_block = block_content
-                        break
-                current_block = [line.strip()]
-            else:
-                current_block.append(line.strip())
+#         for line in lines:
+#             if date_regex.match(line):
+#                 # Start a new block
+#                 if current_block:
+#                     block_content = "\n".join(current_block)
+#                     if f" {request_id} " in block_content:
+#                         matching_block = block_content
+#                         break
+#                 current_block = [line.strip()]
+#             else:
+#                 current_block.append(line.strip())
 
-        # Check the last block
-        if not matching_block and current_block:
-            block_content = "\n".join(current_block)
-            if f" {request_id} " in block_content:
-                matching_block = block_content
+#         # Check the last block
+#         if not matching_block and current_block:
+#             block_content = "\n".join(current_block)
+#             if f" {request_id} " in block_content:
+#                 matching_block = block_content
 
-        return matching_block
+#         return matching_block
 
 def parse_request(content, request_type):
     """
@@ -140,7 +140,9 @@ def parse_request(content, request_type):
         "id": request_id,
         "state": state,
         "utilisateur": user_name,
-        "poste": poste
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
     }
     blockedRequest = {
         "type": request_type,
@@ -150,7 +152,9 @@ def parse_request(content, request_type):
         "state": state,
         "table": table_name,
         "utilisateur": user_name,
-        "poste": poste
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
     }
     return blockedRequest if request_type == "BLOCKED" else lostRequest
 
@@ -347,7 +351,11 @@ def get_segment_by_id(logs, segment_id):
     Returns:
         str: The raw content of the log segment or a message if not found.
     """
+    if None in logs:
+        logs = [log for log in logs if log is not None]
     for log in logs:
-        if log.get("segment_id") == segment_id:
-            return log.get("raw_content", f"Segment pour l'ID {segment_id} introuvable.")
+        for aLog in log:
+            # print(aLog, "--------------------------------------------")
+            if aLog.get("segment_id") == segment_id:
+                return aLog.get("content", f"Segment pour l'ID {segment_id} introuvable.")
     return f"Segment pour l'ID {segment_id} introuvable."
