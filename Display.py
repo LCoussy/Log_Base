@@ -67,6 +67,9 @@ class Display(Screen):
         self.df_combined_lost_data.drop_duplicates(inplace=True)
         self.df_combined_lost_data.reset_index(drop=True, inplace=True)
 
+        dataLost = self.displayData.displayLost.update_table_lost(selected_files)
+        #self.displayData.displayStat.updateGraph(dataBlocked)
+        
         self.displayData.displayBlocked.update_table_blocked(self.df_combined_blocked_data)
 
         self.displayData.displayLost.update_table_lost(self.df_combined_lost_data)

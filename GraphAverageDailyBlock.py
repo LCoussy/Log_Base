@@ -28,8 +28,8 @@ class GraphAverageDailyBlock(BoxLayout):
         # Create the Matplotlib widget to integrate it with Kivy
         self.figure_widget = MatplotFigureSubplot()
         self.figure_widget.figure = self.fig
-
-        # Add the widget to the main layout
+                                
+        # Ajouter le widget au layout principal
         self.add_widget(self.figure_widget)
 
 

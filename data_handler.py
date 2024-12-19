@@ -18,7 +18,7 @@ def create_table_blocked_request(data):
         return None
 
     # Define the required columns, including 'segment_id'
-    requiredColumns = ['date', 'table', 'utilisateur', 'id', 'poste']
+    requiredColumns = ['date', 'table', 'utilisateur', 'id', 'poste', 'segment_id']
 
     # Return the DataFrame if all required columns are present
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
@@ -49,8 +49,11 @@ def create_table_lost_request(data):
 
     if df.empty or 'date' not in df.columns:
         return None
+    if 'segment_id' not in df.columns:
+        df['segment_id'] = None  # You can replace None with a default value if necessary
 
-    requiredColumns = ['date', 'utilisateur', 'id', 'adresse']
+    requiredColumns = ['date', 'utilisateur', 'id', 'poste', 'segment_id']
+
     return df[requiredColumns] if all(col in df.columns for col in requiredColumns) else None
 
 

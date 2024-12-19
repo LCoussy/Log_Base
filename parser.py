@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 import uuid
+
 def convert_seconds_to_dhm(seconds):
     """
     Converts a duration in seconds into a readable format: days, hours, minutes.
@@ -11,54 +12,54 @@ def convert_seconds_to_dhm(seconds):
     Returns:
         str: A formatted string representing the duration in days, hours, minutes.
     """
-    days = seconds // (24 * 3600) -177
+    days = seconds // (24 * 3600)
     hours = (seconds % (24 * 3600)) // 3600
     minutes = (seconds % 3600) // 60
+
     if days >= 1:
         return f"{int(days)} jours, {int(hours)} heures, {int(minutes)} minutes"
+    elif hours >= 1:
+        return f"{int(hours)} heures, {int(minutes)} minutes"
     else:
-        if hours >= 1:
-            return f"{int(hours)} heures, {int(minutes)} minutes"
-        else:
-            return f"{int(minutes)} minutes"
+        return f"{int(minutes)} minutes"
 
-def get_log_segment(file_path, request_id):
-    """
-    Retrieve the log segment corresponding to a specific request ID.
+# def get_log_segment(file_path, request_id):
+#     """
+#     Retrieve the log segment corresponding to a specific request ID.
 
-    Args:
-        file_path (str): The path to the log file.
-        request_id (str): The request ID to search for.
+#     Args:
+#         file_path (str): The path to the log file.
+#         request_id (str): The request ID to search for.
 
-    Returns:
-        str: The segment of the log containing the specified request ID, or None if not found.
-    """
-    date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
+#     Returns:
+#         str: The segment of the log containing the specified request ID, or None if not found.
+#     """
+#     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
 
-    with open(file_path, 'r', encoding='ISO-8859-1') as file:
-        lines = file.readlines()
-        current_block = []
-        matching_block = None
+#     with open(file_path, 'r', encoding='ISO-8859-1') as file:
+#         lines = file.readlines()
+#         current_block = []
+#         matching_block = None
 
-        for line in lines:
-            if date_regex.match(line):
-                # Start a new block
-                if current_block:
-                    block_content = "\n".join(current_block)
-                    if f" {request_id} " in block_content:
-                        matching_block = block_content
-                        break
-                current_block = [line.strip()]
-            else:
-                current_block.append(line.strip())
+#         for line in lines:
+#             if date_regex.match(line):
+#                 # Start a new block
+#                 if current_block:
+#                     block_content = "\n".join(current_block)
+#                     if f" {request_id} " in block_content:
+#                         matching_block = block_content
+#                         break
+#                 current_block = [line.strip()]
+#             else:
+#                 current_block.append(line.strip())
 
-        # Check the last block
-        if not matching_block and current_block:
-            block_content = "\n".join(current_block)
-            if f" {request_id} " in block_content:
-                matching_block = block_content
+#         # Check the last block
+#         if not matching_block and current_block:
+#             block_content = "\n".join(current_block)
+#             if f" {request_id} " in block_content:
+#                 matching_block = block_content
 
-        return matching_block
+#         return matching_block
 
 def parse_request(content, request_type):
     """
@@ -138,9 +139,10 @@ def parse_request(content, request_type):
         "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
         "utilisateur": user_name,
-        "poste": poste
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
     }
     blockedRequest = {
         "type": request_type,
@@ -148,10 +150,11 @@ def parse_request(content, request_type):
         "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
         "table": table_name,
         "utilisateur": user_name,
-        "poste": poste
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
     }
     return blockedRequest if request_type == "BLOCKED" else lostRequest
 
@@ -170,7 +173,7 @@ def parse_user(content):
         dict: Parsed information about the request with keys:
             - "type": Type of request, Blocked or Lost.
             - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
-            - "date2": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
+            - "dateExecution": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
             - "id": Request ID (str) or None.
             - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
             - "adresse": SQL address (str) or None.
@@ -222,7 +225,7 @@ def update_logs_with_duration(logs):
     for log in logs:
         request_id = log["id"]
         first_date = log["date"]
-        second_date = log["date2"]
+        second_date = log["dateExecution"]
 
 
         if request_id not in requests or first_date > requests[request_id]["last_appearance"]:
@@ -242,7 +245,9 @@ def update_logs_with_duration(logs):
             last_appearance = datetime.strptime(requests[request_id]["last_appearance"], "%Y-%m-%d %H:%M:%S")
             start_blocking = datetime.strptime(requests[request_id]["start_blocking"], "%Y-%m-%d %H:%M:%S")
             duration = (last_appearance - start_blocking).total_seconds()
+            print(duration)
             log["duree"] = convert_seconds_to_dhm(duration)
+
 
     return logs
 
@@ -309,7 +314,11 @@ def get_segment_by_id(logs, segment_id):
     Returns:
         str: The raw content of the log segment or a message if not found.
     """
+    if None in logs:
+        logs = [log for log in logs if log is not None]
     for log in logs:
-        if log.get("segment_id") == segment_id:
-            return log.get("raw_content", f"Segment pour l'ID {segment_id} introuvable.")
+        for aLog in log:
+            # print(aLog, "--------------------------------------------")
+            if aLog.get("segment_id") == segment_id:
+                return aLog.get("content", f"Segment pour l'ID {segment_id} introuvable.")
     return f"Segment pour l'ID {segment_id} introuvable."
