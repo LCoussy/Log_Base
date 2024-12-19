@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 import uuid
+
 def convert_seconds_to_dhm(seconds):
     """
     Converts a duration in seconds into a readable format: days, hours, minutes.
@@ -11,16 +12,16 @@ def convert_seconds_to_dhm(seconds):
     Returns:
         str: A formatted string representing the duration in days, hours, minutes.
     """
-    days = seconds // (24 * 3600) -177
+    days = seconds // (24 * 3600)
     hours = (seconds % (24 * 3600)) // 3600
     minutes = (seconds % 3600) // 60
+
     if days >= 1:
         return f"{int(days)} jours, {int(hours)} heures, {int(minutes)} minutes"
+    elif hours >= 1:
+        return f"{int(hours)} heures, {int(minutes)} minutes"
     else:
-        if hours >= 1:
-            return f"{int(hours)} heures, {int(minutes)} minutes"
-        else:
-            return f"{int(minutes)} minutes"
+        return f"{int(minutes)} minutes"
 
 def get_log_segment(file_path, request_id):
     """

@@ -212,9 +212,8 @@ class DisplayArray(Screen):
             self.grid_layout.add_widget(header_button)
 
         self.grid_layout.add_widget(Label(text="segment", bold=True))  
-        
+
         for index, row in df_combined2.iterrows():
-            print(row)
             for cell in row:
                 self.grid_layout.add_widget(Label(text=str(cell)))  
 
