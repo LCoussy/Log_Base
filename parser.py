@@ -1,22 +1,41 @@
 import re
-import json
 from datetime import datetime
-import pandas as pd
-import data_handler as dh
+import uuid
 
-def parse_blocked_request(content):
+def convert_seconds_to_dhm(seconds):
     """
-    Parse a blocked request from the log content.
-
-    This function extracts key details such as the request date, time, ID, table name, 
-    state, SQL address, and user name for a blocked request. The data is returned in a dictionary format.
+    Converts a duration in seconds into a readable format: days, hours, minutes.
 
     Args:
-        content (str): The content block containing the blocked request information.
+        seconds (float): The number of seconds to convert.
 
     Returns:
-        dict: Parsed information about the blocked request with keys:
-            - "type": Type of request, always 'bloquee' for blocked requests.
+        str: A formatted string representing the duration in days, hours, minutes.
+    """
+    days = seconds // (24 * 3600)
+    hours = (seconds % (24 * 3600)) // 3600
+    minutes = (seconds % 3600) // 60
+
+    if days >= 1:
+        return f"{int(days)} jours, {int(hours)} heures, {int(minutes)} minutes"
+    elif hours >= 1:
+        return f"{int(hours)} heures, {int(minutes)} minutes"
+    else:
+        return f"{int(minutes)} minutes"
+
+def parse_request(content, request_type):
+    """
+    Parse a request from the log content.
+
+    This function extracts key details such as the request date, time, ID, table name,
+    state, SQL address, and user name for a request. The data is returned in a dictionary format.
+
+    Args:
+        content (str): The content block containing the request information.
+        request_type (str): The type of request, either "BLOCKED" or "LOST".
+    Returns:
+        dict: Parsed information about the request with keys:
+            - "type": Type of request, Blocked or Lost.
             - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
             - "id": Request ID (str) or None.
             - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
@@ -25,102 +44,174 @@ def parse_blocked_request(content):
             - "utilisateur": User name associated with the request or None.
     """
 
-    # Match pour la date et l'heure (deuxième occurrence)
-    blocking_date_match = re.search(r'\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\s+\w+\s+(\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2})', content)
-    if blocking_date_match:
-        blocking_date = blocking_date_match.group(1)  # Deuxième date
-        blocking_time = blocking_date_match.group(2)  # Deuxième heure
-
-        # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
+    # Match for the first date and time
+    first_date_match = re.search(r'(\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
+    first_date = None
+    if first_date_match:
         try:
-            combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%m/%d/%y %H:%M:%S")
-            iso_format_datetime = combined_datetime.strftime("%Y-%m-%d %H:%M:%S")
+            first_date = datetime.strptime(first_date_match.group(1), "%d/%m/%y %H:%M:%S")
         except ValueError:
-            iso_format_datetime = None
-    else:
-        iso_format_datetime = None
+            pass
 
-    # Extraction de l'état (ACTIVE ou INACTIVE)
+    # Match for the second date (BLOQUE)
+    second_date_match = re.search(r'BLOQUE (\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
+    second_date = None
+    if second_date_match:
+        try:
+            second_date = datetime.strptime(second_date_match.group(1), "%d/%m/%y %H:%M:%S")
+        except ValueError:
+            pass
+    else:
+        second_date_match = re.findall(r'(\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2})', content)
+        if second_date_match:
+            try:
+                second_date = datetime.strptime(second_date_match[1], "%d/%m/%y %H:%M:%S")
+            except ValueError:
+                pass
+
+    # Extract the state (ACTIVE ou INACTIVE)
     state_match = re.search(r'\b(ACTIVE|INACTIVE)\b', content)
     state = state_match.group(1) if state_match else None
 
-    # Extraction des autres informations
-    id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
-    request_id = id_match.group(1) if id_match else None
+    # Extract the request's ID
+    request_id_match = re.search(r'\s+(\d+)\s+(ACTIVE|INACTIVE)', content)
+    request_id = request_id_match.group(1) if request_id_match else None
 
+    # Extract the SQL adress
     sql_address_match = re.search(r'\b(INACTIVE|ACTIVE)\s+(\w+)', content)
     sql_address = sql_address_match.group(2) if sql_address_match else None
 
     table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
     table_name = table_match.group(1) if table_match else None
 
-    user_matches = re.findall(r'^\s*([a-zA-Z0-9_]+)\s*$', content, re.MULTILINE)
-    user_name = user_matches[1] if len(user_matches) >= 2 else None
+    # Extract the user's name
+    user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
+    user_name = user_match.group(1) if user_match else None
 
-    return {
-        "type": "bloquee",
-        "date": iso_format_datetime,
+    # Extract the user's workstation
+    poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
+    poste = poste_match.group(1) if poste_match else None
+
+    # Format the date in ISO format if it exists
+    formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
+    formatted_second_date = second_date.strftime("%Y-%m-%d %H:%M:%S") if second_date else None
+    lostRequest = {
+        "type": request_type,
+        "date": formatted_first_date,
+        "dateExecution": formatted_second_date,
         "id": request_id,
         "state": state,
-        "adresse": sql_address,
+        "utilisateur": user_name,
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
+    }
+    blockedRequest = {
+        "type": request_type,
+        "date": formatted_first_date,
+        "dateExecution": formatted_second_date,
+        "id": request_id,
+        "state": state,
         "table": table_name,
+        "utilisateur": user_name,
+        "poste": poste,
+        "segment_id": str(uuid.uuid4()),
+        "content": content
+    }
+    return blockedRequest if request_type == "BLOCKED" else lostRequest
+
+def parse_user(content):
+    """
+    Parse a request from the log content.
+
+    This function extracts key details such as the request date, time, ID, table name,
+    state, SQL address, and user name for a request. The data is returned in a dictionary format.
+
+    Args:
+        content (str): The content block containing the request information.
+        request_type (str): The type of request, either "BLOCKED" or "LOST".
+
+    Returns:
+        dict: Parsed information about the request with keys:
+            - "type": Type of request, Blocked or Lost.
+            - "date": Combined date and time in 'YYYY-MM-DD HH:MM:SS' format or None if not found.
+            - "dateExecution": Second date found, formatted to 'YYYY-MM-DD HH:MM:SS'.
+            - "id": Request ID (str) or None.
+            - "state": Request state ('INACTIVE' or 'ACTIVE') or None.
+            - "adresse": SQL address (str) or None.
+            - "table": Name of the table involved (str) or None.
+            - "utilisateur": User name associated with the request or None.
+            - "poste": User's machine name associated with the request or None.
+    """
+
+    # Match for the first date and time
+    date_duration_match = re.search(r'((\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2}))\s+(\d{2}:\d{2}:\d{2})', content)
+    first_date = None
+    if date_duration_match.group(1):
+        try:
+            first_date = datetime.strptime(date_duration_match.group(1), "%d/%m/%y %H:%M:%S")
+        except ValueError:
+            pass
+
+    duration = None
+
+    # Extract the user's name
+    user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
+    pattern = re.compile(r'^(?:.*\n){2}(\S+)', re.MULTILINE)
+    matches = pattern.findall(content)
+    user_name = matches[0] if matches else None
+
+
+    # Format the date in ISO format if it exists
+    formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
+
+    return {
+        "type": "USER",
+        "date": formatted_first_date,
+        "DuréeConnection": date_duration_match.group(4),
         "utilisateur": user_name
     }
 
-def parse_lost_request(content):
+def update_logs_with_duration(logs):
     """
-    Useless
+    Update logs with correct blocking duration and remove duplicates by keeping only the most recent entry.
+
+    Args:
+        logs (list): The list of logs to update with the correct blocking durations.
+
+    Returns:
+        list: Updated logs with correct durations and duplicates removed.
     """
+    requests = {}
 
-    # Match pour la date et l'heure (deuxième occurrence)
-    blocking_date_match = re.search(r'\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\s+\w+\s+(\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2})', content)
-    if blocking_date_match:
-        blocking_date = blocking_date_match.group(1)  # Deuxième date
-        blocking_time = blocking_date_match.group(2)  # Deuxième heure
+    for log in logs:
+        request_id = log["id"]
+        first_date = log["date"]
+        second_date = log["dateExecution"]
 
-        # Combiner la date et l'heure, puis convertir au format YYYY-MM-DDTHH:MM:SS
-        try:
-            combined_datetime = datetime.strptime(f"{blocking_date} {blocking_time}", "%d/%m/%y %H:%M:%S")
-            iso_format_datetime = combined_datetime.strftime("%Y-%m-%dT%H:%M:%S")
-        except ValueError:
-            iso_format_datetime = None
-    else:
-        iso_format_datetime = None
 
-    # Match pour l'ID de requête (exemple : 29682)
-    id_match = re.search(r'\s+(\d+)\s+INACTIVE', content)
-    request_id = id_match.group(1) if id_match else None
+        if request_id not in requests or first_date > requests[request_id]["last_appearance"]:
+            requests[request_id] = {
+                "last_appearance": first_date,
+                "start_blocking": second_date
+            }
+        else:
+            if first_date > requests[request_id]["last_appearance"]:
+                requests[request_id]["last_appearance"] = first_date
+            if not requests[request_id]["start_blocking"]:
+                requests[request_id]["start_blocking"] = second_date
 
-    # Match pour le nom de la table
-    table_match = re.search(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}.*\n(\w+)', content, re.MULTILINE)
-    table_name = table_match.group(1) if table_match else None
+    for log in logs:
+        request_id = log["id"]
+        if request_id in requests:
+            last_appearance = datetime.strptime(requests[request_id]["last_appearance"], "%Y-%m-%d %H:%M:%S")
+            start_blocking = datetime.strptime(requests[request_id]["start_blocking"], "%Y-%m-%d %H:%M:%S")
+            duration = (last_appearance - start_blocking).total_seconds()
+            print(duration)
+            log["duree"] = convert_seconds_to_dhm(duration)
 
-    # Match pour l'état (INACTIVE)
-    state_match = re.search(r'\b(INACTIVE|ACTIVE)\b', content)
-    state = state_match.group(1) if state_match else None
 
-    # Match pour l'adresse SQL de la requête (exemple : 5j067zm8mp28h)
-    sql_address_match = re.search(r'INACTIVE\s+(\w+)', content)
-    sql_address = sql_address_match.group(1) if sql_address_match else None
-
-    # Match pour l'utilisateur concerné (premier utilisateur trouvé)
-    user_matches = re.findall(r'^\s*([a-zA-Z0-9_]+)\s*$', content, re.MULTILINE)
-    if user_matches:
-        user_name = user_matches[0]  # Prend le premier utilisateur trouvé
-    else:
-        user_name = None
-
-    return {
-        "type": "perdue",
-        "Date": iso_format_datetime,
-        "heure": blocking_time,
-        "id": request_id,
-        "state": state,
-        "address": sql_address,
-        "table": table_name,
-        "user": user_name
-    }
-
+    return logs
 
 
 def parse_log(file_path):
@@ -141,26 +232,22 @@ def parse_log(file_path):
 
     # Regex for identifying the start of a block with a date
     date_regex = re.compile(r'^\d{2}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}')
+    segment_id_counter = 0
 
-    # Use the correct encoding to read the file
     with open(file_path, 'r', encoding='ISO-8859-1') as file:
         lines = file.readlines()
         current_block = []
 
-        for i, line in enumerate(lines):
+        for line in lines:
             if date_regex.match(line):
                 if current_block:
                     block_content = "\n".join(current_block)
-
-                    # Vérifie si le bloc est une requête bloquée ou perdue
                     if "BLOQUE" in block_content:
-                        parsed_data = parse_blocked_request(block_content)
-                    else:
-                        parsed_data = None
-
-                    if parsed_data:
+                        parsed_data = parse_request(block_content, "BLOCKED")
+                        segment_id = str(uuid.uuid4())
+                        parsed_data["segment_id"] = segment_id
+                        parsed_data["raw_content"] = block_content
                         logs.append(parsed_data)
-
                 current_block = [line.strip()]
             else:
                 current_block.append(line.strip())
@@ -168,8 +255,32 @@ def parse_log(file_path):
         if current_block:
             block_content = "\n".join(current_block)
             if "BLOQUE" in block_content:
-                parsed_data = parse_blocked_request(block_content)
-                if parsed_data:
-                    logs.append(parsed_data)
+                parsed_data = parse_request(block_content, "BLOCKED")
+                segment_id = str(uuid.uuid4())
+                parsed_data["segment_id"] = segment_id
+                parsed_data["raw_content"] = block_content
+                logs.append(parsed_data)
+
+    logs = update_logs_with_duration(logs)
 
     return logs
+
+def get_segment_by_id(logs, segment_id):
+    """
+    Retrieve the raw content of a log segment by its unique ID.
+
+    Args:
+        logs (list): List of parsed logs containing segment IDs and raw content.
+        segment_id (str): The unique ID of the segment to retrieve.
+
+    Returns:
+        str: The raw content of the log segment or a message if not found.
+    """
+    if None in logs:
+        logs = [log for log in logs if log is not None]
+    for log in logs:
+        for aLog in log:
+            # print(aLog, "--------------------------------------------")
+            if aLog.get("segment_id") == segment_id:
+                return aLog.get("content", f"Segment pour l'ID {segment_id} introuvable.")
+    return f"Segment pour l'ID {segment_id} introuvable."
