@@ -25,7 +25,7 @@ class DisplayArray(Screen):
         self.build_ui()
 
 
-    def sort_table(self, column):
+    def sort_table(self, column, requestType):
         """
         Sort the DataFrame based on the selected column and update the grid layout.
 
@@ -47,7 +47,7 @@ class DisplayArray(Screen):
             )
             self.current_df.reset_index(drop=True, inplace=True)
             print("column:", column)
-            self.updateTableFromCurrentData()
+            self.updateTableFromCurrentData(requestType)
 
     def clean_text(self,text):
         """
@@ -143,7 +143,7 @@ class DisplayArray(Screen):
         df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
 
         return df_unique
-    def updateTableFromCurrentData(self):
+    def updateTableFromCurrentData(self, requestType):
         """
         Update the grid layout with the current DataFrame data.
         This method is used to refresh the table after sorting.
@@ -158,7 +158,7 @@ class DisplayArray(Screen):
                 sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
 
             header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-            header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+            header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, requestType))
             self.grid_layout.add_widget(header_button)
 
         self.grid_layout.add_widget(Label(text="segment", bold=True))
@@ -169,7 +169,10 @@ class DisplayArray(Screen):
 
             segment_id = self.current_df.loc[index, "segment_id"]
             view_button = Button(text="Afficher")
-            view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logs, sid))
+            if requestType == "blocked":
+                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
+            else:
+                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
             self.grid_layout.add_widget(view_button)
 
     def update_table_blocked(self, selected_files):
@@ -206,7 +209,7 @@ class DisplayArray(Screen):
                         sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
 
                     header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, "blocked"))
                     self.grid_layout.add_widget(header_button)
 
                 self.grid_layout.add_widget(Label(text="segment", bold=True))
@@ -252,7 +255,7 @@ class DisplayArray(Screen):
                         sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
 
                     header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col))
+                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, "lost"))
                     self.grid_layout.add_widget(header_button)
 
                 self.grid_layout.add_widget(Label(text="segment", bold=True))
