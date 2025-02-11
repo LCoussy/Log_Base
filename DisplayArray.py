@@ -7,6 +7,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
+from kivy.uix.modalview import ModalView
 
 import pandas as pd
 
@@ -81,12 +82,24 @@ class DisplayArray(Screen):
         label.bind(size=label.setter('text_size'))
         content_layout.add_widget(label)
 
-        popup = Popup(
-            title=f"Segment {segment_id}",
-            content=content_layout,
-            size_hint=(0.9, 0.9),
-            auto_dismiss=True
+        popup = ModalView(size_hint=(0.9, 0.9), auto_dismiss=True)
+
+        #popup = Popup(
+        #    title=f"Segment {segment_id}",
+        #    content=content_layout,
+        #    size_hint=(0.9, 0.9),
+        #    auto_dismiss=True
+        #)
+        popup.open()
+        close_button = Button(
+            text="Fermer",
+            size_hint_y=None,
+            height=30
         )
+        close_button.bind(on_release=lambda instance: popup.dismiss())
+        
+        content_layout.add_widget(close_button)
+        popup.add_widget(content_layout)
         popup.open()
 
     def build_ui(self):
