@@ -8,6 +8,9 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
 from kivy.uix.modalview import ModalView
+from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
+
 
 import pandas as pd
 
@@ -125,6 +128,10 @@ class DisplayArray(Screen):
         )
         up_layout.add_widget(title)
 
+        self.progress_bar = ProgressBar(max=100, size_hint=(1, None), height=20)
+        up_layout.add_widget(self.progress_bar)
+        self.progress_bar.opacity = 0  # Cachée par défaut
+
         # Scrollable Array
         scroll_view = ScrollView(size_hint=(1, 0.9))
         self.grid_layout = GridLayout(size_hint_y=None, padding=10, spacing=10, row_force_default=True, row_default_height=40)
@@ -190,94 +197,92 @@ class DisplayArray(Screen):
 
     def update_table_blocked(self, selected_files):
         self.grid_layout.clear_widgets()
-        logs = []
-        self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
+        self.df_combined_blocked = pd.DataFrame()
+        self.logsBlocked = []
+        self.progress_bar.value = 0
+        self.progress_bar.opacity = 1  # Affiche la barre de progression
 
-        for file in selected_files:
+        self.selected_files = selected_files
+        self.current_file_index = 0
+        self.total_files = len(selected_files)
+        self.batch_size = 10  # Nombre de fichiers traités par cycle
 
-            # Ajout du traitement pour df_blocked
-            aLog = GetContentLog.parse(file).get('BLOCKED')
-            logs.append(aLog)
-            df_blocked = dh.create_table_blocked_request(aLog)
-            if df_blocked is not None and not df_blocked.empty:
-                self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
+        Clock.schedule_once(self.process_next_batch_blocked, 0.1)
 
-        if logs:
-            df_combined = self.df_combined_blocked
+    def process_next_batch_blocked(self, dt):
+        """
+        Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
+        """
+        if self.current_file_index < self.total_files:
+            end_index = min(self.current_file_index + self.batch_size, self.total_files)
 
-            if df_combined is not None and not df_combined.empty:
-                df_combined = self.remove_duplicates(df_combined)
-                df_combined.drop_duplicates(inplace=True)
-                df_combined.reset_index(drop=True, inplace=True)
+            for i in range(self.current_file_index, end_index):
+                file = self.selected_files[i]
+                aLog = GetContentLog.parse(file).get('BLOCKED')
+                self.logsBlocked.append(aLog)
+                df_blocked = dh.create_table_blocked_request(aLog)
 
-                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
+                if df_blocked is not None and not df_blocked.empty:
+                    self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
-                self.grid_layout.cols = len(df_combined2.columns) + 1
-                self.current_df = df_combined
-                self.logsBlocked = logs
+            self.current_file_index = end_index  # Mise à jour de l'index
 
-                for header in df_combined2.columns:
-                    sort_symbol = ""
-                    if hasattr(self, 'sort_column') and self.sort_column == header:
-                        sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
+            # Mise à jour de la barre de progression
+            self.progress_bar.value = (self.current_file_index / self.total_files) * 100
 
-                    header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, "blocked"))
-                    self.grid_layout.add_widget(header_button)
-
-                self.grid_layout.add_widget(Label(text="segment", bold=True))
-
-                for index, row in df_combined2.iterrows():
-                    for cell in row:
-                        self.grid_layout.add_widget(Label(text=str(cell)))
-
-                    segment_id = df_combined.loc[index, "segment_id"]
-                    view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
-                    self.grid_layout.add_widget(view_button)
+            # Continue avec le prochain lot
+            Clock.schedule_once(self.process_next_batch_blocked, 0.1)
+        else:
+            self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            if not self.df_combined_blocked.empty:
+                self.df_combined_blocked = self.remove_duplicates(self.df_combined_blocked)
+                self.df_combined_blocked.drop_duplicates(inplace=True)
+                self.df_combined_blocked.reset_index(drop=True, inplace=True)
+                self.current_df = self.df_combined_blocked
+                self.updateTableFromCurrentData("blocked")
 
     def update_table_lost(self, selected_files):
         self.grid_layout.clear_widgets()
-        logs = []
-        self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
+        self.df_combined_lost = pd.DataFrame()
+        self.logsLost = []
+        self.progress_bar.value = 0
+        self.progress_bar.opacity = 1  # Affiche la barre de progression
 
-        for file in selected_files:
-            aLog = GetContentLog.parse(file).get('LOST')
-            logs.append(aLog)
-            df_lost = dh.create_table_lost_request(aLog)
-            if df_lost is not None and not df_lost.empty:
-                self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
+        self.selected_files = selected_files
+        self.current_file_index = 0
+        self.total_files = len(selected_files)
+        self.batch_size = 10  # Nombre de fichiers traités par cycle (ajuste selon tes besoins)
 
-        if logs:
-            df_combined = self.df_combined_lost
+        Clock.schedule_once(self.process_next_batch_lost, 0.1)
 
-            if df_combined is not None and not df_combined.empty:
-                df_combined = self.remove_duplicates(df_combined)
-                df_combined.drop_duplicates(inplace=True)
-                df_combined.reset_index(drop=True, inplace=True)
+    def process_next_batch_lost(self, dt):
+        """
+        Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
+        """
+        if self.current_file_index < self.total_files:
+            end_index = min(self.current_file_index + self.batch_size, self.total_files)
 
-                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
+            for i in range(self.current_file_index, end_index):
+                file = self.selected_files[i]
+                aLog = GetContentLog.parse(file).get('LOST')
+                self.logsLost.append(aLog)
+                df_lost = dh.create_table_lost_request(aLog)
 
-                self.grid_layout.cols = len(df_combined2.columns) + 1
-                self.current_df = df_combined
-                self.logsLost = logs
+                if df_lost is not None and not df_lost.empty:
+                    self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
-                for header in df_combined2.columns:
-                    sort_symbol = ""
-                    if hasattr(self, 'sort_column') and self.sort_column == header:
-                        sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
+            self.current_file_index = end_index  # Mise à jour de l'index
 
-                    header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, "lost"))
-                    self.grid_layout.add_widget(header_button)
+            # Mise à jour de la barre de progression
+            self.progress_bar.value = (self.current_file_index / self.total_files) * 100
 
-                self.grid_layout.add_widget(Label(text="segment", bold=True))
-
-                for index, row in df_combined2.iterrows():
-                    for cell in row:
-                        self.grid_layout.add_widget(Label(text=str(cell)))
-
-                    segment_id = df_combined.loc[index, "segment_id"]
-                    view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
-                    self.grid_layout.add_widget(view_button)
+            # Continue avec le prochain lot
+            Clock.schedule_once(self.process_next_batch_lost, 0.1)
+        else:
+            self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            if not self.df_combined_lost.empty:
+                self.df_combined_lost = self.remove_duplicates(self.df_combined_lost)
+                self.df_combined_lost.drop_duplicates(inplace=True)
+                self.df_combined_lost.reset_index(drop=True, inplace=True)
+                self.current_df = self.df_combined_lost
+                self.updateTableFromCurrentData("lost")
