@@ -95,11 +95,28 @@ class DragDropScreen(Screen):
         self.manager.current = 'display'
 
     def show_error_popup(self, message):
+
+        # Création du layout pour inclure le message et le bouton
+        content_layout = BoxLayout(orientation='vertical', spacing=10, padding=10)
+
+        close_button = Button(text="Fermer", size_hint_y=None, height=40)
+
+        message_label = Label(text=message, halign='center', valign='middle')
+        message_label.bind(size=message_label.setter('text_size'))
+
         popup = Popup(
             title="Erreur",
-            content=Label(text=message, halign='center', valign='middle'),
+            content=content_layout,
             size_hint=(0.6, 0.4)
         )
+
+         # Lier le bouton pour fermer la popup
+        close_button.bind(on_release=popup.dismiss)
+
+        # Ajouter les éléments au layout
+        content_layout.add_widget(message_label)
+        content_layout.add_widget(close_button)
+
         popup.open()
 
     def on_enter(self):
