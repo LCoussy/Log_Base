@@ -21,7 +21,7 @@ build:
     - poetry install --only main
     - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes
     - mkdir dependencies-logbase
-    - pip download --platform win_amd64 --dest dependencies-logbase -r requirements-poetry.txt
+    - pip download --platform win_amd64 --no-deps --dest dependencies-logbase -r requirements-poetry.txt
     - zip -r dependencies-logbase.zip dependencies-logbase
 
 
