@@ -17,7 +17,7 @@ build:
     - pipx inject poetry poetry-plugin-export
 
   script:
-    - poetry lock --no-update
+    - poetry lock
     - poetry install --only main  # Installation des dépendances avec poetry
     - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes  # Export des dépendances vers requirements.txt
     # Télécharger les packages compatibles Windows
