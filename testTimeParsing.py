@@ -21,8 +21,8 @@ def read_logcache_files(directory):
   print(f"Time taken to read .pkg files in __logcache__: {end_time - start_time} seconds")
 
 # Example usage
-# directory_path = '/home/coussy/Downloads/GCE'
-# parse_files_in_directory(directory_path)
+directory_path = '/home/coussy/Downloads/GCE'
+parse_files_in_directory(directory_path)
 
 # logcache_directory_path = '/home/coussy/log-base/ihm_kivy/__logcache__'
 # read_logcache_files(logcache_directory_path)

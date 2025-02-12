@@ -64,22 +64,20 @@ class FilterFiles:
 
         # Walk through the directory and process files
         for root, dir, files in os.walk(directory):
-            for file in sorted(files, key=lambda f: self.convert_datetime(re.search(pattern_filename, os.path.join(root, f))), reverse=True):
+            for file in sorted(files, key=lambda f: self.convert_datetime(re.search(pattern_filename, os.path.join(root, f))) if re.search(pattern_filename, os.path.join(root, f)) else datetime.min, reverse=True):
                 file_path = os.path.join(root, file)
                 pat = re.search(pattern_filename, file_path)
-
-                # Extract hierarchy keys
-                year, month, day, hour = (
-                    pat.group(6),
-                    self.get_month(int(pat.group(5))),
-                    pat.group(4),
-                    f"{pat.group(1).replace("_","0")}:00"
-                )
-
-                # Build nested structure
-                hierarchy.setdefault(year, {}).setdefault(month, {}).setdefault(day, {}).setdefault(hour, []).append({
-                    "file_path": file_path,
-                    "formatted_time": f"{pat.group(1).replace("_","0")}:{pat.group(2)}"
-                })
-
+                if pat:
+                    # Extract hierarchy keys
+                    year, month, day, hour = (
+                        pat.group(6),
+                        self.get_month(int(pat.group(5))),
+                        pat.group(4),
+                        f"{pat.group(1).replace("_","0")}:00"
+                    )
+                    # Build nested structure
+                    hierarchy.setdefault(year, {}).setdefault(month, {}).setdefault(day, {}).setdefault(hour, []).append({
+                        "file_path": file_path,
+                        "formatted_time": f"{pat.group(1).replace("_","0")}:{pat.group(2)}"
+                    })
         return hierarchy
