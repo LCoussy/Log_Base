@@ -38,6 +38,9 @@ def GetContentLog(filepath):
   isRequest = True
   isBlocked = False
   with open(filepath, 'r', encoding='ISO-8859-1') as f:
+    if ("ALTER SYSTEM KILL SESSION" in f):
+      print("Erreur Alter System Kill Session")
+      return {"ERROR" : "Erreur Alter System Kill Session"}
     for line in f:
       if ("résultat de concaténation de chaîne trop long" in line):
         print("Erreur Requête trop longue")
@@ -80,6 +83,7 @@ def GetContentLog(filepath):
           buffer = line
           continue
 
+
   data = {"LOST": data_lost, "BLOCKED": data_blocked, "USER": data_user}
   return data
 
@@ -97,8 +101,9 @@ def parse(filepath):
           os.makedirs('__logcache__')
         # Write data in the fiel using pickle
         with open(cache_file_path, 'wb') as file:
+            print(f"Cache file created: {cache_file_path}")
             pickle.dump(GetContentLog(filepath), file)
-        print(f"Cache file created: {cache_file_path}")
+        print(f"Cache file filled: {cache_file_path}")
     #  Read and return cached data from the file
     result = read_file_pickle(cache_file_path)
     if result is not None:
