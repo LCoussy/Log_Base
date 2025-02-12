@@ -22,7 +22,7 @@ build:
     - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes  # Export des dépendances vers requirements.txt
     # Télécharger les packages compatibles Windows
     - mkdir dependencies-logbase
-    - pip download --platform win_amd64 --only-binary=:all: --dest dependencies-logbase -r requirements-poetry.txt
+    - pip download --platform win_amd64 "--only-binary=:all:" --dest dependencies-logbase -r requirements-poetry.txt
     - zip -r dependencies-logbase.zip dependencies-logbase  # Création du fichier ZIP
 
   artifacts:
