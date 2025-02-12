@@ -89,8 +89,8 @@ def parse_request(content, request_type):
     user_name = user_match.group(1) if user_match else None
 
     # Extract the user's workstation
-    poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
-    poste = poste_match.group(1) if poste_match else None
+    poste_match = re.search(r'^(?:.*\n){4}(\S+)\\(\S+)', content)
+    poste = poste_match.group(2) if poste_match else None
 
     # Format the date in ISO format if it exists
     formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
