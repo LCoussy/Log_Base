@@ -11,7 +11,6 @@ from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
 
-
 import pandas as pd
 
 import parser
@@ -69,8 +68,7 @@ class DisplayArray(Screen):
             logs (list): List of logs parsed from files.
             segment_id (str): The unique ID of the segment to display.
         """
-        from kivy.uix.popup import Popup
-        from kivy.uix.label import Label
+        
 
         segment_content = parser.get_segment_by_id(logs, segment_id)
         segment_content = self.clean_text(segment_content)
@@ -87,12 +85,6 @@ class DisplayArray(Screen):
 
         popup = ModalView(size_hint=(0.9, 0.9), auto_dismiss=True)
 
-        #popup = Popup(
-        #    title=f"Segment {segment_id}",
-        #    content=content_layout,
-        #    size_hint=(0.9, 0.9),
-        #    auto_dismiss=True
-        #)
         popup.open()
         close_button = Button(
             text="Fermer",
@@ -197,7 +189,7 @@ class DisplayArray(Screen):
 
     def update_table_blocked(self, selected_files):
         self.grid_layout.clear_widgets()
-        self.df_combined = pd.DataFrame()
+        self.df_combined_blocked = pd.DataFrame()
         self.logsBlocked = []
         self.progress_bar.value = 0
         self.progress_bar.opacity = 1  # Affiche la barre de progression
@@ -223,7 +215,10 @@ class DisplayArray(Screen):
                 df_blocked = dh.create_table_blocked_request(aLog)
 
                 if df_blocked is not None and not df_blocked.empty:
-                    self.df_combined = pd.concat([self.df_combined, df_blocked], ignore_index=True)
+                    self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
+
+            if self.logsBlocked:
+                df_combined = self.df_combined_blocked
 
             self.current_file_index = end_index  # Mise à jour de l'index
 
@@ -234,16 +229,16 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_blocked, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
-            if not self.df_combined.empty:
-                self.df_combined = self.remove_duplicates(self.df_combined)
-                self.df_combined.drop_duplicates(inplace=True)
-                self.df_combined.reset_index(drop=True, inplace=True)
-                self.current_df = self.df_combined
+            if not self.df_combined_blocked.empty:
+                self.df_combined_blocked = self.remove_duplicates(self.df_combined_blocked)
+                self.df_combined_blocked.drop_duplicates(inplace=True)
+                self.df_combined_blocked.reset_index(drop=True, inplace=True)
+                self.current_df = self.df_combined_blocked
                 self.updateTableFromCurrentData("blocked")
 
     def update_table_lost(self, selected_files):
         self.grid_layout.clear_widgets()
-        self.df_combined = pd.DataFrame()
+        self.df_combined_lost = pd.DataFrame()
         self.logsLost = []
         self.progress_bar.value = 0
         self.progress_bar.opacity = 1  # Affiche la barre de progression
@@ -269,7 +264,7 @@ class DisplayArray(Screen):
                 df_lost = dh.create_table_lost_request(aLog)
 
                 if df_lost is not None and not df_lost.empty:
-                    self.df_combined = pd.concat([self.df_combined, df_lost], ignore_index=True)
+                    self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
             self.current_file_index = end_index  # Mise à jour de l'index
 
@@ -280,9 +275,9 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_lost, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
-            if not self.df_combined.empty:
-                self.df_combined = self.remove_duplicates(self.df_combined)
-                self.df_combined.drop_duplicates(inplace=True)
-                self.df_combined.reset_index(drop=True, inplace=True)
-                self.current_df = self.df_combined
+            if not self.df_combined_lost.empty:
+                self.df_combined_lost = self.remove_duplicates(self.df_combined_lost)
+                self.df_combined_lost.drop_duplicates(inplace=True)
+                self.df_combined_lost.reset_index(drop=True, inplace=True)
+                self.current_df = self.df_combined_lost
                 self.updateTableFromCurrentData("lost")
