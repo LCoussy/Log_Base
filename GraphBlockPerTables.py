@@ -52,7 +52,7 @@ class GraphBlockPerTables(BoxLayout):
                 return
 
             # Count occurrences of table data
-            table_counts = data_filtered['table'].value_counts()
+            table_counts = data_filtered['table'].value_counts().head(10)
             table_counts.plot(kind='bar', ax=self.ax)
 
             # Set graph labels and title
