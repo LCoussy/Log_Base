@@ -213,8 +213,6 @@ class DisplayArray(Screen):
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
             if not self.df_combined_blocked.empty:
-                self.df_combined_blocked = self.remove_duplicates(self.df_combined_blocked)
-                self.df_combined_blocked.drop_duplicates(inplace=True)
                 self.df_combined_blocked.reset_index(drop=True, inplace=True)
                 self.current_df = self.df_combined_blocked
                 self.updateTableFromCurrentData("blocked")
@@ -263,8 +261,6 @@ class DisplayArray(Screen):
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
             if not self.df_combined_lost.empty:
-                self.df_combined_lost = self.remove_duplicates(self.df_combined_lost)
-                self.df_combined_lost.drop_duplicates(inplace=True)
                 self.df_combined_lost.reset_index(drop=True, inplace=True)
                 self.current_df = self.df_combined_lost
                 self.updateTableFromCurrentData("lost")
