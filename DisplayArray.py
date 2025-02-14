@@ -187,7 +187,7 @@ class DisplayArray(Screen):
                 view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
             self.grid_layout.add_widget(view_button)
 
-    def update_table_blocked(self, selected_files):
+    def update_table_blocked(self, selected_files, callback=None):
         self.grid_layout.clear_widgets()
         self.df_combined_blocked = pd.DataFrame()
         self.logsBlocked = []
@@ -198,6 +198,7 @@ class DisplayArray(Screen):
         self.current_file_index = 0
         self.total_files = len(selected_files)
         self.batch_size = 10  # Nombre de fichiers traités par cycle
+        self.callback = callback
 
         Clock.schedule_once(self.process_next_batch_blocked, 0.1)
 
@@ -236,7 +237,10 @@ class DisplayArray(Screen):
                 self.current_df = self.df_combined_blocked
                 self.updateTableFromCurrentData("blocked")
 
-    def update_table_lost(self, selected_files):
+            if self.callback:
+                self.callback(self.df_combined_blocked)
+
+    def update_table_lost(self, selected_files, callback=None):
         self.grid_layout.clear_widgets()
         self.df_combined_lost = pd.DataFrame()
         self.logsLost = []
@@ -247,6 +251,7 @@ class DisplayArray(Screen):
         self.current_file_index = 0
         self.total_files = len(selected_files)
         self.batch_size = 10  # Nombre de fichiers traités par cycle (ajuste selon tes besoins)
+        self.callback = callback
 
         Clock.schedule_once(self.process_next_batch_lost, 0.1)
 
@@ -281,3 +286,6 @@ class DisplayArray(Screen):
                 self.df_combined_lost.reset_index(drop=True, inplace=True)
                 self.current_df = self.df_combined_lost
                 self.updateTableFromCurrentData("lost")
+
+            if self.callback:
+                self.callback(self.df_combined_lost)

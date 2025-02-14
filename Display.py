@@ -46,6 +46,19 @@ class Display(Screen):
         Args:
             selected_files (list of str): List of selected file paths.
         """
-        dataLost = self.displayData.displayLost.update_table_lost(selected_files)
-        dataBlocked = self.displayData.displayBlocked.update_table_blocked(selected_files)
-        self.displayData.displayStat.updateGraph(self.displayData.displayBlocked.df_combined_blocked, self.displayData.displayLost.df_combined_lost)
+        self.dataLost = None
+        self.dataBlocked = None
+
+        def on_data_lost_ready(df_lost):
+            self.dataLost = df_lost
+            if self.dataLost is not None and self.dataBlocked is not None:
+                self.displayData.displayStat.updateGraph(self.dataBlocked, self.dataLost)
+
+        def on_data_blocked_ready(df_blocked):
+            self.dataBlocked = df_blocked
+            if self.dataLost is not None and self.dataBlocked is not None:
+                self.displayData.displayStat.updateGraph(self.dataBlocked, self.dataLost)
+
+        self.displayData.displayLost.update_table_lost(selected_files, callback=on_data_lost_ready)
+        self.displayData.displayBlocked.update_table_blocked(selected_files, callback=on_data_blocked_ready)
+
