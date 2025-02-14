@@ -23,7 +23,7 @@ def read_file_pickle(file_path):
         else:
             print(f"Erreur : Le fichier {file_path} n'existe pas ou est vide.")
             return None
-    # Return the content put in the cache 
+    # Return the content put in the cache
     return file_cache.get(file_path)
 
 

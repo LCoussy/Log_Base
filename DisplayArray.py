@@ -137,24 +137,6 @@ class DisplayArray(Screen):
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
 
-    def remove_duplicates(self, df):
-        """
-        Remove duplicate entries based on 'id' and keep only the most recent entry for each 'id'
-        (based on the 'date' column).
-
-        Args:
-            df (DataFrame): The DataFrame containing the logs.
-
-        Returns:
-            DataFrame: A DataFrame with duplicates removed, keeping the most recent entry for each 'id'.
-        """
-        df['date'] = pd.to_datetime(df['date'], errors='coerce')
-
-        df_sorted = df.sort_values(by=['id', 'date'], ascending=[True, False])
-
-        df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
-
-        return df_unique
     def updateTableFromCurrentData(self, requestType):
         """
         Update the grid layout with the current DataFrame data.
