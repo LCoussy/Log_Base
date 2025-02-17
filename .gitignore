@@ -296,6 +296,8 @@ __logcache__/
 
 poetry.lock
 
-.vscode/
-
 testTimeParsing.py
+
+.vscode
+.vscode/
+.vscode/*

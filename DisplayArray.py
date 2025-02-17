@@ -18,14 +18,15 @@ from kivy.uix.recycleview import RecycleView
 from kivy.properties import StringProperty
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.modalview import ModalView
+from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
 
 import pandas as pd
 
 import parser
 import data_handler as dh
 import GetContentLog
-# from RecyclesViews import MyRecycleViewLost
-# from RecyclesViews import MyRecycleViewBlocked
 
 Builder.load_string('''
 <MyRecycleViewLost>:
@@ -156,8 +157,8 @@ class MyRecycleViewBlocked(RecycleView):
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
-        self.df_combined_lost = pd.DataFrame()  # Stock datas
         self.df_combined_blocked = pd.DataFrame()  # Stock datas
+        self.df_combined_lost = pd.DataFrame()  # Stock datas
         self.myType = type
         self.sort_ascending = True
         self.current_df = None
@@ -204,8 +205,7 @@ class DisplayArray(Screen):
             logs (list): List of logs parsed from files.
             segment_id (str): The unique ID of the segment to display.
         """
-        from kivy.uix.popup import Popup
-        from kivy.uix.label import Label
+        
 
         segment_content = parser.get_segment_by_id(logs, segment_id)
         segment_content = self.clean_text(segment_content)
@@ -220,12 +220,18 @@ class DisplayArray(Screen):
         label.bind(size=label.setter('text_size'))
         content_layout.add_widget(label)
 
-        popup = Popup(
-            title=f"Segment {segment_id}",
-            content=content_layout,
-            size_hint=(0.9, 0.9),
-            auto_dismiss=True
+        popup = ModalView(size_hint=(0.9, 0.9), auto_dismiss=True)
+
+        popup.open()
+        close_button = Button(
+            text="Fermer",
+            size_hint_y=None,
+            height=30
         )
+        close_button.bind(on_release=lambda instance: popup.dismiss())
+        
+        content_layout.add_widget(close_button)
+        popup.add_widget(content_layout)
         popup.open()
 
     def build_ui(self):
@@ -252,6 +258,10 @@ class DisplayArray(Screen):
             text_size=(Window.width * 0.7, None)
         )
         up_layout.add_widget(title)
+
+        self.progress_bar = ProgressBar(max=100, size_hint=(1, None), height=20)
+        up_layout.add_widget(self.progress_bar)
+        self.progress_bar.opacity = 0  # Cachée par défaut
 
         # Scrollable Array
         # scroll_view = ScrollView(size_hint=(1, 0.9))
@@ -318,6 +328,7 @@ class DisplayArray(Screen):
     #             view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
     #         self.grid_layout.add_widget(view_button)
 
+<<<<<<< DisplayArray.py
     def update_table_blocked(self, selected_files):
         logs = []
         self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
@@ -328,10 +339,31 @@ class DisplayArray(Screen):
             df_blocked = dh.create_table_blocked_request(aLog)
             if df_blocked is not None and not df_blocked.empty:
                 self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
+=======
+    def update_table_blocked(self, selected_files, callback=None):
+        self.grid_layout.clear_widgets()
+        self.df_combined_blocked = pd.DataFrame()
+        self.logsBlocked = []
+        self.progress_bar.value = 0
+        self.progress_bar.opacity = 1  # Affiche la barre de progression
 
-        if logs:
-            df_combined = self.df_combined_blocked
+        self.selected_files = selected_files
+        self.current_file_index = 0
+        self.total_files = len(selected_files)
+        self.batch_size = 10  # Nombre de fichiers traités par cycle
+        self.callback = callback
 
+        Clock.schedule_once(self.process_next_batch_blocked, 0.1)
+>>>>>>> DisplayArray.py
+
+    def process_next_batch_blocked(self, dt):
+        """
+        Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
+        """
+        if self.current_file_index < self.total_files:
+            end_index = min(self.current_file_index + self.batch_size, self.total_files)
+
+<<<<<<< DisplayArray.py
             if df_combined is not None and not df_combined.empty:
                 df_combined.reset_index(drop=True, inplace=True)
                 self.current_df = df_combined
@@ -360,10 +392,53 @@ class DisplayArray(Screen):
             df_lost = dh.create_table_lost_request(aLog)
             if df_lost is not None and not df_lost.empty:
                 self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
+=======
+            for i in range(self.current_file_index, end_index):
+                file = self.selected_files[i]
+                aLog = GetContentLog.parse(file).get('BLOCKED')
+                self.logsBlocked.append(aLog)
+                df_blocked = dh.create_table_blocked_request(aLog)
 
-        if logs:
-            df_combined = self.df_combined_lost
+                if df_blocked is not None and not df_blocked.empty:
+                    self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
+            if self.logsBlocked:
+                df_combined = self.df_combined_blocked
+
+            self.current_file_index = end_index  # Mise à jour de l'index
+
+            # Mise à jour de la barre de progression
+            self.progress_bar.value = (self.current_file_index / self.total_files) * 100
+
+            # Continue avec le prochain lot
+            Clock.schedule_once(self.process_next_batch_blocked, 0.1)
+        else:
+            self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            if not self.df_combined_blocked.empty:
+                self.df_combined_blocked.reset_index(drop=True, inplace=True)
+                self.current_df = self.df_combined_blocked
+                self.updateTableFromCurrentData("blocked")
+
+            if self.callback:
+                self.callback(self.df_combined_blocked)
+
+    def update_table_lost(self, selected_files, callback=None):
+        self.grid_layout.clear_widgets()
+        self.df_combined_lost = pd.DataFrame()
+        self.logsLost = []
+        self.progress_bar.value = 0
+        self.progress_bar.opacity = 1  # Affiche la barre de progression
+
+        self.selected_files = selected_files
+        self.current_file_index = 0
+        self.total_files = len(selected_files)
+        self.batch_size = 10  # Nombre de fichiers traités par cycle (ajuste selon tes besoins)
+        self.callback = callback
+>>>>>>> DisplayArray.py
+
+        Clock.schedule_once(self.process_next_batch_lost, 0.1)
+
+<<<<<<< DisplayArray.py
             if df_combined is not None and not df_combined.empty:
                 df_combined.reset_index(drop=True, inplace=True)
                 self.current_df = df_combined
@@ -381,3 +456,37 @@ class DisplayArray(Screen):
                     ]
                 )
 
+=======
+    def process_next_batch_lost(self, dt):
+        """
+        Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
+        """
+        if self.current_file_index < self.total_files:
+            end_index = min(self.current_file_index + self.batch_size, self.total_files)
+
+            for i in range(self.current_file_index, end_index):
+                file = self.selected_files[i]
+                aLog = GetContentLog.parse(file).get('LOST')
+                self.logsLost.append(aLog)
+                df_lost = dh.create_table_lost_request(aLog)
+
+                if df_lost is not None and not df_lost.empty:
+                    self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
+
+            self.current_file_index = end_index  # Mise à jour de l'index
+
+            # Mise à jour de la barre de progression
+            self.progress_bar.value = (self.current_file_index / self.total_files) * 100
+
+            # Continue avec le prochain lot
+            Clock.schedule_once(self.process_next_batch_lost, 0.1)
+        else:
+            self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            if not self.df_combined_lost.empty:
+                self.df_combined_lost.reset_index(drop=True, inplace=True)
+                self.current_df = self.df_combined_lost
+                self.updateTableFromCurrentData("lost")
+
+            if self.callback:
+                self.callback(self.df_combined_lost)
+>>>>>>> DisplayArray.py
