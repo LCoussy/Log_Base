@@ -111,27 +111,12 @@ class MyRecycleViewLost(RecycleView):
         self.refresh_from_data()
         # self.ids['afficher_bouton'].disabled = False
 
-
-# class MyRVLost(BoxLayout):
-#     def __init__(self, **kwargs):
-#         super(MyRVLost, self).__init__(**kwargs)
-#         self.orientation = 'vertical'
-#         self.root = Builder.load_file('RecyclesViews/recycleViewDefLost.kv')
-#         print("root : ", self.root)
-#         print("ids : ", self.ids)
-
 class MyViewClassBlocked(BoxLayout):
     date = StringProperty('')
     table = StringProperty('')
     user = StringProperty('')
     poste = StringProperty('')
     afficher_button_blocked = ObjectProperty(None)
-
-    # def on_afficher_button_blocked(self, instance, *args):
-    #     print("Afficher : ")
-    #     if self.afficher_button_blocked:
-    #         print("Afficher : eagoiheagoih")
-    #         self.afficher_button_blocked()
 
 class MyRecycleViewBlocked(RecycleView):
     def __init__(self, **kwargs):
@@ -147,13 +132,6 @@ class MyRecycleViewBlocked(RecycleView):
         self.refresh_from_data()
         # self.ids['afficher_bouton'].disabled = False
 
-# class MyRVBlocked(BoxLayout):
-#     def __init__(self, **kwargs):
-#         super(MyRVBlocked, self).__init__(**kwargs)
-#         self.orientation = 'vertical'
-#         self.root = Builder.load_file('RecyclesViews/recycleViewDefBlocked.kv')
-
-
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
@@ -165,29 +143,6 @@ class DisplayArray(Screen):
         self.build_ui()
 
 
-    # def sort_table(self, column, requestType):
-    #     """
-    #     Sort the DataFrame based on the selected column and update the grid layout.
-
-    #     Args:
-    #         column (str): The name of the column to sort by.
-    #     """
-    #     if self.current_df is not None and column in self.current_df.columns:
-    #         if not hasattr(self, 'sort_ascending'):
-    #             self.sort_ascending = True
-
-    #         if hasattr(self, 'sort_column') and self.sort_column == column:
-    #             self.sort_ascending = not self.sort_ascending
-    #         else:
-    #             self.sort_ascending = True
-    #             self.sort_column = column
-
-    #         self.current_df.sort_values(
-    #             by=column, ascending=self.sort_ascending, inplace=True
-    #         )
-    #         self.current_df.reset_index(drop=True, inplace=True)
-    #         print("column:", column)
-    #         self.updateTableFromCurrentData(requestType)
 
     def clean_text(self,text):
         """
@@ -205,7 +160,7 @@ class DisplayArray(Screen):
             logs (list): List of logs parsed from files.
             segment_id (str): The unique ID of the segment to display.
         """
-        
+
 
         segment_content = parser.get_segment_by_id(logs, segment_id)
         segment_content = self.clean_text(segment_content)
@@ -229,7 +184,7 @@ class DisplayArray(Screen):
             height=30
         )
         close_button.bind(on_release=lambda instance: popup.dismiss())
-        
+
         content_layout.add_widget(close_button)
         popup.add_widget(content_layout)
         popup.open()
@@ -296,50 +251,6 @@ class DisplayArray(Screen):
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
 
-    # def updateTableFromCurrentData(self, requestType):
-    #     """
-    #     Update the grid layout with the current DataFrame data.
-    #     This method is used to refresh the table after sorting.
-    #     """
-    #     self.grid_layout.clear_widgets()
-    #     df_combined2 = self.current_df.drop(columns=["segment_id", "id"], errors='ignore')
-    #     self.grid_layout.cols = len(df_combined2.columns) + 1
-
-    #     for header in df_combined2.columns:
-    #         sort_symbol = ""
-    #         if hasattr(self, 'sort_column') and self.sort_column == header:
-    #             sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
-
-    #         header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-    #         header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, requestType))
-    #         self.grid_layout.add_widget(header_button)
-
-    #     self.grid_layout.add_widget(Label(text="segment", bold=True))
-
-    #     for index, row in df_combined2.iterrows():
-    #         for cell in row:
-    #             self.grid_layout.add_widget(Label(text=str(cell)))
-
-    #         segment_id = self.current_df.loc[index, "segment_id"]
-    #         view_button = Button(text="Afficher")
-    #         if requestType == "blocked":
-    #             view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
-    #         else:
-    #             view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
-    #         self.grid_layout.add_widget(view_button)
-
-<<<<<<< DisplayArray.py
-    def update_table_blocked(self, selected_files):
-        logs = []
-        self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
-
-        for file in selected_files:
-            aLog = GetContentLog.read_file_pickle(GetContentLog.getLogcacheFilepath(file)).get('BLOCKED')
-            logs.append(aLog)
-            df_blocked = dh.create_table_blocked_request(aLog)
-            if df_blocked is not None and not df_blocked.empty:
-                self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
-=======
     def update_table_blocked(self, selected_files, callback=None):
         self.grid_layout.clear_widgets()
         self.df_combined_blocked = pd.DataFrame()
@@ -354,7 +265,6 @@ class DisplayArray(Screen):
         self.callback = callback
 
         Clock.schedule_once(self.process_next_batch_blocked, 0.1)
->>>>>>> DisplayArray.py
 
     def process_next_batch_blocked(self, dt):
         """
@@ -362,48 +272,17 @@ class DisplayArray(Screen):
         """
         if self.current_file_index < self.total_files:
             end_index = min(self.current_file_index + self.batch_size, self.total_files)
-
-<<<<<<< DisplayArray.py
-            if df_combined is not None and not df_combined.empty:
-                df_combined.reset_index(drop=True, inplace=True)
-                self.current_df = df_combined
-                self.logsBlocked = logs
-
-                self.myRVBlocked.update(
-                    [
-                        {
-                            'date': row['date'],
-                            'table': row['table'],
-                            'user': row['utilisateur'],
-                            'poste': row['poste'] if row['poste'] is not None else "",
-                            'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
-                        }
-                        for index, row in df_combined.iterrows()
-                    ]
-                )
-
-    def update_table_lost(self, selected_files):
-        logs = []
-        self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
-
-        for file in selected_files:
-            aLog = GetContentLog.read_file_pickle(GetContentLog.getLogcacheFilepath(file)).get('LOST')
-            logs.append(aLog)
-            df_lost = dh.create_table_lost_request(aLog)
-            if df_lost is not None and not df_lost.empty:
-                self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
-=======
             for i in range(self.current_file_index, end_index):
                 file = self.selected_files[i]
-                aLog = GetContentLog.parse(file).get('BLOCKED')
+                aLog = GetContentLog.read_file_pickle(GetContentLog.getLogcacheFilepath(file)).get('BLOCKED')
                 self.logsBlocked.append(aLog)
                 df_blocked = dh.create_table_blocked_request(aLog)
 
                 if df_blocked is not None and not df_blocked.empty:
                     self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
-            if self.logsBlocked:
-                df_combined = self.df_combined_blocked
+            # if self.logsBlocked:
+            #     df_combined = self.df_combined_blocked
 
             self.current_file_index = end_index  # Mise à jour de l'index
 
@@ -417,7 +296,19 @@ class DisplayArray(Screen):
             if not self.df_combined_blocked.empty:
                 self.df_combined_blocked.reset_index(drop=True, inplace=True)
                 self.current_df = self.df_combined_blocked
-                self.updateTableFromCurrentData("blocked")
+                self.myRVBlocked.update(
+                    [
+                        {
+                            'date': row['date'],
+                            'table': row['table'],
+                            'user': row['utilisateur'],
+                            'poste': row['poste'] if row['poste'] is not None else "",
+                            'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
+                        }
+                        for index, row in self.current_df.iterrows()
+                    ]
+                )
+                # self.updateTableFromCurrentData("blocked")
 
             if self.callback:
                 self.callback(self.df_combined_blocked)
@@ -434,29 +325,10 @@ class DisplayArray(Screen):
         self.total_files = len(selected_files)
         self.batch_size = 10  # Nombre de fichiers traités par cycle (ajuste selon tes besoins)
         self.callback = callback
->>>>>>> DisplayArray.py
 
         Clock.schedule_once(self.process_next_batch_lost, 0.1)
 
-<<<<<<< DisplayArray.py
-            if df_combined is not None and not df_combined.empty:
-                df_combined.reset_index(drop=True, inplace=True)
-                self.current_df = df_combined
-                self.logsLost = logs
 
-                self.myRVLost.update(
-                    [
-                        {
-                            'date': row['date'],
-                            'user': row['utilisateur'],
-                            'poste': row['poste'] if row['poste'] is not None else "",
-                            'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
-                        }
-                        for index, row in df_combined.iterrows()
-                    ]
-                )
-
-=======
     def process_next_batch_lost(self, dt):
         """
         Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
@@ -466,7 +338,7 @@ class DisplayArray(Screen):
 
             for i in range(self.current_file_index, end_index):
                 file = self.selected_files[i]
-                aLog = GetContentLog.parse(file).get('LOST')
+                aLog = GetContentLog.read_file_pickle(GetContentLog.getLogcacheFilepath(file)).get('LOST')
                 self.logsLost.append(aLog)
                 df_lost = dh.create_table_lost_request(aLog)
 
@@ -485,8 +357,18 @@ class DisplayArray(Screen):
             if not self.df_combined_lost.empty:
                 self.df_combined_lost.reset_index(drop=True, inplace=True)
                 self.current_df = self.df_combined_lost
-                self.updateTableFromCurrentData("lost")
+                # self.updateTableFromCurrentData("lost")
+                self.myRVLost.update(
+                    [
+                        {
+                            'date': row['date'],
+                            'user': row['utilisateur'],
+                            'poste': row['poste'] if row['poste'] is not None else "",
+                            'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
+                        }
+                        for index, row in self.current_df.iterrows()
+                    ]
+                )
 
             if self.callback:
                 self.callback(self.df_combined_lost)
->>>>>>> DisplayArray.py
