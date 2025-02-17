@@ -85,12 +85,20 @@ def parse_request(content, request_type):
     table_name = table_match.group(1) if table_match else None
 
     # Extract the user's name
-    user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
-    user_name = user_match.group(1) if user_match else None
+    user_match = re.search(r'^(?:.*\n){2}(\S+)\\(\S+)', content)
+    if not user_match:
+        user_match = re.search(r'^(?:.*\n){2}(\S+)', content)
+        user_name = user_match.group(1) if user_match else None
+    else :
+        user_name = user_match.group(2) if user_match else None
 
     # Extract the user's workstation
     poste_match = re.search(r'^(?:.*\n){4}(\S+)\\(\S+)', content)
-    poste = poste_match.group(2) if poste_match else None
+    if not poste_match:
+        poste_match = re.search(r'^(?:.*\n){4}(\S+)', content)
+        poste = poste_match.group(1) if poste_match else None
+    else :
+        poste = poste_match.group(2) if poste_match else None
 
     # Format the date in ISO format if it exists
     formatted_first_date = first_date.strftime("%Y-%m-%d %H:%M:%S") if first_date else None
@@ -147,7 +155,7 @@ def parse_user(content):
     # Match for the first date and time
     date_duration_match = re.search(r'((\d{2}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2}))\s+(\d{2}:\d{2}:\d{2})', content)
     first_date = None
-    if date_duration_match.group(1):
+    if date_duration_match and date_duration_match.group(1):
         try:
             first_date = datetime.strptime(date_duration_match.group(1), "%d/%m/%y %H:%M:%S")
         except ValueError:
@@ -168,7 +176,7 @@ def parse_user(content):
     return {
         "type": "USER",
         "date": formatted_first_date,
-        "DuréeConnection": date_duration_match.group(4),
+        "DuréeConnection": date_duration_match.group(4) if date_duration_match else None,
         "utilisateur": user_name
     }
 

@@ -39,6 +39,9 @@ def GetContentLog(filepath):
   isBlocked = False
   with open(filepath, 'r', encoding='ISO-8859-1') as f:
     for line in f:
+      if ("ALTER SYSTEM KILL SESSION" in line):
+        print("Erreur Alter System Kill Session")
+        return {"ERROR" : "Erreur Alter System Kill Session"}
       if ("résultat de concaténation de chaîne trop long" in line):
         print("Erreur Requête trop longue")
         return {"ERROR" : "Erreur Requête trop longue"}
@@ -80,6 +83,7 @@ def GetContentLog(filepath):
           buffer = line
           continue
 
+
   data = {"LOST": data_lost, "BLOCKED": data_blocked, "USER": data_user}
   return data
 
@@ -97,8 +101,10 @@ def parse(filepath):
           os.makedirs('__logcache__')
         # Write data in the fiel using pickle
         with open(cache_file_path, 'wb') as file:
+            print(f"Cache file created: {cache_file_path}")
+            # print(GetContentLog(filepath))
             pickle.dump(GetContentLog(filepath), file)
-        print(f"Cache file created: {cache_file_path}")
+        print(f"Cache file filled: {cache_file_path}")
     #  Read and return cached data from the file
     result = read_file_pickle(cache_file_path)
     if result is not None:
@@ -109,3 +115,17 @@ def parse(filepath):
   else:
       print("Erreur : Nom de fichier non trouvé.")
       return None
+
+def getLogcacheFilepath(filepath):
+  patternFilePath = re.compile(r'[^\\|/]+(?=\.[^.]+$)')
+  match = patternFilePath.search(filepath)
+  if match:
+    curDir = os.getcwd()
+    if '/' in curDir:
+      return f'{curDir}/__logcache__/{match.group(0)}.pkl'
+    else :
+      return f'{curDir}\\__logcache__\\{match.group(0)}.pkl'
+  else:
+    return None
+
+# print(transformFilepath('/home/coussy/Downloads/log 1/log (2)/GCE__5-45-02_82_07-12-2024.txt'))
