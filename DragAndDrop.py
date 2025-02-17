@@ -10,6 +10,7 @@ from kivy.properties import StringProperty
 
 import os
 from processing import process_directory, validate_directory
+import GetContentLog
 
 Window.size = (1000, 600)
 
@@ -90,6 +91,11 @@ class DragDropScreen(Screen):
             self.show_error_popup("Fichier invalide.")
 
     def update_ui_and_navigate(self):
+        for file in os.listdir(self.path):
+            if '/' in self.path:
+                GetContentLog.parse(self.path + '/' + file)
+            else :
+                GetContentLog.parse(self.path + '\\' + file)
         Screen = self.manager.get_screen('display')
         Screen.logExplorer.update_directory(self.path)
         self.manager.current = 'display'
