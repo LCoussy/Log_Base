@@ -7,6 +7,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserIconView
 from kivy.core.window import Window
 from kivy.properties import StringProperty
+from DateRangeSelector import DateSelectionPopup 
+from datetime import datetime, timedelta
 
 import os
 from processing import process_directory, validate_directory
@@ -26,6 +28,24 @@ class DragDropScreen(Screen):
         mainLayout.add_widget(self.create_left_layout())
         mainLayout.add_widget(self.create_right_layout())
         self.add_widget(mainLayout)
+
+    def show_date_selection(self):
+        """
+        Ouvre la popup de sélection de date après le drag & drop.
+        """
+        # Définir une plage de dates fictive (remplace par les vraies dates des fichiers)
+        start_date = datetime(2023, 11, 26)  # Remplace 2023 par l'année actuelle si nécessaire
+        end_date = datetime(2023, 12, 5)
+
+        # Générer toutes les dates dans cette plage
+        available_dates = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1)]
+
+        def on_date_chosen(selected_date):
+            print(f"Date sélectionnée : {selected_date}")  # Remplace par ton code
+            self.update_ui_and_navigate(selected_date)
+
+        popup = DateSelectionPopup(on_date_chosen)
+        popup.open()
 
     def create_left_layout(self):
         leftLayout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
@@ -76,28 +96,36 @@ class DragDropScreen(Screen):
             self.path = selection[0]
             if validate_directory(self.path):
                 process_directory(self.path)
-                self.update_ui_and_navigate()
+                self.show_date_selection()  # Montre la popup de sélection de date
             else:
                 self.show_error_popup("Veuillez sélectionner un dossier valide.")
         self.popup.dismiss()
+
 
     def on_file_drop(self, window, file_path):
         self.path = file_path.decode("utf-8")
         self.dropLabel.text = f"{self.path}"
         if validate_directory(self.path):
             process_directory(self.path)
-            self.update_ui_and_navigate()
+            self.show_date_selection()
         else:
             self.show_error_popup("Fichier invalide.")
 
-    def update_ui_and_navigate(self):
+    def update_ui_and_navigate(self, selected_date=None):
+        """
+        Met à jour l'interface et navigue vers l'affichage des logs.
+        """
         for file in os.listdir(self.path):
             if '/' in self.path:
                 GetContentLog.parse(self.path + '/' + file)
             else :
                 GetContentLog.parse(self.path + '\\' + file)
-        Screen = self.manager.get_screen('display')
-        Screen.logExplorer.update_directory(self.path)
+        
+        display_screen = self.manager.get_screen('display')
+        
+        # Transmettre la date à DisplayArray (ou autre écran de logs)
+        if selected_date:
+            display_screen.logExplorer.update_directory(self.path, selected_date)
         self.manager.current = 'display'
 
     def show_error_popup(self, message):

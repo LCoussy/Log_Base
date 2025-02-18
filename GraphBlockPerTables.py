@@ -33,6 +33,7 @@ class GraphBlockPerTables(BoxLayout):
         self.add_widget(self.figure_widget)
 
     def updateGraph(self, data):
+        print(f" Mise à jour du graphique {self.graph_type} avec {len(data)} entrées")
         """
         Updates the graph with new data.
 

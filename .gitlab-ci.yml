@@ -1,5 +1,6 @@
 stages:
   - build
+  - download_windows_dependencies
 
 build:
   stage: build
@@ -17,9 +18,8 @@ build:
     - pipx install poetry  # Installation de poetry
     - pipx inject poetry poetry-plugin-export
 
-
   script:
-    - poetry lock --no-update
+    - poetry lock 
     - poetry install --only main # Installation des dépendances avec poetry
     - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes  # Export des dépendances vers requirements.txt
     - pip install -r requirements-poetry.txt --target ./dependencies-logbase --upgrade
@@ -29,4 +29,32 @@ build:
     paths:
       - dependencies-logbase.zip
   only:
-  - main
+    - main
+
+download_windows_dependencies:
+  stage: download_windows_dependencies
+  tags:
+    - docker
+  image: python:3.12  # Utilisation de l'image officielle Python
+  before_script:
+    - apt-get update && apt-get install -y zip python3 pip # Installation de zip
+    - pip install --upgrade pip
+    # - pip install setuptools
+    - python3 -m pip install --user pipx
+    - python3 -m pip install --user --upgrade pipx
+    - python3 -m pipx ensurepath --global # optional to allow pipx actions with --global argument
+    - source ~/.bashrc
+    - pipx install poetry  # Installation de poetry
+    - pipx inject poetry poetry-plugin-export
+
+  script:
+    - poetry lock
+    - poetry install --only main # Installation des dépendances avec poetry
+    - poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes  # Export des dépendances vers requirements.txt
+    - pip download --platform win_amd64 --no-deps --dest dependencies-logbase -r requirements-poetry.txt  # Téléchargement des dépendances Windows
+    - zip -r dependencies-logbase-windows.zip dependencies-logbase  # Création du fichier ZIP pour Windows
+  artifacts:
+    paths:
+      - dependencies-logbase-windows.zip
+  only:
+    - main
