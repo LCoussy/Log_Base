@@ -8,6 +8,7 @@ from kivy.uix.filechooser import FileChooserIconView
 from kivy.core.window import Window
 from kivy.properties import StringProperty
 
+import threading
 import os
 from processing import process_directory, validate_directory
 import GetContentLog
@@ -19,6 +20,7 @@ class DragDropScreen(Screen):
 
     def __init__(self, **kwargs):
         super(DragDropScreen, self).__init__(**kwargs)
+        self.parsingThread =threading.Thread(target=self.process_parsing)
         self.filesList = []
         self.build_ui()
     def build_ui(self):
@@ -26,6 +28,14 @@ class DragDropScreen(Screen):
         mainLayout.add_widget(self.create_left_layout())
         mainLayout.add_widget(self.create_right_layout())
         self.add_widget(mainLayout)
+
+    def process_parsing(self):
+        for file in os.listdir(self.path):
+            if '/' in self.path:
+                GetContentLog.parse(self.path + '/' + file)
+            else :
+                GetContentLog.parse(self.path + '\\' + file)
+
 
     def create_left_layout(self):
         leftLayout = BoxLayout(orientation='vertical', size_hint=(0.3, 1), padding=10, spacing=10)
@@ -91,11 +101,12 @@ class DragDropScreen(Screen):
             self.show_error_popup("Fichier invalide.")
 
     def update_ui_and_navigate(self):
-        for file in os.listdir(self.path):
-            if '/' in self.path:
-                GetContentLog.parse(self.path + '/' + file)
-            else :
-                GetContentLog.parse(self.path + '\\' + file)
+        # for file in os.listdir(self.path):
+        #     if '/' in self.path:
+        #         GetContentLog.parse(self.path + '/' + file)
+        #     else :
+        #         GetContentLog.parse(self.path + '\\' + file)
+        self.parsingThread.start()
         Screen = self.manager.get_screen('display')
         Screen.logExplorer.update_directory(self.path)
         self.manager.current = 'display'
