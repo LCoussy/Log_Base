@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  download_dependencies:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies and create ZIP
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pipx
+        pipx ensurepath
+        pipx install poetry
+        pipx inject poetry poetry-plugin-export
+        poetry lock
+        poetry install --only main
+        poetry export -f requirements.txt --output requirements-poetry.txt --without-hashes
+        pip download --platform win_amd64 --no-deps --dest dependencies-logbase -r requirements-poetry.txt
+        powershell Compress-Archive -Path dependencies-logbase -DestinationPath dependencies-logbase-windows.zip
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dependencies-logbase-windows
+        path: dependencies-logbase-windows.zip
