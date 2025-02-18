@@ -9,6 +9,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
+from kivy.clock import Clock
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.recyclegridlayout import RecycleGridLayout
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
@@ -142,8 +143,6 @@ class DisplayArray(Screen):
         self.current_df = None
         self.build_ui()
 
-
-
     def clean_text(self,text):
         """
         Remove unwanted characters such as tabs or non-printable characters.
@@ -250,6 +249,24 @@ class DisplayArray(Screen):
         main_layout.add_widget(up_layout)
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
+    
+#    def updateTableFromCurrentData(self, requestType):
+#        """
+#        Update the grid layout with the current DataFrame data.
+#        This method is used to refresh the table after sorting.
+#        """
+#        print("Données actuelles dans current_df : ", self.current_df)  # Debug
+#        self.grid_layout.clear_widgets()
+#
+#        # Assurez-vous de supprimer les colonnes non nécessaires
+#        df_combined2 = self.current_df.drop(columns=["segment_id", "id"], errors='ignore')
+#        self.grid_layout.cols = len(df_combined2.columns) + 1  # Ajouter une colonne pour les boutons
+#
+#        # Ajouter les en-têtes de colonnes avec possibilité de tri
+#        for header in df_combined2.columns:
+#            sort_symbol = ""
+#            if hasattr(self, 'sort_column') and self.sort_column == header:
+#                sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
 
     def update_table_blocked(self, selected_files, callback=None):
         self.grid_layout.clear_widgets()
@@ -266,6 +283,29 @@ class DisplayArray(Screen):
 
         Clock.schedule_once(self.process_next_batch_blocked, 0.1)
 
+#<<<<<<< DisplayArray.py
+#        self.grid_layout.add_widget(Label(text="segment", bold=True))  # Colonne pour afficher le bouton de segment
+#
+#        # Ajouter les données sous forme de lignes
+#        for index, row in df_combined2.iterrows():
+#            for cell in row:
+#                self.grid_layout.add_widget(Label(text=str(cell)))
+#
+#            # Ajouter le bouton "Afficher" pour chaque segment
+#            segment_id = self.current_df.loc[index, "segment_id"]
+#            view_button = Button(text="Afficher")
+#            if requestType == "blocked":
+#                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
+#            else:
+#                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
+#            self.grid_layout.add_widget(view_button)
+#
+#        # Forcer la mise à jour du layout
+#        Clock.schedule_once(lambda dt: self.grid_layout.canvas.ask_update(), 2)
+
+
+#    def update_table_blocked(self, selected_files):
+#=======
     def process_next_batch_blocked(self, dt):
         """
         Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
@@ -314,6 +354,7 @@ class DisplayArray(Screen):
                 self.callback(self.df_combined_blocked)
 
     def update_table_lost(self, selected_files, callback=None):
+#>>>>>>> DisplayArray.py
         self.grid_layout.clear_widgets()
         self.df_combined_lost = pd.DataFrame()
         self.logsLost = []
