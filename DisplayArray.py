@@ -108,6 +108,7 @@ class MyRecycleViewLost(RecycleView):
         # self.data = [{'text': str(x), 'position':"Position"} for x in range(33000)]  # Génère des nombres de 0 à 49
 
     def update(self, data):
+        data.sort(key=lambda x: x['date'])
         self.data = data
         self.refresh_from_data()
         # self.ids['afficher_bouton'].disabled = False
@@ -127,8 +128,9 @@ class MyRecycleViewBlocked(RecycleView):
         # self.data = [{'text': str(x), 'position':"Position"} for x in range(33000)]  # Génère des nombres de 0 à 49
 
     def update(self, data):
+        data.sort(key=lambda x: x['date'])
         self.data = data
-        print(data)
+        # print(data)
         # self.data.afficher_button_blocked.bind(on_release=data)
         self.refresh_from_data()
         # self.ids['afficher_bouton'].disabled = False
@@ -249,7 +251,7 @@ class DisplayArray(Screen):
         main_layout.add_widget(up_layout)
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
-    
+
 #    def updateTableFromCurrentData(self, requestType):
 #        """
 #        Update the grid layout with the current DataFrame data.
@@ -333,21 +335,27 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_blocked, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
-            if not self.df_combined_blocked.empty:
-                self.df_combined_blocked.reset_index(drop=True, inplace=True)
-                self.current_df = self.df_combined_blocked
-                self.myRVBlocked.update(
-                    [
-                        {
-                            'date': row['date'],
-                            'table': row['table'],
-                            'user': row['utilisateur'],
-                            'poste': row['poste'] if row['poste'] is not None else "",
-                            'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
-                        }
-                        for index, row in self.current_df.iterrows()
-                    ]
-                )
+            # if not self.df_combined_blocked.empty:
+            self.df_combined_blocked.reset_index(drop=True, inplace=True)
+            self.current_df = self.df_combined_blocked
+            self.myRVBlocked.update(
+                [
+                    {
+                        'date': row['date'],
+                        'table': row['table'],
+                        'user': row['utilisateur'],
+                        'poste': row['poste'] if row['poste'] is not None else "",
+                        'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
+                    } if row['date'] is not None else {
+                        'date': "",
+                        'table': "",
+                        'user': "",
+                        'poste': "",
+                        'afficher_button_blocked': None
+                    }
+                    for index, row in self.current_df.iterrows()
+                ]
+            )
                 # self.updateTableFromCurrentData("blocked")
 
             if self.callback:
@@ -395,21 +403,27 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_lost, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
-            if not self.df_combined_lost.empty:
-                self.df_combined_lost.reset_index(drop=True, inplace=True)
-                self.current_df = self.df_combined_lost
-                # self.updateTableFromCurrentData("lost")
-                self.myRVLost.update(
-                    [
-                        {
-                            'date': row['date'],
-                            'user': row['utilisateur'],
-                            'poste': row['poste'] if row['poste'] is not None else "",
-                            'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
-                        }
-                        for index, row in self.current_df.iterrows()
-                    ]
-                )
+            # if not self.df_combined_lost.empty:
+            self.df_combined_lost.reset_index(drop=True, inplace=True)
+            self.current_df = self.df_combined_lost
+            # self.updateTableFromCurrentData("lost")
+            self.myRVLost.update(
+                [
+                    {
+                        'date': row['date'],
+                        'user': row['utilisateur'],
+                        'poste': row['poste'] if row['poste'] is not None else "",
+                        'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
+                    } if row['date'] is not None else {
+                        'date': "",
+                        'table': "",
+                        'user': "",
+                        'poste': "",
+                        'afficher_button_blocked': None
+                    }
+                    for index, row in self.current_df.iterrows()
+                ]
+            )
 
             if self.callback:
                 self.callback(self.df_combined_lost)
