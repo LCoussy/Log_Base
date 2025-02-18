@@ -35,7 +35,7 @@ jobs:
         powershell Compress-Archive -Path dependencies-logbase -DestinationPath dependencies-logbase-windows.zip
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dependencies-logbase-windows
         path: dependencies-logbase-windows.zip
