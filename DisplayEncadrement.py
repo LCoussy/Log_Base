@@ -102,19 +102,25 @@ class LogExplorer(BoxLayout):
             start_date = datetime.strptime(self.start_date, '%d/%m/%y')
             end_date = datetime.strptime(self.end_date, '%d/%m/%y')
 
-            # Décaler la période d'une semaine en arrière
+            # Vérifier s'il y a des logs pour la semaine précédente
             new_start_date = start_date - timedelta(weeks=1)
             new_end_date = end_date - timedelta(weeks=1)
+            logs = self.get_logs_for_period(self.log_directory, new_start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
+
+            if not logs:
+                return  
 
             # Mettre à jour la période affichée
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
             self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
 
-            logs = self.get_logs_for_period(self.log_directory, self.start_date, self.end_date)
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
                 self.on_file_selected(logs)
+
+            # 🔹 Vérifier si on doit activer/désactiver les boutons
+            self.update_navigation_buttons()
 
         except ValueError as e:
             print(f"Erreur de conversion de date : {e}")
@@ -124,19 +130,25 @@ class LogExplorer(BoxLayout):
             start_date = datetime.strptime(self.start_date, '%d/%m/%y')
             end_date = datetime.strptime(self.end_date, '%d/%m/%y')
 
-            # Décaler la période d'une semaine en avant
+            # Vérifier s'il y a des logs pour la semaine suivante
             new_start_date = start_date + timedelta(weeks=1)
             new_end_date = end_date + timedelta(weeks=1)
+            logs = self.get_logs_for_period(self.log_directory, new_start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
+
+            if not logs:
+                return  
 
             # Mettre à jour la période affichée
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
             self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
 
-            logs = self.get_logs_for_period(self.log_directory, self.start_date, self.end_date)
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
                 self.on_file_selected(logs)
+
+            # 🔹 Vérifier si on doit activer/désactiver les boutons
+            self.update_navigation_buttons()
 
         except ValueError as e:
             print(f"Erreur de conversion de date : {e}")
@@ -146,18 +158,25 @@ class LogExplorer(BoxLayout):
             start_date = datetime.strptime(self.start_date, '%d/%m/%y')
             end_date = datetime.strptime(self.end_date, '%d/%m/%y')
 
-            # Ajouter une semaine à la date de fin
+            # Vérifier s'il y a des logs pour la semaine suivante
+            new_start_date = start_date + timedelta(weeks=1)
             new_end_date = end_date + timedelta(weeks=1)
+            logs = self.get_logs_for_period(self.log_directory, new_start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
+
+            if not logs:
+                return  
 
             # Mettre à jour la période affichée
-            self.start_date = start_date.strftime('%d/%m/%y')
+            self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
             self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
 
-            logs = self.get_logs_for_period(self.log_directory, self.start_date, self.end_date)
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
                 self.on_file_selected(logs)
+
+            # 🔹 Vérifier si on doit activer/désactiver les boutons
+            self.update_navigation_buttons()
 
         except ValueError as e:
             print(f"Erreur de conversion de date : {e}")
@@ -167,18 +186,39 @@ class LogExplorer(BoxLayout):
             start_date = datetime.strptime(self.start_date, '%d/%m/%y')
             end_date = datetime.strptime(self.end_date, '%d/%m/%y')
 
-            # Retirer une semaine à la date de fin
+            # Vérifier s'il y a des logs pour la semaine précédente
+            new_start_date = start_date - timedelta(weeks=1)
             new_end_date = end_date - timedelta(weeks=1)
+            logs = self.get_logs_for_period(self.log_directory, new_start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
+
+            if not logs:
+                return  
 
             # Mettre à jour la période affichée
-            self.start_date = start_date.strftime('%d/%m/%y')
+            self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
             self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
 
-            logs = self.get_logs_for_period(self.log_directory, self.start_date, self.end_date)
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
                 self.on_file_selected(logs)
 
+            # 🔹 Vérifier si on doit activer/désactiver les boutons
+            self.update_navigation_buttons()
+
         except ValueError as e:
             print(f"Erreur de conversion de date : {e}")
+    
+    def update_navigation_buttons(self):
+        """Active ou désactive les boutons selon la disponibilité des logs"""
+        prev_start = datetime.strptime(self.start_date, '%d/%m/%y') - timedelta(weeks=1)
+        prev_end = prev_start + timedelta(days=6)
+        next_start = datetime.strptime(self.start_date, '%d/%m/%y') + timedelta(weeks=1)
+        next_end = next_start + timedelta(days=6)
+
+        has_prev_logs = self.get_logs_for_period(self.log_directory, prev_start.strftime('%d/%m/%y'), prev_end.strftime('%d/%m/%y'))
+        has_next_logs = self.get_logs_for_period(self.log_directory, next_start.strftime('%d/%m/%y'), next_end.strftime('%d/%m/%y'))
+
+        self.prev_button.disabled = not has_prev_logs
+        self.next_button.disabled = not has_next_logs
+
