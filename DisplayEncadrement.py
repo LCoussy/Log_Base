@@ -5,6 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from FilterFiles import FilterFiles
 from datetime import datetime, timedelta
+
 class LogExplorer(BoxLayout):
     """
     Affiche les logs de la période correspondant aux dates sélectionnées.
@@ -66,7 +67,10 @@ class LogExplorer(BoxLayout):
         self.start_date = start_date.strftime('%d/%m/%y')
         self.end_date = end_date.strftime('%d/%m/%y')
         
-        self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
+        # Calculer le nombre de semaines
+        num_weeks = (end_date - start_date).days // 7 + 1
+        
+        self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
 
         # 🔹 Récupération des logs pour la période donnée
         logs = self.get_logs_for_period(new_directory, self.start_date, self.end_date)
@@ -113,8 +117,10 @@ class LogExplorer(BoxLayout):
             # Mettre à jour la période affichée
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
-            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
-
+        # Calculer le nombre de semaines
+            num_weeks = (end_date - start_date).days // 7 + 1
+        
+            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
                 self.on_file_selected(logs)
@@ -141,7 +147,10 @@ class LogExplorer(BoxLayout):
             # Mettre à jour la période affichée
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
-            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
+                    # Calculer le nombre de semaines
+            num_weeks = (end_date - start_date).days // 7 + 1
+        
+            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
 
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
@@ -169,8 +178,10 @@ class LogExplorer(BoxLayout):
             # Mettre à jour la période affichée
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
-            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
-
+                    # Calculer le nombre de semaines
+            num_weeks = (end_date - start_date).days // 7 + 1
+        
+            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
                 self.on_file_selected(logs)
@@ -197,7 +208,10 @@ class LogExplorer(BoxLayout):
             # Mettre à jour la période affichée
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
-            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date}"
+                    # Calculer le nombre de semaines
+            num_weeks = (end_date - start_date).days // 7 + 1
+        
+            self.date_label.text = f"Logs de la période : {self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
 
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
