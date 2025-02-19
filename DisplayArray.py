@@ -226,6 +226,10 @@ class DisplayArray(Screen):
         filter_layout.add_widget(self.user_filter)
         filter_layout.add_widget(self.table_filter)
 
+        # Changement de texte dans les TextInput
+        self.user_filter.bind(text=self.on_text_user)
+        self.table_filter.bind(text=self.on_text_table)
+
         # Ajouter le layout des filtres au layout principal
         up_layout.add_widget(filter_layout)
 
@@ -442,3 +446,47 @@ class DisplayArray(Screen):
 
             if self.callback:
                 self.callback(self.df_combined_lost)
+
+    def on_text_user(self, instance, value):
+        print('The widget User', instance, 'have:', value)
+        if value is not None:
+            if self.myType == "perdues":
+                self.myRVLost.update(
+                    [
+                        {
+                            'date': row['date'],
+                            'user': row['utilisateur'],
+                            'poste': row['poste'] if row['poste'] is not None else "",
+                            'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
+                        } if row['utilisateur'] == value else {
+                            'date': "",
+                            'table': "",
+                            'user': "",
+                            'poste': "",
+                            'afficher_button_lost': None
+                        }
+                        for index, row in self.current_df.iterrows()
+                    ]
+                )
+            elif self.myType == "bloquees":
+                self.myRVBlocked.update(
+                    [
+                        {
+                            'date': row['date'],
+                            'table': row['table'],
+                            'user': row['utilisateur'],
+                            'poste': row['poste'] if row['poste'] is not None else "",
+                            'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
+                        } if row['utilisateur'] == value else {
+                            'date': "",
+                            'table': "",
+                            'user': "",
+                            'poste': "",
+                            'afficher_button_blocked': None
+                        }
+                        for index, row in self.current_df.iterrows()
+                    ]
+                )
+    
+    def on_text_table(self, instance, value):
+        print('The widget Table', instance, 'have:', value)
