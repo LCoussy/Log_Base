@@ -1,19 +1,14 @@
 # DisplayArray.py
 from kivy.uix.recycleview import RecycleView
-from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
-from kivy.uix.recycleboxlayout import RecycleBoxLayout
-from kivy.uix.recyclegridlayout import RecycleGridLayout
-from kivy.uix.recycleview.layout import LayoutSelectionBehavior
-from kivy.properties import BooleanProperty, ObjectProperty
+from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from kivy.uix.recycleview import RecycleView
 from kivy.properties import StringProperty
@@ -22,6 +17,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+from kivy.uix.textinput import TextInput
 
 import pandas as pd
 
@@ -219,13 +215,28 @@ class DisplayArray(Screen):
         up_layout.add_widget(self.progress_bar)
         self.progress_bar.opacity = 0  # Cachée par défaut
 
+        # Ajouter un layout horizontal pour les filtres
+        filter_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=40)
+
+        # TextInput pour filtrer
+        self.user_filter = TextInput(hint_text="Filtrer pour un utilisateur", multiline=False, size_hint=(0.5, 1))
+        self.table_filter = TextInput(hint_text="Filtrer pour une table", multiline=False, size_hint=(0.5, 1))
+
+        # Ajouter les filtres au layout horizontal
+        filter_layout.add_widget(self.user_filter)
+        filter_layout.add_widget(self.table_filter)
+
+        # Ajouter le layout des filtres au layout principal
+        up_layout.add_widget(filter_layout)
+
+        # Cacher lse filtres le temps du chargement
+        self.user_filter.opacity = 0
+        self.table_filter.opacity = 0
+
         # Scrollable Array
-        # scroll_view = ScrollView(size_hint=(1, 0.9))
         self.grid_layout = GridLayout(size_hint_y=None, padding=10, spacing=10, row_force_default=True, row_default_height=40)
         self.grid_layout.bind(minimum_height=self.grid_layout.setter('height'))
         self.myRVLost = MyRecycleViewLost()
-        # scroll_view.add_widget(self.grid_layout)
-        # scroll_view.add_widget(self.grid_layout)
 
         down_layout.add_widget(down_up_layout)
         down_layout.add_widget(down_down_layout)
@@ -246,7 +257,7 @@ class DisplayArray(Screen):
             self.myRVLost = MyRecycleViewLost()
             down_down_layout.add_widget(self.myRVLost)
 
-        # down_layout.add_widget(self.myRVLost) if self.myType == "lost" else down_layout.add_widget(self.myRVBlocked)
+        
         # Assemble the main layout
         main_layout.add_widget(up_layout)
         main_layout.add_widget(down_layout)
@@ -335,6 +346,8 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_blocked, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            self.user_filter.opacity = 1
+            self.table_filter.opacity = 1
             # if not self.df_combined_blocked.empty:
             self.df_combined_blocked.reset_index(drop=True, inplace=True)
             self.current_df = self.df_combined_blocked
@@ -403,6 +416,8 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_lost, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            self.user_filter.opacity = 1
+            self.table_filter.opacity = 1
             # if not self.df_combined_lost.empty:
             self.df_combined_lost.reset_index(drop=True, inplace=True)
             self.current_df = self.df_combined_lost
