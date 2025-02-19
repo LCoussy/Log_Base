@@ -1,19 +1,14 @@
 # DisplayArray.py
 from kivy.uix.recycleview import RecycleView
-from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
-from kivy.uix.recycleboxlayout import RecycleBoxLayout
-from kivy.uix.recyclegridlayout import RecycleGridLayout
-from kivy.uix.recycleview.layout import LayoutSelectionBehavior
-from kivy.properties import BooleanProperty, ObjectProperty
+from kivy.properties import ObjectProperty
 from kivy.lang import Builder
 from kivy.uix.recycleview import RecycleView
 from kivy.properties import StringProperty
@@ -22,6 +17,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+from kivy.uix.textinput import TextInput
 
 import pandas as pd
 
@@ -79,15 +75,15 @@ Builder.load_string('''
         size_hint_y: None
         height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
     Label:
-        text: root.table
-        size_hint_y: None
-        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
-    Label:
         text: root.user
         size_hint_y: None
         height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
     Label:
         text: root.poste
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Label:
+        text: root.table
         size_hint_y: None
         height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
     Button:
@@ -105,35 +101,50 @@ class MyRecycleViewLost(RecycleView):
     def __init__(self, **kwargs):
         super(MyRecycleViewLost, self).__init__(**kwargs)
         self.data = []  # Génère des nombres de 0 à 49
+        self.RealData = []
         # self.data = [{'text': str(x), 'position':"Position"} for x in range(33000)]  # Génère des nombres de 0 à 49
 
     def update(self, data):
         data.sort(key=lambda x: x['date'])
         self.data = data
+        self.RealData = self.data
         self.refresh_from_data()
         # self.ids['afficher_bouton'].disabled = False
 
+    def filtered(self, type, value):
+        # for x in self.data:
+        #     print(x[type])
+        self.data = [x for x in self.RealData if value in x[type]]
+        # print(self.data)
+        self.refresh_from_data()
+
 class MyViewClassBlocked(BoxLayout):
     date = StringProperty('')
-    table = StringProperty('')
     user = StringProperty('')
     poste = StringProperty('')
+    table = StringProperty('')
     afficher_button_blocked = ObjectProperty(None)
 
 class MyRecycleViewBlocked(RecycleView):
     def __init__(self, **kwargs):
         super(MyRecycleViewBlocked, self).__init__(**kwargs)
         self.data = []  # Génère des nombres de 0 à 49
+        self.RealData = []
         # print(self._get_viewclass)
         # self.data = [{'text': str(x), 'position':"Position"} for x in range(33000)]  # Génère des nombres de 0 à 49
 
     def update(self, data):
         data.sort(key=lambda x: x['date'])
         self.data = data
+        self.RealData = self.data
         # print(data)
         # self.data.afficher_button_blocked.bind(on_release=data)
         self.refresh_from_data()
         # self.ids['afficher_bouton'].disabled = False
+
+    def filtered(self, type, value):
+        self.data = [x for x in self.RealData if value in x[type]]
+        self.refresh_from_data()
 
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
@@ -219,23 +230,43 @@ class DisplayArray(Screen):
         up_layout.add_widget(self.progress_bar)
         self.progress_bar.opacity = 0  # Cachée par défaut
 
+        # Ajouter un layout horizontal pour les filtres
+        filter_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=40)
+
+        # TextInput pour filtrer
+        self.user_filter = TextInput(hint_text="Filtrer pour un utilisateur", multiline=False, size_hint=(0.5, 1))
+        self.user_filter.bind(text=self.on_text_user)
+        filter_layout.add_widget(self.user_filter)
+        if self.myType == "bloquees":
+            self.table_filter = TextInput(hint_text="Filtrer pour une table", multiline=False, size_hint=(0.5, 1))
+            self.table_filter.bind(text=self.on_text_table)
+            filter_layout.add_widget(self.table_filter)
+            self.table_filter.opacity = 0
+
+        # Ajouter les filtres au layout horizontal
+
+        # Changement de texte dans les TextInput
+
+        # Ajouter le layout des filtres au layout principal
+        up_layout.add_widget(filter_layout)
+
+        # Cacher lse filtres le temps du chargement
+        self.user_filter.opacity = 0
+
         # Scrollable Array
-        # scroll_view = ScrollView(size_hint=(1, 0.9))
         self.grid_layout = GridLayout(size_hint_y=None, padding=10, spacing=10, row_force_default=True, row_default_height=40)
         self.grid_layout.bind(minimum_height=self.grid_layout.setter('height'))
         self.myRVLost = MyRecycleViewLost()
-        # scroll_view.add_widget(self.grid_layout)
-        # scroll_view.add_widget(self.grid_layout)
 
         down_layout.add_widget(down_up_layout)
         down_layout.add_widget(down_down_layout)
 
         headers = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
         headers.add_widget(Label(text="Date", size_hint_y=None))
-        headers.add_widget(Label(text="Table", size_hint_y=None))
         headers.add_widget(Label(text="User", size_hint_y=None))
+        headers.add_widget(Label(text="Poste", size_hint_y=None))
         if self.myType == "bloquees":
-            headers.add_widget(Label(text="Poste", size_hint_y=None))
+            headers.add_widget(Label(text="Table", size_hint_y=None))
         headers.add_widget(Label(text="Afficher", size_hint_y=None))
 
         down_up_layout.add_widget(headers)
@@ -246,7 +277,7 @@ class DisplayArray(Screen):
             self.myRVLost = MyRecycleViewLost()
             down_down_layout.add_widget(self.myRVLost)
 
-        # down_layout.add_widget(self.myRVLost) if self.myType == "lost" else down_layout.add_widget(self.myRVBlocked)
+
         # Assemble the main layout
         main_layout.add_widget(up_layout)
         main_layout.add_widget(down_layout)
@@ -335,6 +366,9 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_blocked, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            self.user_filter.opacity = 1
+            if self.myType == "bloquees":
+                self.table_filter.opacity = 1
             # if not self.df_combined_blocked.empty:
             self.df_combined_blocked.reset_index(drop=True, inplace=True)
             self.current_df = self.df_combined_blocked
@@ -342,15 +376,15 @@ class DisplayArray(Screen):
                 [
                     {
                         'date': row['date'],
-                        'table': row['table'],
                         'user': row['utilisateur'],
                         'poste': row['poste'] if row['poste'] is not None else "",
+                        'table': row['table'],
                         'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
                     } if row['date'] is not None else {
                         'date': "",
-                        'table': "",
                         'user': "",
                         'poste': "",
+                        'table': "",
                         'afficher_button_blocked': None
                     }
                     for index, row in self.current_df.iterrows()
@@ -403,6 +437,9 @@ class DisplayArray(Screen):
             Clock.schedule_once(self.process_next_batch_lost, 0.1)
         else:
             self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            self.user_filter.opacity = 1
+            if self.myType == "bloquees":
+                self.table_filter.opacity = 1
             # if not self.df_combined_lost.empty:
             self.df_combined_lost.reset_index(drop=True, inplace=True)
             self.current_df = self.df_combined_lost
@@ -416,10 +453,9 @@ class DisplayArray(Screen):
                         'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
                     } if row['date'] is not None else {
                         'date': "",
-                        'table': "",
                         'user': "",
                         'poste': "",
-                        'afficher_button_blocked': None
+                        'afficher_button_lost': None
                     }
                     for index, row in self.current_df.iterrows()
                 ]
@@ -427,3 +463,53 @@ class DisplayArray(Screen):
 
             if self.callback:
                 self.callback(self.df_combined_lost)
+
+    def on_text_user(self, instance, value):
+        # print('The widget User', instance, 'have:', value)
+        if value is not None:
+            if self.myType == "perdues":
+                self.myRVLost.filtered('user', value)
+                # self.myRVLost.update(
+                #     [
+                #         {
+                #             'date': row['date'],
+                #             'user': row['utilisateur'],
+                #             'poste': row['poste'] if row['poste'] is not None else "",
+                #             'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
+                #         } if value in row['utilisateur'] else {
+                #             'date': "",
+                #             'table': "",
+                #             'user': "",
+                #             'poste': "",
+                #             'afficher_button_lost': lambda :None
+                #         }
+                #         for index, row in self.current_df.iterrows()
+                #     ]
+                # )
+            else:
+                self.myRVBlocked.filtered('user', value)
+                # self.myRVBlocked.update(
+                #     [
+                #         {
+                #             'date': row['date'],
+                #             'table': row['table'],
+                #             'user': row['utilisateur'],
+                #             'poste': row['poste'] if row['poste'] is not None else "",
+                #             'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
+                #         } if value in row['utilisateur'] else {
+                #             'date': "",
+                #             'table': "",
+                #             'user': "",
+                #             'poste': "",
+                #             'afficher_button_blocked': lambda :None
+                #         }
+                #         for index, row in self.current_df.iterrows()
+                #     ]
+                # )
+
+    def on_text_table(self, instance, value):
+        if value is not None:
+            if self.myType == "perdues":
+                self.myRVLost.filtered('table', value)
+            else:
+                self.myRVBlocked.filtered('table', value)
