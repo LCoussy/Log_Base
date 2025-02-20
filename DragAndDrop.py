@@ -116,17 +116,21 @@ class DragDropScreen(Screen):
         Met à jour l'interface et navigue vers l'affichage des logs.
         """
         for file in os.listdir(self.path):
-            if '/' in self.path:
-                GetContentLog.parse(self.path + '/' + file)
-            else :
-                GetContentLog.parse(self.path + '\\' + file)
-        
+            file_path = os.path.join(self.path, file)
+            GetContentLog.parse(file_path)
+
         display_screen = self.manager.get_screen('display')
-        
-        # Transmettre la date à DisplayArray (ou autre écran de logs)
+
         if selected_date:
-            display_screen.logExplorer.update_directory(self.path, selected_date)
+            if selected_date[1]:  
+                date_param = selected_date  
+            else:
+                date_param = selected_date[0]  
+
+            display_screen.logExplorer.update_directory(self.path, date_param)
+
         self.manager.current = 'display'
+
 
     def show_error_popup(self, message):
 
