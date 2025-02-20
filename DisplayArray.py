@@ -100,22 +100,17 @@ class MyViewClassLost(BoxLayout):
 class MyRecycleViewLost(RecycleView):
     def __init__(self, **kwargs):
         super(MyRecycleViewLost, self).__init__(**kwargs)
-        self.data = []  # Génère des nombres de 0 à 49
+        self.data = []  
         self.RealData = []
-        # self.data = [{'text': str(x), 'position':"Position"} for x in range(33000)]  # Génère des nombres de 0 à 49
 
     def update(self, data):
         data.sort(key=lambda x: x['date'])
         self.data = data
         self.RealData = self.data
         self.refresh_from_data()
-        # self.ids['afficher_bouton'].disabled = False
 
     def filtered(self, type, value):
-        # for x in self.data:
-        #     print(x[type])
         self.data = [x for x in self.RealData if value in x[type]]
-        # print(self.data)
         self.refresh_from_data()
 
 class MyViewClassBlocked(BoxLayout):
@@ -128,19 +123,14 @@ class MyViewClassBlocked(BoxLayout):
 class MyRecycleViewBlocked(RecycleView):
     def __init__(self, **kwargs):
         super(MyRecycleViewBlocked, self).__init__(**kwargs)
-        self.data = []  # Génère des nombres de 0 à 49
+        self.data = [] 
         self.RealData = []
-        # print(self._get_viewclass)
-        # self.data = [{'text': str(x), 'position':"Position"} for x in range(33000)]  # Génère des nombres de 0 à 49
 
     def update(self, data):
         data.sort(key=lambda x: x['date'])
         self.data = data
         self.RealData = self.data
-        # print(data)
-        # self.data.afficher_button_blocked.bind(on_release=data)
         self.refresh_from_data()
-        # self.ids['afficher_bouton'].disabled = False
 
     def filtered(self, type, value):
         self.data = [x for x in self.RealData if value in x[type]]
@@ -242,12 +232,6 @@ class DisplayArray(Screen):
             self.table_filter.bind(text=self.on_text_table)
             filter_layout.add_widget(self.table_filter)
             self.table_filter.opacity = 0
-
-        # Ajouter les filtres au layout horizontal
-
-        # Changement de texte dans les TextInput
-
-        # Ajouter le layout des filtres au layout principal
         up_layout.add_widget(filter_layout)
 
         # Cacher lse filtres le temps du chargement
@@ -283,24 +267,6 @@ class DisplayArray(Screen):
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
 
-#    def updateTableFromCurrentData(self, requestType):
-#        """
-#        Update the grid layout with the current DataFrame data.
-#        This method is used to refresh the table after sorting.
-#        """
-#        print("Données actuelles dans current_df : ", self.current_df)  # Debug
-#        self.grid_layout.clear_widgets()
-#
-#        # Assurez-vous de supprimer les colonnes non nécessaires
-#        df_combined2 = self.current_df.drop(columns=["segment_id", "id"], errors='ignore')
-#        self.grid_layout.cols = len(df_combined2.columns) + 1  # Ajouter une colonne pour les boutons
-#
-#        # Ajouter les en-têtes de colonnes avec possibilité de tri
-#        for header in df_combined2.columns:
-#            sort_symbol = ""
-#            if hasattr(self, 'sort_column') and self.sort_column == header:
-#                sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
-
     def update_table_blocked(self, selected_files, callback=None):
         self.grid_layout.clear_widgets()
         self.df_combined_blocked = pd.DataFrame()
@@ -316,29 +282,6 @@ class DisplayArray(Screen):
 
         Clock.schedule_once(self.process_next_batch_blocked, 0.1)
 
-#<<<<<<< DisplayArray.py
-#        self.grid_layout.add_widget(Label(text="segment", bold=True))  # Colonne pour afficher le bouton de segment
-#
-#        # Ajouter les données sous forme de lignes
-#        for index, row in df_combined2.iterrows():
-#            for cell in row:
-#                self.grid_layout.add_widget(Label(text=str(cell)))
-#
-#            # Ajouter le bouton "Afficher" pour chaque segment
-#            segment_id = self.current_df.loc[index, "segment_id"]
-#            view_button = Button(text="Afficher")
-#            if requestType == "blocked":
-#                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
-#            else:
-#                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
-#            self.grid_layout.add_widget(view_button)
-#
-#        # Forcer la mise à jour du layout
-#        Clock.schedule_once(lambda dt: self.grid_layout.canvas.ask_update(), 2)
-
-
-#    def update_table_blocked(self, selected_files):
-#=======
     def process_next_batch_blocked(self, dt):
         """
         Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
@@ -354,22 +297,16 @@ class DisplayArray(Screen):
                 if df_blocked is not None and not df_blocked.empty:
                     self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
-            # if self.logsBlocked:
-            #     df_combined = self.df_combined_blocked
+            self.current_file_index = end_index  
 
-            self.current_file_index = end_index  # Mise à jour de l'index
-
-            # Mise à jour de la barre de progression
             self.progress_bar.value = (self.current_file_index / self.total_files) * 100
 
-            # Continue avec le prochain lot
             Clock.schedule_once(self.process_next_batch_blocked, 0.1)
         else:
-            self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            self.progress_bar.opacity = 0  
             self.user_filter.opacity = 1
             if self.myType == "bloquees":
                 self.table_filter.opacity = 1
-            # if not self.df_combined_blocked.empty:
             self.df_combined_blocked.reset_index(drop=True, inplace=True)
             self.current_df = self.df_combined_blocked
             self.myRVBlocked.update(
@@ -390,23 +327,21 @@ class DisplayArray(Screen):
                     for index, row in self.current_df.iterrows()
                 ]
             )
-                # self.updateTableFromCurrentData("blocked")
 
             if self.callback:
                 self.callback(self.df_combined_blocked)
 
     def update_table_lost(self, selected_files, callback=None):
-#>>>>>>> DisplayArray.py
         self.grid_layout.clear_widgets()
         self.df_combined_lost = pd.DataFrame()
         self.logsLost = []
         self.progress_bar.value = 0
-        self.progress_bar.opacity = 1  # Affiche la barre de progression
+        self.progress_bar.opacity = 1  
 
         self.selected_files = selected_files
         self.current_file_index = 0
         self.total_files = len(selected_files)
-        self.batch_size = 10  # Nombre de fichiers traités par cycle (ajuste selon tes besoins)
+        self.batch_size = 10  
         self.callback = callback
 
         Clock.schedule_once(self.process_next_batch_lost, 0.1)
@@ -428,22 +363,18 @@ class DisplayArray(Screen):
                 if df_lost is not None and not df_lost.empty:
                     self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
 
-            self.current_file_index = end_index  # Mise à jour de l'index
+            self.current_file_index = end_index  
 
-            # Mise à jour de la barre de progression
             self.progress_bar.value = (self.current_file_index / self.total_files) * 100
 
-            # Continue avec le prochain lot
             Clock.schedule_once(self.process_next_batch_lost, 0.1)
         else:
-            self.progress_bar.opacity = 0  # Cache la barre une fois terminé
+            self.progress_bar.opacity = 0 
             self.user_filter.opacity = 1
             if self.myType == "bloquees":
                 self.table_filter.opacity = 1
-            # if not self.df_combined_lost.empty:
             self.df_combined_lost.reset_index(drop=True, inplace=True)
             self.current_df = self.df_combined_lost
-            # self.updateTableFromCurrentData("lost")
             self.myRVLost.update(
                 [
                     {
@@ -465,47 +396,12 @@ class DisplayArray(Screen):
                 self.callback(self.df_combined_lost)
 
     def on_text_user(self, instance, value):
-        # print('The widget User', instance, 'have:', value)
         if value is not None:
             if self.myType == "perdues":
                 self.myRVLost.filtered('user', value)
-                # self.myRVLost.update(
-                #     [
-                #         {
-                #             'date': row['date'],
-                #             'user': row['utilisateur'],
-                #             'poste': row['poste'] if row['poste'] is not None else "",
-                #             'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
-                #         } if value in row['utilisateur'] else {
-                #             'date': "",
-                #             'table': "",
-                #             'user': "",
-                #             'poste': "",
-                #             'afficher_button_lost': lambda :None
-                #         }
-                #         for index, row in self.current_df.iterrows()
-                #     ]
-                # )
             else:
                 self.myRVBlocked.filtered('user', value)
-                # self.myRVBlocked.update(
-                #     [
-                #         {
-                #             'date': row['date'],
-                #             'table': row['table'],
-                #             'user': row['utilisateur'],
-                #             'poste': row['poste'] if row['poste'] is not None else "",
-                #             'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
-                #         } if value in row['utilisateur'] else {
-                #             'date': "",
-                #             'table': "",
-                #             'user': "",
-                #             'poste': "",
-                #             'afficher_button_blocked': lambda :None
-                #         }
-                #         for index, row in self.current_df.iterrows()
-                #     ]
-                # )
+
 
     def on_text_table(self, instance, value):
         if value is not None:

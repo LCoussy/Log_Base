@@ -76,8 +76,8 @@ class LogExplorer(BoxLayout):
             start_date = date_obj
             end_date = date_obj
 
-        start_date = start_date - timedelta(days=start_date.weekday())  # Lundi de la semaine de début
-        end_date = end_date + timedelta(days=(6 - end_date.weekday()))  # Dimanche de la semaine de fin
+        start_date = start_date - timedelta(days=start_date.weekday()) 
+        end_date = end_date + timedelta(days=(6 - end_date.weekday()))  
 
         self.start_date = start_date.strftime('%d/%m/%y')
         self.end_date = end_date.strftime('%d/%m/%y')
@@ -98,14 +98,13 @@ class LogExplorer(BoxLayout):
             start_date = datetime.strptime(start_date_str, '%d/%m/%y')
             end_date = datetime.strptime(end_date_str, '%d/%m/%y')
 
-            start_week = start_date - timedelta(days=start_date.weekday())  # Lundi de la semaine de début
-            end_week = end_date + timedelta(days=(6 - end_date.weekday()))  # Dimanche de la semaine de fin
+            start_week = start_date - timedelta(days=start_date.weekday()) 
+            end_week = end_date + timedelta(days=(6 - end_date.weekday())) 
 
             logs = []
             logs += self.filter_files.get_logs_in_date_range(directory, start_week, end_week)
             return logs
         except ValueError as e:
-            print(f"Erreur de conversion de date : {e}")
             return []
 
     def prev_week(self, instance):

@@ -7,7 +7,19 @@ from DisplayStat import DisplayStat
 
 class DisplayData(Screen):
     """
-    Screen that contains the DisplayArray and manages its layout.
+    DisplayData is a Kivy Screen class that builds and manages the user interface for displaying data.
+
+    Attributes:
+        instance (list): A list containing instances of data to be displayed.
+        displayLost (DisplayArray): An instance of DisplayArray for displaying lost requests.
+        displayBlocked (DisplayArray): An instance of DisplayArray for displaying blocked requests.
+        displayStat (DisplayStat): An instance of DisplayStat for displaying statistics.
+        handleSwitchGraph (HandleSwitchGraph): A button for switching to the graph display.
+        handleSwitchRequest (HandleSwitchRequest): A button for switching to the request display.
+
+    Methods:
+        __init__(**kwargs): Initializes the DisplayData screen and builds the UI.
+        build_ui(): Builds the user interface of the Display screen.
     """
 
     def __init__(self, **kwargs):

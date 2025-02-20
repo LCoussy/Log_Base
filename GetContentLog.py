@@ -8,12 +8,9 @@ file_cache = {}
 
 # function to read file content using pickle and implement caching
 def read_file_pickle(file_path):
-    # Check if the file is already in cache
     if file_path not in file_cache:
-        # Check if the file exist and is not empty
         if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
             try:
-                # Read the file using pickle and store the content in the cache
                 with open(file_path, 'rb') as file:
                     file_content = pickle.load(file)
                     file_cache[file_path] = file_content
@@ -101,10 +98,7 @@ def parse(filepath):
           os.makedirs('__logcache__')
         # Write data in the fiel using pickle
         with open(cache_file_path, 'wb') as file:
-            print(f"Cache file created: {cache_file_path}")
-            # print(GetContentLog(filepath))
             pickle.dump(GetContentLog(filepath), file)
-        print(f"Cache file filled: {cache_file_path}")
     #  Read and return cached data from the file
     result = read_file_pickle(cache_file_path)
     if result is not None:
@@ -127,5 +121,4 @@ def getLogcacheFilepath(filepath):
       return f'{curDir}\\__logcache__\\{match.group(0)}.pkl'
   else:
     return None
-
-# print(transformFilepath('/home/coussy/Downloads/log 1/log (2)/GCE__5-45-02_82_07-12-2024.txt'))
+  

@@ -7,8 +7,26 @@ from DisplayEncadrement import LogExplorer
 
 class Display(Screen):
     """
-    Screen that contains the DisplayArray and manages its layout.
+    Display is a Kivy Screen that represents the main user interface for displaying log data.
+
+    Attributes:
+        fileOrDirectoryPath (str): Path to the file or directory containing log data.
+        displayData (DisplayData): Widget for displaying data.
+        logExplorer (LogExplorer): Widget for exploring log files.
+        dataLost (DataFrame or None): DataFrame containing lost data, initialized to None.
+        dataBlocked (DataFrame or None): DataFrame containing blocked data, initialized to None.
+
+    Methods:
+        __init__(fileOrDirectoryPath, **kwargs):
+            Initializes the Display screen with the given file or directory path.
+        
+        build_ui():
+            Builds the user interface of the Display screen.
+        
+        on_file_selected(selected_files):
+            Callback function to handle file selection in LogExplorer.
     """
+
 
     def __init__(self, fileOrDirectoryPath, **kwargs):
         super(Display, self).__init__(**kwargs)
@@ -26,8 +44,6 @@ class Display(Screen):
         self.displayData = DisplayData()
 
         self.logExplorer = LogExplorer(log_directory=self.fileOrDirectoryPath, on_file_selected=self.on_file_selected)
-        #switchGraphButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
-        #switchGraphButton.add_widget(self.displayData.handleSwitchGraph)
 
         header_layout.add_widget(self.logExplorer)
         #header_layout.add_widget(switchGraphButton)

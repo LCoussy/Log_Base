@@ -7,6 +7,20 @@ import re
 
 class DateSelectionPopup(Popup):
     def __init__(self, on_date_selected, **kwargs):
+        """
+        Initializes the DateRangeSelector instance.
+
+        Args:
+            on_date_selected (function): Callback function to be called when a date is selected.
+            **kwargs: Additional keyword arguments to be passed to the parent class initializer.
+
+        Attributes:
+            on_date_selected (function): Stores the callback function for date selection.
+            title (str): Title of the date range selector.
+            size_hint (tuple): Size hint for the date range selector.
+            start_date_input (TextInput): Input field for the start date.
+            end_date_input (TextInput): Input field for the end date.
+        """
         super().__init__(**kwargs)
         self.on_date_selected = on_date_selected
         self.title = "Entrer une période (dd/mm/yy)"
@@ -35,6 +49,21 @@ class DateSelectionPopup(Popup):
         self.add_widget(layout)
 
     def validate_date(self, instance):
+        """
+        Validates the date input fields and triggers the date selection callback.
+
+        This method checks if the start and end date inputs match the expected date format (DD/MM/YY).
+        If the end date is not provided, it defaults to the start date. Upon successful validation,
+        it calls the `on_date_selected` callback with the start and end dates. If the callback's
+        instance has a method `on_file_selected`, it retrieves logs for the specified period and
+        triggers the `on_file_selected` method with the retrieved logs.
+
+        Args:
+            instance: The instance of the widget that triggered this method.
+
+        Returns:
+            None
+        """
         start_date = self.start_date_input.text.strip()
         end_date = self.end_date_input.text.strip()
 
