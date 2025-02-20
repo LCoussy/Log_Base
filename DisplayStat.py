@@ -128,7 +128,6 @@ class DisplayStat(Screen):
         # Update the graph with the provided data
         graph_widget.updateGraph(data)
 
-        print(data)
 
         # Ajouter un bouton pour fermer la popup
         close_button = Button(

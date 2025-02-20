@@ -106,10 +106,7 @@ def parse(filepath):
           os.makedirs('__logcache__')
         # Write data in the fiel using pickle
         with open(cache_file_path, 'wb') as file:
-            print(f"Cache file created: {cache_file_path}")
-            # print(GetContentLog(filepath))
             pickle.dump(GetContentLog(filepath), file)
-        print(f"Cache file filled: {cache_file_path}")
     #  Read and return cached data from the file
     # result = read_file_pickle(cache_file_path)
     # if result is not None:
@@ -132,5 +129,4 @@ def getLogcacheFilepath(filepath):
       return f'{curDir}\\__logcache__\\{match.group(0)}.pkl'
   else:
     return None
-
-# print(transformFilepath('/home/coussy/Downloads/log 1/log (2)/GCE__5-45-02_82_07-12-2024.txt'))
+  

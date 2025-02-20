@@ -288,7 +288,6 @@ def get_segment_by_id(logs, segment_id):
         logs = [log for log in logs if log is not None]
     for log in logs:
         for aLog in log:
-            # print(aLog, "--------------------------------------------")
             if aLog.get("segment_id") == segment_id:
                 return aLog.get("content", f"Segment pour l'ID {segment_id} introuvable.")
     return f"Segment pour l'ID {segment_id} introuvable."
