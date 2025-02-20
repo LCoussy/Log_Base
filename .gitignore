@@ -297,6 +297,9 @@ __logcache__/
 poetry.lock
 
 testTimeParsing.py
+testThreading.py
+DragAndDrop copy.py
+DragAndDrop copy 2.py
 
 .vscode
 .vscode/
