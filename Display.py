@@ -26,11 +26,11 @@ class Display(Screen):
         self.displayData = DisplayData()
 
         self.logExplorer = LogExplorer(log_directory=self.fileOrDirectoryPath, on_file_selected=self.on_file_selected)
-        switchGraphButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
-        switchGraphButton.add_widget(self.displayData.handleSwitchGraph)
+        #switchGraphButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
+        #switchGraphButton.add_widget(self.displayData.handleSwitchGraph)
 
         header_layout.add_widget(self.logExplorer)
-        header_layout.add_widget(switchGraphButton)
+        #header_layout.add_widget(switchGraphButton)
 
         main_layout.add_widget(header_layout)  
         main_layout.add_widget(self.displayData)  

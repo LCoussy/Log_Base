@@ -25,7 +25,7 @@ class DisplayData(Screen):
 
         mainBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
         mainBoxLayoutUp = BoxLayout(orientation='horizontal', size_hint=(1, 0.9), padding=10, spacing=10)
-        mainBoxLayoutDownButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
+        mainBoxLayoutDownButton = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), padding=5, spacing=5)
 
         # Create instances of DisplayArray and DisplayStat
         self.displayLost = DisplayArray("perdues")
@@ -46,7 +46,17 @@ class DisplayData(Screen):
         self.handleSwitchGraph = hs.HandleSwitchGraph(screenManager=screenManager, instance=self.instance)
         self.handleSwitchRequest = hs.HandleSwitchRequest(screenManager=screenManager, instance=self.instance)
 
+        # Ajouter les boutons avec le même size_hint_y pour une hauteur égale
+        self.handleSwitchRequest.size_hint_y = 0.8
+        self.handleSwitchGraph.size_hint_y = 0.8
+
+        self.handleSwitchRequest.size_hint_x = 0.8
+        self.handleSwitchGraph.size_hint_x = 0.8
+
+
+
         mainBoxLayoutDownButton.add_widget(self.handleSwitchRequest)
+        mainBoxLayoutDownButton.add_widget(self.handleSwitchGraph)
 
         stat_screen.add_widget(self.displayStat)
 
