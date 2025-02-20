@@ -4,27 +4,32 @@ import parser
 import pickle
 
 # dictionary to store cached file content
-file_cache = {}
+# file_cache = {}
+
+# def drop_cache():
+#     global file_cache
+#     file_cache = {}
 
 # function to read file content using pickle and implement caching
 def read_file_pickle(file_path):
     # Check if the file is already in cache
-    if file_path not in file_cache:
-        # Check if the file exist and is not empty
-        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            try:
-                # Read the file using pickle and store the content in the cache
-                with open(file_path, 'rb') as file:
-                    file_content = pickle.load(file)
-                    file_cache[file_path] = file_content
-            except EOFError:
-                print(f"Erreur : Le fichier {file_path} est vide ou corrompu.")
-                return None
-        else:
-            print(f"Erreur : Le fichier {file_path} n'existe pas ou est vide.")
+    # if file_path not in file_cache:
+    # Check if the file exist and is not empty
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        try:
+            # Read the file using pickle and store the content in the cache
+            with open(file_path, 'rb') as file:
+                file_content = pickle.load(file)
+                # file_cache[file_path] = file_content
+        except EOFError:
+            print(f"Erreur : Le fichier {file_path} est vide ou corrompu.")
             return None
+    else:
+        print(f"Erreur : Le fichier {file_path} n'existe pas ou est vide.")
+        return None
     # Return the content put in the cache
-    return file_cache.get(file_path)
+    return file_content
+    # return file_cache.get(file_path)
 
 
 
@@ -106,12 +111,12 @@ def parse(filepath):
             pickle.dump(GetContentLog(filepath), file)
         print(f"Cache file filled: {cache_file_path}")
     #  Read and return cached data from the file
-    result = read_file_pickle(cache_file_path)
-    if result is not None:
-        return result
-    else:
-        print("Erreur : Impossible de lire les données mises en cache.")
-        return None
+    # result = read_file_pickle(cache_file_path)
+    # if result is not None:
+    #     return result
+    # else:
+    #     print("Erreur : Impossible de lire les données mises en cache.")
+    #     return None
   else:
       print("Erreur : Nom de fichier non trouvé.")
       return None
