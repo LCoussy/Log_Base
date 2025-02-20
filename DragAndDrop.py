@@ -12,7 +12,7 @@ from kivy.core.window import Window
 from kivy.properties import StringProperty
 from kivy.clock import Clock
 from kivy.app import App
-from DateRangeSelector import DateSelectionPopup 
+from DateRangeSelector import DateSelectionPopup
 from datetime import datetime, timedelta
 
 import concurrent.futures
@@ -293,41 +293,47 @@ class DragDropScreen(Screen):
         else:
             self.show_error_popup("Fichier invalide.")
 
-<<<<<<< DragAndDrop.py
-    def check_progress(self, dt):
+    def check_progress(self, dt, selected_date=None):
         if self.progressBar.progress_bar.value >= 100:
             self.mainLayout.opacity = 1
             Screen = self.manager.get_screen('display')
-            Screen.logExplorer.update_directory(self.path)
+            if selected_date:
+                if selected_date[1]:
+                    date_param = selected_date
+                else:
+                    date_param = selected_date[0]
+
+                Screen.logExplorer.update_directory(self.path, date_param)
+
             self.manager.current = 'display'
             return False  # Stop the scheduling
         return True  # Continue scheduling
 
-    def update_ui_and_navigate(self):
+    def update_ui_and_navigate(self, selected_date=None):
         self.nbFiles = len(os.listdir(self.path))
         self.mainLayout.opacity = 0
         self.progressBar.start_progress(None, self.path)  # Start the progress bar
-        Clock.schedule_interval(self.check_progress, 0.1)  # Check progress every 0.1 seconds
+        Clock.schedule_interval(lambda dt:self.check_progress(dt, selected_date), 0.1)  # Check progress every 0.1 seconds
 
-    def update_ui_and_navigate(self, selected_date=None):
-        """
-        Met à jour l'interface et navigue vers l'affichage des logs.
-        """
-        for file in os.listdir(self.path):
-            file_path = os.path.join(self.path, file)
-            GetContentLog.parse(file_path)
+    # def update_ui_and_navigate(self, selected_date=None):
+    #     """
+    #     Met à jour l'interface et navigue vers l'affichage des logs.
+    #     """
+    #     for file in os.listdir(self.path):
+    #         file_path = os.path.join(self.path, file)
+    #         GetContentLog.parse(file_path)
 
-        display_screen = self.manager.get_screen('display')
+    #     display_screen = self.manager.get_screen('display')
 
-        if selected_date:
-            if selected_date[1]:  
-                date_param = selected_date  
-            else:
-                date_param = selected_date[0]  
+    #     if selected_date:
+    #         if selected_date[1]:
+    #             date_param = selected_date
+    #         else:
+    #             date_param = selected_date[0]
 
-            display_screen.logExplorer.update_directory(self.path, date_param)
+    #         display_screen.logExplorer.update_directory(self.path, date_param)
 
-        self.manager.current = 'display'
+    #     self.manager.current = 'display'
 
 
     def show_error_popup(self, message):
