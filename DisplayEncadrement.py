@@ -15,8 +15,8 @@ class LogExplorer(BoxLayout):
     """
     log_directory = StringProperty()
     selected_files = ListProperty()
-    start_date = StringProperty() 
-    end_date = StringProperty()   
+    start_date = StringProperty()
+    end_date = StringProperty()
     on_files_selected = ObjectProperty(None)
 
     def __init__(self, log_directory, on_file_selected=None, **kwargs):
@@ -24,7 +24,7 @@ class LogExplorer(BoxLayout):
         self.orientation = 'vertical'
         self.size_hint = (1, 1)
         self.filter_files = FilterFiles()
-        self.on_file_selected = on_file_selected  
+        self.on_file_selected = on_file_selected
 
         self.top_layout = BoxLayout(size_hint=(1, 0.1), padding=(10, 10), spacing=10)
 
@@ -76,8 +76,8 @@ class LogExplorer(BoxLayout):
             start_date = date_obj
             end_date = date_obj
 
-        start_date = start_date - timedelta(days=start_date.weekday()) 
-        end_date = end_date + timedelta(days=(6 - end_date.weekday()))  
+        start_date = start_date - timedelta(days=start_date.weekday())
+        end_date = end_date + timedelta(days=(6 - end_date.weekday()))
 
         self.start_date = start_date.strftime('%d/%m/%y')
         self.end_date = end_date.strftime('%d/%m/%y')
@@ -87,8 +87,9 @@ class LogExplorer(BoxLayout):
 
         logs = self.get_logs_for_period(new_directory, self.start_date, self.end_date)
         self.no_data_label.text = "" if logs else "Pas de données disponibles"
-        
+
         if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
+
             self.on_file_selected(logs)
 
         self.update_navigation_buttons()
@@ -98,8 +99,8 @@ class LogExplorer(BoxLayout):
             start_date = datetime.strptime(start_date_str, '%d/%m/%y')
             end_date = datetime.strptime(end_date_str, '%d/%m/%y')
 
-            start_week = start_date - timedelta(days=start_date.weekday()) 
-            end_week = end_date + timedelta(days=(6 - end_date.weekday())) 
+            start_week = start_date - timedelta(days=start_date.weekday())
+            end_week = end_date + timedelta(days=(6 - end_date.weekday()))
 
             logs = []
             logs += self.filter_files.get_logs_in_date_range(directory, start_week, end_week)
@@ -117,12 +118,12 @@ class LogExplorer(BoxLayout):
             logs = self.get_logs_for_period(self.log_directory, new_start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
 
             if not logs:
-                return  
+                return
 
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
             num_weeks = (new_end_date - new_start_date).days // 7 + 1
-        
+
             self.date_label.text = f"{self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
             if hasattr(self, 'on_file_selected') and callable(self.on_file_selected):
@@ -143,12 +144,12 @@ class LogExplorer(BoxLayout):
             logs = self.get_logs_for_period(self.log_directory, new_start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
 
             if not logs:
-                return  
+                return
 
             self.start_date = new_start_date.strftime('%d/%m/%y')
             self.end_date = new_end_date.strftime('%d/%m/%y')
             num_weeks = (new_end_date - new_start_date).days // 7 + 1
-        
+
             self.date_label.text = f"{self.start_date} - {self.end_date} ({num_weeks} semaine(s))"
 
             self.no_data_label.text = "" if logs else "Pas de données disponibles"
@@ -171,7 +172,7 @@ class LogExplorer(BoxLayout):
 
             if not logs:
                 self.add_button.disabled = True
-                return  
+                return
 
             self.end_date = new_end_date.strftime('%d/%m/%y')
 
@@ -197,7 +198,7 @@ class LogExplorer(BoxLayout):
             logs = self.get_logs_for_period(self.log_directory, start_date.strftime('%d/%m/%y'), new_end_date.strftime('%d/%m/%y'))
 
             if not logs:
-                return  
+                return
 
             self.end_date = new_end_date.strftime('%d/%m/%y')
 
@@ -216,19 +217,19 @@ class LogExplorer(BoxLayout):
 
     def update_navigation_buttons(self):
         """Active ou désactive les boutons selon la disponibilité des logs"""
-        
+
         start_date = datetime.strptime(self.start_date, '%d/%m/%y')
         end_date = datetime.strptime(self.end_date, '%d/%m/%y')
         prev_start = start_date - timedelta(weeks=1)
         prev_end = prev_start + timedelta(days=6)
-        next_start = end_date + timedelta(days=1)  
-        next_end = next_start + timedelta(days=6)  
+        next_start = end_date + timedelta(days=1)
+        next_end = next_start + timedelta(days=6)
 
         has_prev_logs = self.get_logs_for_period(self.log_directory, prev_start.strftime('%d/%m/%y'), prev_end.strftime('%d/%m/%y'))
         has_next_logs = self.get_logs_for_period(self.log_directory, next_start.strftime('%d/%m/%y'), next_end.strftime('%d/%m/%y'))
 
         self.prev_button.disabled = not has_prev_logs
-        self.next_button.disabled = not has_next_logs 
+        self.next_button.disabled = not has_next_logs
 
         self.subtract_button.disabled = (start_date == end_date)
         self.add_button.disabled = self.next_button.disabled
