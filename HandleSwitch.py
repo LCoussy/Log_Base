@@ -10,9 +10,10 @@ class HandleSwitchGraph(BoxLayout):
         self.size_hint = (1, None)
         self.height = 50
         self.instance = instance
+        self.padding = (0, 28, 0, 0)  
 
         self.switch_button = Button(text="Données/Statistiques")
-        self.switch_button.bind(on_press=lambda e : self.switch_screen(self.instance))
+        self.switch_button.bind(on_press=lambda e: self.switch_screen(self.instance))
         self.add_widget(self.switch_button)
 
     def switch_screen(self, instance):
