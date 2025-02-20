@@ -77,7 +77,7 @@ class ParsingProgressBar(BoxLayout):
       # self.update_progress(i)
 
   def update_progress(self, value):
-    self.label.text = f'Progress: {value}%'
+    self.label.text = f'Progress: {value:.2f}%'
     if value == 100:
       self.opacity = 0  # Make the progress bar invisible
 
