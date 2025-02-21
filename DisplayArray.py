@@ -1,12 +1,23 @@
 # DisplayArray.py
+from kivy.uix.recycleview import RecycleView
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.screenmanager import Screen
+from kivy.clock import Clock
+from kivy.properties import ObjectProperty
+from kivy.lang import Builder
+from kivy.uix.recycleview import RecycleView
+from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.modalview import ModalView
+from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
+from kivy.uix.textinput import TextInput
 
 import pandas as pd
 
@@ -14,40 +25,126 @@ import parser
 import data_handler as dh
 import GetContentLog
 
+Builder.load_string('''
+<MyRecycleViewLost>:
+    id: my_recycle_view_lost
+    viewclass: 'MyViewClassLost'
+    RecycleBoxLayout:
+        default_size: None, dp(30)  # Taille par défaut des cellules
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+
+<MyViewClassLost>:
+    id: my_view_class_lost
+    size_hint_y: 1
+    height: self.minimum_height
+    Label:
+        text: root.date
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Label:
+        text: root.user
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Label:
+        text: root.poste
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Button:
+        text: 'Afficher'
+        on_press: root.afficher_button_lost()
+
+<MyRecycleViewBlocked>:
+    id: my_recycle_view_blocked
+    viewclass: 'MyViewClassBlocked'
+    RecycleBoxLayout:
+        default_size: None, dp(30)  # Taille par défaut des cellules
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+
+<MyViewClassBlocked>:
+    id: my_view_class_blocked
+    size_hint_y: 1
+    height: self.minimum_height
+    Label:
+        text: root.date
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Label:
+        text: root.user
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Label:
+        text: root.poste
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Label:
+        text: root.table
+        size_hint_y: None
+        height: self.texture_size[1] + dp(4)  # Ajout d'espace vertical
+    Button:
+        text: 'Afficher'
+        on_press: root.afficher_button_blocked()
+''')
+
+class MyViewClassLost(BoxLayout):
+    date = StringProperty('')
+    user = StringProperty('')
+    poste = StringProperty('')
+    afficher_button_lost = ObjectProperty(None)
+
+class MyRecycleViewLost(RecycleView):
+    def __init__(self, **kwargs):
+        super(MyRecycleViewLost, self).__init__(**kwargs)
+        self.data = []  
+        self.RealData = []
+
+    def update(self, data):
+        data.sort(key=lambda x: x['date'])
+        self.data = data
+        self.RealData = self.data
+        self.refresh_from_data()
+
+    def filtered(self, type, value):
+        self.data = [x for x in self.RealData if value in x[type]]
+        self.refresh_from_data()
+
+class MyViewClassBlocked(BoxLayout):
+    date = StringProperty('')
+    user = StringProperty('')
+    poste = StringProperty('')
+    table = StringProperty('')
+    afficher_button_blocked = ObjectProperty(None)
+
+class MyRecycleViewBlocked(RecycleView):
+    def __init__(self, **kwargs):
+        super(MyRecycleViewBlocked, self).__init__(**kwargs)
+        self.data = [] 
+        self.RealData = []
+
+    def update(self, data):
+        data.sort(key=lambda x: x['date'])
+        self.data = data
+        self.RealData = self.data
+        self.refresh_from_data()
+
+    def filtered(self, type, value):
+        self.data = [x for x in self.RealData if value in x[type]]
+        self.refresh_from_data()
+
 class DisplayArray(Screen):
     def __init__(self, type, **kwargs):
         super(DisplayArray, self).__init__(**kwargs)
-        self.df_combined_lost = pd.DataFrame()  # Stock datas
         self.df_combined_blocked = pd.DataFrame()  # Stock datas
+        self.df_combined_lost = pd.DataFrame()  # Stock datas
         self.myType = type
         self.sort_ascending = True
         self.current_df = None
         self.build_ui()
-
-
-    def sort_table(self, column, requestType):
-        """
-        Sort the DataFrame based on the selected column and update the grid layout.
-
-        Args:
-            column (str): The name of the column to sort by.
-        """
-        if self.current_df is not None and column in self.current_df.columns:
-            if not hasattr(self, 'sort_ascending'):
-                self.sort_ascending = True
-
-            if hasattr(self, 'sort_column') and self.sort_column == column:
-                self.sort_ascending = not self.sort_ascending
-            else:
-                self.sort_ascending = True
-                self.sort_column = column
-
-            self.current_df.sort_values(
-                by=column, ascending=self.sort_ascending, inplace=True
-            )
-            self.current_df.reset_index(drop=True, inplace=True)
-            print("column:", column)
-            self.updateTableFromCurrentData(requestType)
 
     def clean_text(self,text):
         """
@@ -65,8 +162,7 @@ class DisplayArray(Screen):
             logs (list): List of logs parsed from files.
             segment_id (str): The unique ID of the segment to display.
         """
-        from kivy.uix.popup import Popup
-        from kivy.uix.label import Label
+
 
         segment_content = parser.get_segment_by_id(logs, segment_id)
         segment_content = self.clean_text(segment_content)
@@ -81,12 +177,18 @@ class DisplayArray(Screen):
         label.bind(size=label.setter('text_size'))
         content_layout.add_widget(label)
 
-        popup = Popup(
-            title=f"Segment {segment_id}",
-            content=content_layout,
-            size_hint=(0.9, 0.9),
-            auto_dismiss=True
+        popup = ModalView(size_hint=(0.9, 0.9), auto_dismiss=True)
+
+        popup.open()
+        close_button = Button(
+            text="Fermer",
+            size_hint_y=None,
+            height=30
         )
+        close_button.bind(on_release=lambda instance: popup.dismiss())
+
+        content_layout.add_widget(close_button)
+        popup.add_widget(content_layout)
         popup.open()
 
     def build_ui(self):
@@ -100,6 +202,8 @@ class DisplayArray(Screen):
 
         up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=0, spacing=0)
         down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.9), padding=0, spacing=0)
+        down_up_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=0, spacing=0)
+        down_down_layout = BoxLayout(orientation='vertical', size_hint=(1, 0.9), padding=0, spacing=0)
 
 
         title = Label(
@@ -112,159 +216,196 @@ class DisplayArray(Screen):
         )
         up_layout.add_widget(title)
 
+        self.progress_bar = ProgressBar(max=100, size_hint=(1, None), height=20)
+        up_layout.add_widget(self.progress_bar)
+        self.progress_bar.opacity = 0  # Cachée par défaut
+
+        # Ajouter un layout horizontal pour les filtres
+        filter_layout = BoxLayout(orientation='horizontal', size_hint=(1, None), height=40)
+
+        # TextInput pour filtrer
+        self.user_filter = TextInput(hint_text="Filtrer pour un utilisateur", multiline=False, size_hint=(0.5, 1))
+        self.user_filter.bind(text=self.on_text_user)
+        filter_layout.add_widget(self.user_filter)
+        if self.myType == "bloquees":
+            self.table_filter = TextInput(hint_text="Filtrer pour une table", multiline=False, size_hint=(0.5, 1))
+            self.table_filter.bind(text=self.on_text_table)
+            filter_layout.add_widget(self.table_filter)
+            self.table_filter.opacity = 0
+        up_layout.add_widget(filter_layout)
+
+        # Cacher lse filtres le temps du chargement
+        self.user_filter.opacity = 0
+
         # Scrollable Array
-        scroll_view = ScrollView(size_hint=(1, 0.9))
         self.grid_layout = GridLayout(size_hint_y=None, padding=10, spacing=10, row_force_default=True, row_default_height=40)
         self.grid_layout.bind(minimum_height=self.grid_layout.setter('height'))
-        scroll_view.add_widget(self.grid_layout)
+        self.myRVLost = MyRecycleViewLost()
 
-        down_layout.add_widget(scroll_view)
+        down_layout.add_widget(down_up_layout)
+        down_layout.add_widget(down_down_layout)
+
+        headers = BoxLayout(orientation='horizontal', size_hint_y=None, height=40)
+        headers.add_widget(Label(text="Date", size_hint_y=None))
+        headers.add_widget(Label(text="User", size_hint_y=None))
+        headers.add_widget(Label(text="Poste", size_hint_y=None))
+        if self.myType == "bloquees":
+            headers.add_widget(Label(text="Table", size_hint_y=None))
+        headers.add_widget(Label(text="Afficher", size_hint_y=None))
+
+        down_up_layout.add_widget(headers)
+        if self.myType == "bloquees":
+            self.myRVBlocked = MyRecycleViewBlocked()
+            down_down_layout.add_widget(self.myRVBlocked)
+        else:
+            self.myRVLost = MyRecycleViewLost()
+            down_down_layout.add_widget(self.myRVLost)
+
 
         # Assemble the main layout
         main_layout.add_widget(up_layout)
         main_layout.add_widget(down_layout)
         self.add_widget(main_layout)
 
-    def remove_duplicates(self, df):
-        """
-        Remove duplicate entries based on 'id' and keep only the most recent entry for each 'id'
-        (based on the 'date' column).
-
-        Args:
-            df (DataFrame): The DataFrame containing the logs.
-
-        Returns:
-            DataFrame: A DataFrame with duplicates removed, keeping the most recent entry for each 'id'.
-        """
-        df['date'] = pd.to_datetime(df['date'], errors='coerce')
-
-        df_sorted = df.sort_values(by=['id', 'date'], ascending=[True, False])
-
-        df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
-
-        return df_unique
-    def updateTableFromCurrentData(self, requestType):
-        """
-        Update the grid layout with the current DataFrame data.
-        This method is used to refresh the table after sorting.
-        """
+    def update_table_blocked(self, selected_files, callback=None):
         self.grid_layout.clear_widgets()
-        df_combined2 = self.current_df.drop(columns=["segment_id", "id"], errors='ignore')
-        self.grid_layout.cols = len(df_combined2.columns) + 1
+        self.df_combined_blocked = pd.DataFrame()
+        self.logsBlocked = []
+        self.progress_bar.value = 0
+        self.progress_bar.opacity = 1  # Affiche la barre de progression
 
-        for header in df_combined2.columns:
-            sort_symbol = ""
-            if hasattr(self, 'sort_column') and self.sort_column == header:
-                sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
+        self.selected_files = selected_files
+        self.current_file_index = 0
+        self.total_files = len(selected_files)
+        self.batch_size = 10  # Nombre de fichiers traités par cycle
+        self.callback = callback
 
-            header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-            header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, requestType))
-            self.grid_layout.add_widget(header_button)
+        Clock.schedule_once(self.process_next_batch_blocked, 0.1)
 
-        self.grid_layout.add_widget(Label(text="segment", bold=True))
+    def process_next_batch_blocked(self, dt):
+        """
+        Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
+        """
+        if self.current_file_index < self.total_files:
+            end_index = min(self.current_file_index + self.batch_size, self.total_files)
+            for i in range(self.current_file_index, end_index):
+                file = self.selected_files[i]
+                aLog = GetContentLog.read_file_pickle(GetContentLog.getLogcacheFilepath(file)).get('BLOCKED')
+                self.logsBlocked.append(aLog)
+                df_blocked = dh.create_table_blocked_request(aLog)
 
-        for index, row in df_combined2.iterrows():
-            for cell in row:
-                self.grid_layout.add_widget(Label(text=str(cell)))
+                if df_blocked is not None and not df_blocked.empty:
+                    self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
 
-            segment_id = self.current_df.loc[index, "segment_id"]
-            view_button = Button(text="Afficher")
-            if requestType == "blocked":
-                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
+            self.current_file_index = end_index  
+
+            self.progress_bar.value = (self.current_file_index / self.total_files) * 100
+
+            Clock.schedule_once(self.process_next_batch_blocked, 0.1)
+        else:
+            self.progress_bar.opacity = 0  
+            self.user_filter.opacity = 1
+            if self.myType == "bloquees":
+                self.table_filter.opacity = 1
+            self.df_combined_blocked.reset_index(drop=True, inplace=True)
+            self.current_df = self.df_combined_blocked
+            self.myRVBlocked.update(
+                [
+                    {
+                        'date': row['date'],
+                        'user': row['utilisateur'],
+                        'poste': row['poste'] if row['poste'] is not None else "",
+                        'table': row['table'],
+                        'afficher_button_blocked': lambda sid=row['segment_id']: self.show_segment(self.logsBlocked, sid)
+                    } if row['date'] is not None else {
+                        'date': "",
+                        'user': "",
+                        'poste': "",
+                        'table': "",
+                        'afficher_button_blocked': None
+                    }
+                    for index, row in self.current_df.iterrows()
+                ]
+            )
+
+            if self.callback:
+                self.callback(self.df_combined_blocked)
+
+    def update_table_lost(self, selected_files, callback=None):
+        self.grid_layout.clear_widgets()
+        self.df_combined_lost = pd.DataFrame()
+        self.logsLost = []
+        self.progress_bar.value = 0
+        self.progress_bar.opacity = 1  
+
+        self.selected_files = selected_files
+        self.current_file_index = 0
+        self.total_files = len(selected_files)
+        self.batch_size = 10  
+        self.callback = callback
+
+        Clock.schedule_once(self.process_next_batch_lost, 0.1)
+
+
+    def process_next_batch_lost(self, dt):
+        """
+        Traite un lot de fichiers à la fois pour améliorer la vitesse sans bloquer l'UI.
+        """
+        if self.current_file_index < self.total_files:
+            end_index = min(self.current_file_index + self.batch_size, self.total_files)
+
+            for i in range(self.current_file_index, end_index):
+                file = self.selected_files[i]
+                aLog = GetContentLog.read_file_pickle(GetContentLog.getLogcacheFilepath(file)).get('LOST')
+                self.logsLost.append(aLog)
+                df_lost = dh.create_table_lost_request(aLog)
+
+                if df_lost is not None and not df_lost.empty:
+                    self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
+
+            self.current_file_index = end_index  
+
+            self.progress_bar.value = (self.current_file_index / self.total_files) * 100
+
+            Clock.schedule_once(self.process_next_batch_lost, 0.1)
+        else:
+            self.progress_bar.opacity = 0 
+            self.user_filter.opacity = 1
+            if self.myType == "bloquees":
+                self.table_filter.opacity = 1
+            self.df_combined_lost.reset_index(drop=True, inplace=True)
+            self.current_df = self.df_combined_lost
+            self.myRVLost.update(
+                [
+                    {
+                        'date': row['date'],
+                        'user': row['utilisateur'],
+                        'poste': row['poste'] if row['poste'] is not None else "",
+                        'afficher_button_lost': lambda sid=row['segment_id']: self.show_segment(self.logsLost, sid)
+                    } if row['date'] is not None else {
+                        'date': "",
+                        'user': "",
+                        'poste': "",
+                        'afficher_button_lost': None
+                    }
+                    for index, row in self.current_df.iterrows()
+                ]
+            )
+
+            if self.callback:
+                self.callback(self.df_combined_lost)
+
+    def on_text_user(self, instance, value):
+        if value is not None:
+            if self.myType == "perdues":
+                self.myRVLost.filtered('user', value)
             else:
-                view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
-            self.grid_layout.add_widget(view_button)
+                self.myRVBlocked.filtered('user', value)
 
-    def update_table_blocked(self, selected_files):
-        self.grid_layout.clear_widgets()
-        logs = []
-        self.df_combined_blocked = pd.DataFrame()  # Initialise le DataFrame pour les contenus bloqués
 
-        for file in selected_files:
-
-            # Ajout du traitement pour df_blocked
-            aLog = GetContentLog.parse(file).get('BLOCKED')
-            logs.append(aLog)
-            df_blocked = dh.create_table_blocked_request(aLog)
-            if df_blocked is not None and not df_blocked.empty:
-                self.df_combined_blocked = pd.concat([self.df_combined_blocked, df_blocked], ignore_index=True)
-
-        if logs:
-            df_combined = self.df_combined_blocked
-
-            if df_combined is not None and not df_combined.empty:
-                df_combined = self.remove_duplicates(df_combined)
-                df_combined.drop_duplicates(inplace=True)
-                df_combined.reset_index(drop=True, inplace=True)
-
-                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
-
-                self.grid_layout.cols = len(df_combined2.columns) + 1
-                self.current_df = df_combined
-                self.logsBlocked = logs
-
-                for header in df_combined2.columns:
-                    sort_symbol = ""
-                    if hasattr(self, 'sort_column') and self.sort_column == header:
-                        sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
-
-                    header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, "blocked"))
-                    self.grid_layout.add_widget(header_button)
-
-                self.grid_layout.add_widget(Label(text="segment", bold=True))
-
-                for index, row in df_combined2.iterrows():
-                    for cell in row:
-                        self.grid_layout.add_widget(Label(text=str(cell)))
-
-                    segment_id = df_combined.loc[index, "segment_id"]
-                    view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsBlocked, sid))
-                    self.grid_layout.add_widget(view_button)
-
-    def update_table_lost(self, selected_files):
-        self.grid_layout.clear_widgets()
-        logs = []
-        self.df_combined_lost = pd.DataFrame()  # Initialise le DataFrame pour les contenus perdus
-
-        for file in selected_files:
-            aLog = GetContentLog.parse(file).get('LOST')
-            logs.append(aLog)
-            df_lost = dh.create_table_lost_request(aLog)
-            if df_lost is not None and not df_lost.empty:
-                self.df_combined_lost = pd.concat([self.df_combined_lost, df_lost], ignore_index=True)
-
-        if logs:
-            df_combined = self.df_combined_lost
-
-            if df_combined is not None and not df_combined.empty:
-                df_combined = self.remove_duplicates(df_combined)
-                df_combined.drop_duplicates(inplace=True)
-                df_combined.reset_index(drop=True, inplace=True)
-
-                df_combined2 = df_combined.drop(columns=["segment_id", "id"], errors='ignore')
-
-                self.grid_layout.cols = len(df_combined2.columns) + 1
-                self.current_df = df_combined
-                self.logsLost = logs
-
-                for header in df_combined2.columns:
-                    sort_symbol = ""
-                    if hasattr(self, 'sort_column') and self.sort_column == header:
-                        sort_symbol = " /\\ " if self.sort_ascending else " \\/ "
-
-                    header_button = Button(text=f"{header}{sort_symbol}", bold=True)
-                    header_button.bind(on_release=lambda instance, col=header: self.sort_table(col, "lost"))
-                    self.grid_layout.add_widget(header_button)
-
-                self.grid_layout.add_widget(Label(text="segment", bold=True))
-
-                for index, row in df_combined2.iterrows():
-                    for cell in row:
-                        self.grid_layout.add_widget(Label(text=str(cell)))
-
-                    segment_id = df_combined.loc[index, "segment_id"]
-                    view_button = Button(text="Afficher")
-                    view_button.bind(on_release=lambda instance, sid=segment_id: self.show_segment(self.logsLost, sid))
-                    self.grid_layout.add_widget(view_button)
+    def on_text_table(self, instance, value):
+        if value is not None:
+            if self.myType == "perdues":
+                self.myRVLost.filtered('table', value)
+            else:
+                self.myRVBlocked.filtered('table', value)

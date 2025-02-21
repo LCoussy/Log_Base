@@ -1,4 +1,4 @@
-# Display.py
+# DisplayData.py
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 import HandleSwitch as hs
@@ -7,7 +7,19 @@ from DisplayStat import DisplayStat
 
 class DisplayData(Screen):
     """
-    Screen that contains the DisplayArray and manages its layout.
+    DisplayData is a Kivy Screen class that builds and manages the user interface for displaying data.
+
+    Attributes:
+        instance (list): A list containing instances of data to be displayed.
+        displayLost (DisplayArray): An instance of DisplayArray for displaying lost requests.
+        displayBlocked (DisplayArray): An instance of DisplayArray for displaying blocked requests.
+        displayStat (DisplayStat): An instance of DisplayStat for displaying statistics.
+        handleSwitchGraph (HandleSwitchGraph): A button for switching to the graph display.
+        handleSwitchRequest (HandleSwitchRequest): A button for switching to the request display.
+
+    Methods:
+        __init__(**kwargs): Initializes the DisplayData screen and builds the UI.
+        build_ui(): Builds the user interface of the Display screen.
     """
 
     def __init__(self, **kwargs):
@@ -25,7 +37,7 @@ class DisplayData(Screen):
 
         mainBoxLayout = BoxLayout(orientation='vertical', padding=0, spacing=0)
         mainBoxLayoutUp = BoxLayout(orientation='horizontal', size_hint=(1, 0.9), padding=10, spacing=10)
-        mainBoxLayoutDownButton = BoxLayout(orientation='vertical', size_hint=(1, 0.1), padding=10, spacing=10)
+        mainBoxLayoutDownButton = BoxLayout(orientation='horizontal', size_hint=(1, 0.1), padding=5, spacing=5)
 
         # Create instances of DisplayArray and DisplayStat
         self.displayLost = DisplayArray("perdues")
@@ -46,7 +58,17 @@ class DisplayData(Screen):
         self.handleSwitchGraph = hs.HandleSwitchGraph(screenManager=screenManager, instance=self.instance)
         self.handleSwitchRequest = hs.HandleSwitchRequest(screenManager=screenManager, instance=self.instance)
 
+        # Ajouter les boutons avec le même size_hint_y pour une hauteur égale
+        self.handleSwitchRequest.size_hint_y = 0.8
+        self.handleSwitchGraph.size_hint_y = 0.8
+
+        self.handleSwitchRequest.size_hint_x = 0.8
+        self.handleSwitchGraph.size_hint_x = 0.8
+
+
+
         mainBoxLayoutDownButton.add_widget(self.handleSwitchRequest)
+        mainBoxLayoutDownButton.add_widget(self.handleSwitchGraph)
 
         stat_screen.add_widget(self.displayStat)
 

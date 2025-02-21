@@ -4,27 +4,32 @@ import parser
 import pickle
 
 # dictionary to store cached file content
-file_cache = {}
+# file_cache = {}
+
+# def drop_cache():
+#     global file_cache
+#     file_cache = {}
 
 # function to read file content using pickle and implement caching
 def read_file_pickle(file_path):
     # Check if the file is already in cache
-    if file_path not in file_cache:
-        # Check if the file exist and is not empty
-        if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-            try:
-                # Read the file using pickle and store the content in the cache
-                with open(file_path, 'rb') as file:
-                    file_content = pickle.load(file)
-                    file_cache[file_path] = file_content
-            except EOFError:
-                print(f"Erreur : Le fichier {file_path} est vide ou corrompu.")
-                return None
-        else:
-            print(f"Erreur : Le fichier {file_path} n'existe pas ou est vide.")
+    # if file_path not in file_cache:
+    # Check if the file exist and is not empty
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        try:
+            # Read the file using pickle and store the content in the cache
+            with open(file_path, 'rb') as file:
+                file_content = pickle.load(file)
+                # file_cache[file_path] = file_content
+        except EOFError:
+            print(f"Erreur : Le fichier {file_path} est vide ou corrompu.")
             return None
-    # Return the content put in the cache 
-    return file_cache.get(file_path)
+    else:
+        print(f"Erreur : Le fichier {file_path} n'existe pas ou est vide.")
+        return None
+    # Return the content put in the cache
+    return file_content
+    # return file_cache.get(file_path)
 
 
 
@@ -39,6 +44,9 @@ def GetContentLog(filepath):
   isBlocked = False
   with open(filepath, 'r', encoding='ISO-8859-1') as f:
     for line in f:
+      if ("ALTER SYSTEM KILL SESSION" in line):
+        print("Erreur Alter System Kill Session")
+        return {"ERROR" : "Erreur Alter System Kill Session"}
       if ("résultat de concaténation de chaîne trop long" in line):
         print("Erreur Requête trop longue")
         return {"ERROR" : "Erreur Requête trop longue"}
@@ -80,6 +88,7 @@ def GetContentLog(filepath):
           buffer = line
           continue
 
+
   data = {"LOST": data_lost, "BLOCKED": data_blocked, "USER": data_user}
   return data
 
@@ -98,14 +107,26 @@ def parse(filepath):
         # Write data in the fiel using pickle
         with open(cache_file_path, 'wb') as file:
             pickle.dump(GetContentLog(filepath), file)
-        print(f"Cache file created: {cache_file_path}")
     #  Read and return cached data from the file
-    result = read_file_pickle(cache_file_path)
-    if result is not None:
-        return result
-    else:
-        print("Erreur : Impossible de lire les données mises en cache.")
-        return None
+    # result = read_file_pickle(cache_file_path)
+    # if result is not None:
+    #     return result
+    # else:
+    #     print("Erreur : Impossible de lire les données mises en cache.")
+    #     return None
   else:
       print("Erreur : Nom de fichier non trouvé.")
       return None
+
+def getLogcacheFilepath(filepath):
+  patternFilePath = re.compile(r'[^\\|/]+(?=\.[^.]+$)')
+  match = patternFilePath.search(filepath)
+  if match:
+    curDir = os.getcwd()
+    if '/' in curDir:
+      return f'{curDir}/__logcache__/{match.group(0)}.pkl'
+    else :
+      return f'{curDir}\\__logcache__\\{match.group(0)}.pkl'
+  else:
+    return None
+  

@@ -2,6 +2,10 @@ import MainApp as MApp
 import kivy
 from kivy.config import Config
 import logging
+from kivy.core.window import Window
+
+# Définir la taille de la fenêtre
+Window.size = (Window.width + 1000, Window.height + 1000) 
 
 Config.set('input', 'mouse', 'mouse,disable_multitouch')
 kivy.logger.Logger.setLevel(logging.WARNING)

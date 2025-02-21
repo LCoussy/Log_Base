@@ -33,6 +33,7 @@ class GraphBlockPerTables(BoxLayout):
         self.add_widget(self.figure_widget)
 
     def updateGraph(self, data):
+        print(f" Mise à jour du graphique {self.graph_type} avec {len(data)} entrées")
         """
         Updates the graph with new data.
 
@@ -52,7 +53,7 @@ class GraphBlockPerTables(BoxLayout):
                 return
 
             # Count occurrences of table data
-            table_counts = data_filtered['table'].value_counts()
+            table_counts = data_filtered['table'].value_counts().head(10)
             table_counts.plot(kind='bar', ax=self.ax)
 
             # Set graph labels and title
