@@ -304,3 +304,6 @@ DragAndDrop copy 2.py
 .vscode
 .vscode/
 .vscode/*
+
+venv_project/
+dependencies/
