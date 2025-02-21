@@ -73,11 +73,11 @@ class FilterFiles:
                         pat.group(6),
                         self.get_month(int(pat.group(5))),
                         pat.group(4),
-                        f"{pat.group(1).replace("_","0")}:00"
+                        f"{pat.group(1).replace('_', '0')}:00"
                     )
                     hierarchy.setdefault(year, {}).setdefault(month, {}).setdefault(day, {}).setdefault(hour, []).append({
                         "file_path": file_path,
-                        "formatted_time": f"{pat.group(1).replace("_","0")}:{pat.group(2)}"
+                        "formatted_time": f"{pat.group(1).replace('_','0')}:{pat.group(2)}"
                     })
         return hierarchy
     def get_logs_in_date_range(self, directory, start_date, end_date):
